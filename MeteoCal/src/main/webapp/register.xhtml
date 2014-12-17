@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Registration</title>
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    </h:head>
+    <h:body>
+        <div id="header">
+            <h1>MeteoCal</h1>
+        </div>
+        <div id="nav">
+            <br>Descrizione</br>
+            <br>Descrizione</br>
+            <br>Descrizione</br>
+            <br>Descrizione</br>
+            <br>Descrizione</br>
+            <br>Descrizione</br>
+            <br>Descrizione</br>
+        </div>
+        <div id="section">
+        <h:form id="registrationform">
+            <p:panel header="Registration Form">
+                <h:panelGrid columns="3" id="regGrid">
+                    <h:outputLabel for="name">Name:</h:outputLabel>
+                    <p:inputText id="name" value="#{registrationBean.user.name}">
+                        <p:ajax update="namemsg"/>
+                    </p:inputText>
+                    <p:message id="namemsg" for="name" />
+                    
+                    <h:outputLabel for="name">Surname:</h:outputLabel>
+                    <p:inputText id="surname" value="#{registrationBean.user.surname}">
+                        <p:ajax update="surnamemsg"/>
+                    </p:inputText>
+                    <p:message id="surnamemsg" for="surname" />
+                    
+                    <h:outputLabel for="birthday" value="Birthday:" />
+                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" />
+                    <p:message id="birthdaymsg" for="birthday" />
+                   
+                    <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
+                    <p:inputText id="phoneNumber" value="#{registrationBean.user.phoneNumber}">
+                        <p:ajax update="phoneNumbermsg"/>
+                    </p:inputText>
+                    <p:message id="phoneNumbermsg" for="phoneNumber" />
+                    
+                    <h:outputLabel for="residenceTown">Residence Town:</h:outputLabel>
+                    <p:inputText id="residenceTown" value="#{registrationBean.user.residenceTown}">
+                        <p:ajax update="residenceTownmsg"/>
+                    </p:inputText>
+                    <p:message id="residenceTownmsg" for="residenceTown" />
+                   
+                    <h:outputLabel for="email">Email:</h:outputLabel>
+                    <p:inputText id="email" value="#{registrationBean.user.email}" >
+                        <p:ajax update="emailmsg"/>
+                    </p:inputText>
+                    <p:message id="emailmsg" for="email" />
+                    
+                    <h:outputLabel for="password">Password:</h:outputLabel>
+                    <p:password id="password" value="#{registrationBean.user.password}"
+                                feedback="true" match="pwd2" label="Password"/>
+                    <p:message for="password" />
+
+                    <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
+                    <p:password id="pwd2" label="Confirm Password"/>
+                </h:panelGrid>
+                <p:commandButton id="submit" value="Register" update="regGrid"
+                                 action="#{registrationBean.register()}" />
+
+            </p:panel>
+        </h:form>
+        </div>
+        <div id="footer">
+        Daniele Marangoni - Matteo Montalcini - Daniele Moro
+        </div>
+    </h:body>
+</html>
+
