@@ -10,28 +10,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
-/**
- *
- * @author DanieleMarangoni
- */
 @Entity
 public class WeatherCondition implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private int prova;
+    @NotNull(message = "May not be empty")
+    private float precipitation;
     
-    public int getProva() {
-        return prova;
-    }
-
-    public void setProva(int prova) {
-        this.prova = prova;
-    }
-
+    @NotNull(message = "May not be empty")
+    private float wind;
+    
+    @NotNull(message = "May not be empty")
+    private float temperature;
+    
     public Long getId() {
         return id;
     }
@@ -40,5 +38,28 @@ public class WeatherCondition implements Serializable {
         this.id = id;
     }
 
+    public float getPrecipitation() {
+        return precipitation;
+    }
+
+    public void setPrecipitation(float precipitation) {
+        this.precipitation = precipitation;
+    }
+
+    public float getWind() {
+        return wind;
+    }
+
+    public void setWind(float wind) {
+        this.wind = wind;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
     
 }
