@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 
-@Entity
+@Entity(name = "EVENT")
 public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -28,7 +28,7 @@ public class Event implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date timeStart;
 
-     @NotNull(message = "May not be empty")
+    @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date timeEnd;
      
@@ -37,11 +37,8 @@ public class Event implements Serializable {
     @NotNull(message = "May not be empty")
     private String town;
     
-    @NotNull(message = "May not be empty")
     private String latitude;
     
-    
-    @NotNull(message = "May not be empty")
     private String longitude;
     
     @NotNull(message = "May not be empty")
@@ -62,11 +59,16 @@ public class Event implements Serializable {
     @NotNull(message = "May not be empty")
     private PredefinedTypology predefinedTypology;
     
-    @NotNull(message = "May not be empty")
+    //@NotNull(message = "May not be empty")
     private WeatherCondition acceptedWeatherConditions;
     
     private WeatherCondition weatherForecast;
-     
+    
+    
+    @NotNull(message = "May not be empty")
+    private String groupName;
+   
+    
     public Long getId() {
         return id;
     }
@@ -201,6 +203,20 @@ public class Event implements Serializable {
 
     public void setWeatherForecast(WeatherCondition weatherForecast) {
         this.weatherForecast = weatherForecast;
+    }
+
+    /**
+     * @return the groupName
+     */
+    public String getGroupName() {
+        return groupName;
+    }
+
+    /**
+     * @param groupName the groupName to set
+     */
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
     
 }

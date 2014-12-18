@@ -33,6 +33,6 @@ public class ModifyUser {
     
     public String updateProfile () {
         um.updateUser(user);
-        return "home";
+        return "home?faces-redirect=true";
     }
 }

@@ -8,19 +8,8 @@
     </h:head>
     <h:body>
         Logged user: #{userBean.name}<br/>
-        <p:link outcome="userProfile" value="userProfile"/>
-        
-        <p:link outcome="createEvent" value="createEvent"/>
-        
-        <p:link outcome="importCalendar" value="importCalendar"/> 
-        
-        <p:link outcome="exportCalendar" value="exportCalendar"/> 
-        
-        <p:link outcome="createdEvent" value="createdEvent"/> 
-         
         <h:form>
-            <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+            <p:commandLink action="#{eventBean.createdEvent()}" value="logout"/>
         </h:form>
     </h:body>
 </html>
-
