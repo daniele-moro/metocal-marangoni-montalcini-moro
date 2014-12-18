@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Stateless
 public class UserManager {
@@ -33,6 +34,18 @@ public class UserManager {
 
     public User getLoggedUser() {
         return em.find(User.class, principal.getName());
+    }
+    
+    public void updateUser(User user) {
+        System.out.println(user.getName());
+        Query q = em.createQuery("UPDATE USER u SET u.name = '" + user.getName() + 
+                "', u.surname = '" + user.getSurname() + 
+                //"', u.birthday = " + user.getBirthday() + 
+                "', u.phoneNumber = ' " + user.getPhoneNumber() + 
+                "', u.residenceTown = '" + user.getResidenceTown() +
+                "', u.email = '" + user.getEmail() + 
+                "' WHERE u.email = '" +user.getEmail() + "'");
+        q.executeUpdate();
     }
     
 }

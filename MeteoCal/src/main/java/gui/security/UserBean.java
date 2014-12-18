@@ -6,6 +6,7 @@
 package gui.security;
 
 import business.security.boundary.UserManager;
+import business.security.entity.User;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -17,11 +18,17 @@ public class UserBean{
     @EJB
     UserManager um;
     
+    private User user; 
+    
     public UserBean() {
     }
     
     public String getName() {
         return um.getLoggedUser().getName();
+    }
+    
+    public User getUser() {
+        return um.getLoggedUser();
     }
     
 }

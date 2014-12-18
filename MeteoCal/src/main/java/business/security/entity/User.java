@@ -45,7 +45,6 @@ public class User implements Serializable {
     @NotNull(message = "May not be empty")
     private String groupName;
    
-    
     public String getName() {
         return name;
     }

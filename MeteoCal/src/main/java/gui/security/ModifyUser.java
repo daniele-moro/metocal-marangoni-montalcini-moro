@@ -8,35 +8,31 @@ package gui.security;
 import business.security.boundary.UserManager;
 import business.security.entity.User;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class RegistrationBean {
-
+public class ModifyUser {
+    
     @EJB
     private UserManager um;
-
-    private User user;
-
-    public RegistrationBean() {
-    }
-
+    
+    private User user; 
+    
     public User getUser() {
         if (user == null) {
             user = new User();
         }
-        return user;
+        return user; 
     }
     
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User u) {
+        user = u; 
     }
-
-    public String register() {
-        um.save(user);
-        return "user/home?faces-redirect=true";
+    
+    public String updateProfile () {
+        um.updateUser(user);
+        return "home";
     }
-
 }

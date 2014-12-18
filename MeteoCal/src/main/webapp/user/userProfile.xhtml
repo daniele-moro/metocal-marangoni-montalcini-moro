@@ -9,6 +9,7 @@
     <h:body>
         Logged user: #{userBean.name}<br/>
         <p:link outcome="home" value="home"/><br />
+        <p:link outcome="modifyProfile" value="modifyProfile"/><br />
         <h:form>
             <p:commandLink action="#{loginBean.logout()}" value="logout"/>
         </h:form>
