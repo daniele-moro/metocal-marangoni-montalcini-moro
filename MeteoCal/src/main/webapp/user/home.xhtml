@@ -8,15 +8,23 @@
     </h:head>
     <h:body>
         Logged user: #{userBean.name}<br/>
-        <p:link outcome="userProfile" value="userProfile"/>
+        <p:link outcome="userProfile" value="userProfile"/><br/>
         
-        <p:link outcome="createEvent" value="createEvent"/>
+        <p:link outcome="createEvent" value="createEvent"/><br/>
         
-        <p:link outcome="importCalendar" value="importCalendar"/> 
+        <p:link outcome="importCalendar" value="importCalendar"/><br/> 
         
-        <p:link outcome="exportCalendar" value="exportCalendar"/> 
+        <p:link outcome="exportCalendar" value="exportCalendar"/><br/>
         
-        <p:link outcome="createdEvent" value="createdEvent"/> 
+        <p:link outcome="createdEvent" value="createdEvent"/><br/>
+        
+        <h:form id="addInvitation">
+            <p:outputLabel for="email" value="Email"/>
+            <p:inputText id="email" value="#{addInvitationBean.email}" 
+                                     required="true" />
+            <p:commandButton id="submit" action="#{addInvitationBean.addUserThroughEmail()}" value="Search" />
+        </h:form>  
+          
          
         <h:form>
             <p:commandLink action="#{loginBean.logout()}" value="logout"/>
