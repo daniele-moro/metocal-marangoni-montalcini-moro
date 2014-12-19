@@ -64,11 +64,6 @@ public class Event implements Serializable {
     
     private WeatherCondition weatherForecast;
     
-    
-    @NotNull(message = "May not be empty")
-    private String groupName;
-   
-    
     public Long getId() {
         return id;
     }
@@ -205,18 +200,5 @@ public class Event implements Serializable {
         this.weatherForecast = weatherForecast;
     }
 
-    /**
-     * @return the groupName
-     */
-    public String getGroupName() {
-        return groupName;
-    }
-
-    /**
-     * @param groupName the groupName to set
-     */
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
     
 }

@@ -30,7 +30,6 @@ public class EventManager {
     Principal principal;
 
     public void save(Event event) {
-        event.setGroupName(Group.EVENT);
         em.persist(event);
     }
     
@@ -64,22 +63,32 @@ public class EventManager {
         lista = qCreatedEvent.getResultList();
     }
    
-   public NameSurnameEmail findUser(String email) {
-       Query qFindUserName = em.createQuery("SELECT u.name FROM USER u WHERE u.email = '" + email + "'"); 
-       Query qFindUserSurname = em.createQuery("SELECT u.surname FROM USER u WHERE u.email = '" + email + "'"); 
-       NameSurnameEmail newElement = new NameSurnameEmail(); 
-       newElement.setName((String)qFindUserName.getSingleResult());
-       newElement.setSurname((String)qFindUserSurname.getSingleResult());
-       newElement.setEmail(email);
-       System.out.println("" + newElement.getName() + "|||| sdfddkfnekfd");
-       System.out.println("" + newElement.getSurname() + "|||| sdfddkfnekfd");
-       
-       
-       
-       /*newElement.setName(element.get(0));
-       newElement.setSurname(element.get(1)); 
-       newElement.setEmail(element.get(2));*/
-       return newElement; 
+   public User findUser(String email) {
+       NameSurnameEmail nameSurnameEmail = new NameSurnameEmail();
+       Query qFindUserThroughEmail = em.createQuery("SELECT u FROM USER u WHERE u.email = '" + email +"'");
+       List <User> user = (List<User>) qFindUserThroughEmail.getResultList();
+       return user.get(0);
    }
-    
+   
+   public NameSurnameEmail findNameSurnameEmailFromUser(String email) {
+       User u = findUser(email);
+       NameSurnameEmail nameSurnameEmail = new NameSurnameEmail();
+       nameSurnameEmail.setNameSurnameEmail(u.getName(), u.getSurname(), u.getEmail());
+       return nameSurnameEmail;
+   }
+  
+    public List<NameSurnameEmail> findUser(String name, String surname) {
+       Query qFindUserEmail = em.createQuery("SELECT u.email FROM USER u WHERE u.name = '" + name + "' AND u.surname = '" + surname + "'"); 
+       List<String> emails;
+       List<NameSurnameEmail> list = new ArrayList<>(); 
+       emails = (List<String>) qFindUserEmail.getResultList(); 
+       for (String email : emails) {
+           NameSurnameEmail element = new NameSurnameEmail(); 
+           element.setEmail(email);
+           element.setName(name);
+           element.setSurname(surname);
+           list.add(element); 
+       }
+       return list; 
+  }
 }

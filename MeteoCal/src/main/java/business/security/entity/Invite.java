@@ -21,8 +21,16 @@ public class Invite implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Event event;
+
+    
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
     public static enum InviteStatus {
         accepted, 
@@ -30,27 +38,20 @@ public class Invite implements Serializable {
         delayedEvent, 
         invited;
     }
-
-    @NotNull(message = "May not be empty")
-    private String userEmail;
+    
+    @Id
+    private User user;
     
     @NotNull(message = "May not be empty")
     private InviteStatus status; 
     
-    public Long getId() {
-        return id;
+
+    public User getUser() {
+        return user;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public InviteStatus getStatus() {

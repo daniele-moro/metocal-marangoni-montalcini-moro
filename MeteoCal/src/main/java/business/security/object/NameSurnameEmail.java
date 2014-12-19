@@ -43,6 +43,12 @@ public class NameSurnameEmail {
         this.email = email;
     }
     
+    public void setNameSurnameEmail (String name, String surname, String email) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+    }
+    
     public String toString(){
         return "Name: " + name + " Surname: " + surname + " Email: " + email;
     }

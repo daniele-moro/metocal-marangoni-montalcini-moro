@@ -6,6 +6,7 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
+import business.security.boundary.NotificationManager;
 import business.security.boundary.UserManager;
 import business.security.entity.Event;
 import business.security.entity.PredefinedTypology;
@@ -22,6 +23,9 @@ public class EventBean {
 
     @EJB
     private EventManager eventManager;
+    
+    @EJB
+    private NotificationManager notificationManager; 
     
     private Event event; 
     
@@ -58,6 +62,7 @@ public class EventBean {
         eventManager.save(acceptedWeatherCondition);
         event.setAcceptedWeatherConditions(acceptedWeatherCondition);
         eventManager.save(event);
+        notificationManager.setEvent(event); 
         return "addInvitation";
     }
     

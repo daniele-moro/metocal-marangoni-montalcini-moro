@@ -6,17 +6,17 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
-import business.security.entity.WeatherCondition;
+import business.security.boundary.NotificationManager;
+import business.security.entity.Invite;
+import business.security.entity.Notification;
+import business.security.entity.NotificationType;
 import business.security.object.NameSurnameEmail;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -26,8 +26,13 @@ public class AddInvitationBean {
     
     @EJB
     private EventManager eventManager;
+    
+    @EJB
+    private NotificationManager notificationManager; 
 
     private List<NameSurnameEmail> invitedPeople;
+    
+    private List<NameSurnameEmail> partialResults;
     
     @NotNull(message = "May not be empty")
     private String name; 
@@ -43,14 +48,14 @@ public class AddInvitationBean {
         invitedPeople = new ArrayList<>();
     }
 
-    public List<NameSurnameEmail> getInvitedPeopleEmails() {
+    public List<NameSurnameEmail> getInvitedPeople() {
         if (invitedPeople == null) {
             invitedPeople = new ArrayList<>();
         }
         return invitedPeople;
     }
 
-    public void setInvitedPeopleEmails(List<NameSurnameEmail> invitedPeople) {
+    public void setInvitedPeople(List<NameSurnameEmail> invitedPeople) {
         this.invitedPeople = invitedPeople;
     }
     
@@ -80,19 +85,54 @@ public class AddInvitationBean {
         this.email = email;
     }
     
-    public void addUserThroughEmail() {
-        System.out.println("Dentro add user through email");
-        if(email!=null) {
-            invitedPeople.add(eventManager.findUser(email));  
-        }
-        System.out.println(invitedPeople.toString());
-        
+    public String addUserThroughEmail() {
+        invitedPeople.add(eventManager.findNameSurnameEmailFromUser(email)); 
+        System.out.println(invitedPeople.get(0));
+        System.out.println(eventManager.findNameSurnameEmailFromUser(email));
+        sendInvitations();
+        //todo: azzerare stringa email
+        return "addInvitation"; 
     }
     
     
     
-    public void addUserThroughNameSurname() {
-       
+    public String addUserThroughNameSurname() {
+        System.out.println("appena dentro add User");
+        partialResults = eventManager.findUser(name, surname);
+        if(partialResults.size() == 1) {
+            invitedPeople.add(partialResults.get(0)); 
+        } else {
+            return "searchResults"; 
+        } 
+        //TODO: azzerare le stringhe name e surname
+        return "addInvitation"; 
+        
+    }
+
+    public List<NameSurnameEmail> getPartialResults() {
+        return partialResults;
+    }
+
+    public void setPartialResults(List<NameSurnameEmail> partialResults) {
+        this.partialResults = partialResults;
+    }
+    
+    public String sendInvitations() {
+        System.out.println(invitedPeople.get(0) + "dentro a send invitation");
+        for (NameSurnameEmail element : invitedPeople) {
+            
+            Invite invite = new Invite(); 
+            invite.setUser(eventManager.findUser(element.getEmail()));
+            invite.setStatus(Invite.InviteStatus.invited);
+            notificationManager.save(invite);
+            Notification notification = new Notification(); 
+            notification.setType(NotificationType.invite);
+            notification.setNotificatedUser(eventManager.findUser(element.getEmail()));
+            notification.setSeen(false);
+            notification.setGenerationDate(new Date());
+            notificationManager.save(notification);
+        }
+        return "createdEvent";
     }
     
 }
