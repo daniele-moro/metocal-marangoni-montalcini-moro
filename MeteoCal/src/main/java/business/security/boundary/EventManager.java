@@ -9,6 +9,7 @@ import business.security.entity.Event;
 import business.security.entity.Group;
 import business.security.entity.User;
 import business.security.entity.WeatherCondition;
+import business.security.object.NameSurnameEmail;
 import java.beans.Statement;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -29,13 +30,11 @@ public class EventManager {
     Principal principal;
 
     public void save(Event event) {
-        System.out.println("ciaoevent");
         event.setGroupName(Group.EVENT);
         em.persist(event);
     }
     
     public void save(WeatherCondition weatherCondition) {
-        System.out.println("ciaoweather");
         em.persist(weatherCondition);
     }
 
@@ -64,5 +63,23 @@ public class EventManager {
         List<String> lista = new ArrayList<String>(); 
         lista = qCreatedEvent.getResultList();
     }
+   
+   public NameSurnameEmail findUser(String email) {
+       Query qFindUserName = em.createQuery("SELECT u.name FROM USER u WHERE u.email = '" + email + "'"); 
+       Query qFindUserSurname = em.createQuery("SELECT u.surname FROM USER u WHERE u.email = '" + email + "'"); 
+       NameSurnameEmail newElement = new NameSurnameEmail(); 
+       newElement.setName((String)qFindUserName.getSingleResult());
+       newElement.setSurname((String)qFindUserSurname.getSingleResult());
+       newElement.setEmail(email);
+       System.out.println("" + newElement.getName() + "|||| sdfddkfnekfd");
+       System.out.println("" + newElement.getSurname() + "|||| sdfddkfnekfd");
+       
+       
+       
+       /*newElement.setName(element.get(0));
+       newElement.setSurname(element.get(1)); 
+       newElement.setEmail(element.get(2));*/
+       return newElement; 
+   }
     
 }

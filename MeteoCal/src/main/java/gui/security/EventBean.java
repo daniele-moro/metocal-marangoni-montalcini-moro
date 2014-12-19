@@ -58,7 +58,7 @@ public class EventBean {
         eventManager.save(acceptedWeatherCondition);
         event.setAcceptedWeatherConditions(acceptedWeatherCondition);
         eventManager.save(event);
-        return "home?faces-redirect=true";
+        return "addInvitation";
     }
     
     public void createdEvent() {

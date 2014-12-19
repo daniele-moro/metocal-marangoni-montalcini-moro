@@ -22,10 +22,10 @@ public class WeatherCondition implements Serializable {
     private Long id;
     
     @NotNull(message = "May not be empty")
-    private float precipitation;
+    private float precipitation; 
     
     @NotNull(message = "May not be empty")
-    private float wind;
+    private float wind; 
     
     @NotNull(message = "May not be empty")
     private float temperature;
