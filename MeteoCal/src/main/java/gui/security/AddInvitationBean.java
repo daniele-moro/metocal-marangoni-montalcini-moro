@@ -25,10 +25,6 @@ public class AddInvitationBean {
     @EJB
     private SearchManager searchManager; 
     
-    private List<NameSurnameEmail> invitedPeople;
-    
-    private List<NameSurnameEmail> partialResults;
-    
     @NotNull(message = "May not be empty")
     private String name; 
     
@@ -75,21 +71,14 @@ public class AddInvitationBean {
         
     }
 
-    public void setInvitedPeople(List<NameSurnameEmail> invitedPeople) {
-        this.invitedPeople = invitedPeople;
-    }
 
     public List<NameSurnameEmail> getPartialResults() {
         return notificationManager.getPartialResults();
     }
     
-    public void setPartialResults(List<NameSurnameEmail> partialResults) {
-        this.partialResults = partialResults;
-    }
-    
     public String addUserThroughEmail() {
         System.out.println(email + "dentro addInvitationBeanaddUserThroughemail");
-        notificationManager.addInvitation(searchManager.findNameSurnameEmailFromUser(email), searchManager.findUser(email));
+        notificationManager.addInvitation(email);
         return "addInvitation"; 
     }
     
@@ -99,7 +88,7 @@ public class AddInvitationBean {
         System.out.println("appena dentro add User");
         notificationManager.setPartialResults(searchManager.findNameEmailSurnameFromNameSurname(name, surname));
         if(notificationManager.getPartialResults().size() == 1) {
-            notificationManager.addInvitation(searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0), searchManager.findUser(name, surname));
+            notificationManager.addInvitation(name, surname);
         } else {
             return "searchResults"; 
         }

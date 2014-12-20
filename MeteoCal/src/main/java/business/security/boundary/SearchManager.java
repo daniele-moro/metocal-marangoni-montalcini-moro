@@ -39,14 +39,6 @@ public class SearchManager {
        return user.get(0);
    }
    
-   public User findUser(String name, String surname) {
-       System.out.println("" + em);
-       Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.name = '" + name + "' AND u.surname '" + surname + "'"); 
-       System.out.println("ciao");
-       List <User> users = (List<User>) qFindUser.getResultList();
-       return users.get(0);
-   }
-   
    public NameSurnameEmail findNameSurnameEmailFromUser(String email) {
        System.out.println(email + "searchManager dentro find name surame email from user");
        User u = findUser(email);

@@ -15,6 +15,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -29,6 +30,7 @@ public class NotificationManager {
     @Inject
     Principal principal;
     
+    @EJB
     private SearchManager searchManager; 
     
     private Event event; 
@@ -37,14 +39,11 @@ public class NotificationManager {
     
     private Notification notification; 
     
-    private List<User> users; 
-    
     private List<NameSurnameEmail> invitedPeople;
     
     private List<NameSurnameEmail> partialResults;
     
     public NotificationManager() {
-        users = new ArrayList<>();
         searchManager = new SearchManager(); 
         invitedPeople = new ArrayList<>(); 
         partialResults = new ArrayList<>(); 
@@ -106,12 +105,12 @@ public class NotificationManager {
         this.notification = notification;
     }
     
-     
-    public void addInvitation(NameSurnameEmail element, User u) {
-        System.out.println("nel notificaiton manager" + em);
-        invitedPeople.add(element);
-        users.add(u); 
-        
+    public void addInvitation(String email) {
+        invitedPeople.add(searchManager.findNameSurnameEmailFromUser(email)); 
+    }
+    
+    public void addInvitation(String name, String surname) {
+        invitedPeople.add(searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0));
     }
     
       public void sendNotifications() {
@@ -121,14 +120,14 @@ public class NotificationManager {
     }
     
     public void createInviteNotifications() {
-        for(int i = 0; i < invitedPeople.size(); i++) {
+        for(NameSurnameEmail element : invitedPeople) {
             setInvite(new Invite()); 
-            getInvite().setUser(users.get(i));
+            getInvite().setUser(searchManager.findUser(element.getEmail()));
             getInvite().setStatus(Invite.InviteStatus.invited);
             getInvite().setEvent(event);
             setNotification(new Notification()); 
             getNotification().setType(NotificationType.invite);
-            getNotification().setNotificatedUser(users.get(i));
+            getNotification().setNotificatedUser(searchManager.findUser(element.getEmail()));
             getNotification().setRelatedEvent(event);
             getNotification().setSeen(false);
             getNotification().setGenerationDate(new Date());
