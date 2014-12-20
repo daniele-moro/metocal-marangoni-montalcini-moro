@@ -32,17 +32,18 @@ public class NotificationManager {
     Principal principal;
     
     private Event event; 
-
-    public void save(Notification notification) {
-        notification.setRelatedEvent(findEvent(getEvent().getId()));
+    
+    public void sendNotification(Invite invite, Notification notification) {
+        createInviteNotification(invite, notification); 
+        em.persist(invite);
         em.persist(notification);
     }
     
-   public void save(Invite invite) {
-      invite.setEvent(findEvent(getEvent().getId()));
-       em.persist(invite);
-   }
-   
+    public void createInviteNotification(Invite invite, Notification notification) {
+        invite.setEvent(findEvent(getEvent().getId()));
+        notification.setRelatedEvent(findEvent(getEvent().getId()));
+    }
+
    
    public Event findEvent(Long eventId) {
        Query qFindEventThrougId = em.createQuery("SELECT e FROM EVENT e WHERE e.id = " + eventId);

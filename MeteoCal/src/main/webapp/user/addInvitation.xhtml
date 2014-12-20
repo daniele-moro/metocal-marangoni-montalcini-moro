@@ -37,6 +37,12 @@
             <p:commandButton id="add" action="#{addInvitationBean.addUserThroughNameSurname()}" value="Add" />            
             </p:panel>
         </h:form>
+        <h:form>
+            <p:panel header="Added users">
+                    <p:outputLabel value="#{addInvitationBean.invitedPeople}"/>
+            </p:panel>
+        </h:form>
+        
         <p:commandButton id="finish" action="#{addInvitationBean.sendInvitations()}" value="Finish" />            
         <div id="footer">
         Daniele Marangoni - Matteo Montalcini - Daniele Moro

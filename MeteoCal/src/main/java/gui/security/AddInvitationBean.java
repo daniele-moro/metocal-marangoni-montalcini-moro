@@ -85,13 +85,13 @@ public class AddInvitationBean {
         this.email = email;
     }
     
-    public String addUserThroughEmail() {
+    public void addUserThroughEmail() {
         invitedPeople.add(eventManager.findNameSurnameEmailFromUser(email)); 
-        System.out.println(invitedPeople.get(0));
+        System.out.println(invitedPeople.get(0) + "fewafw");
         System.out.println(eventManager.findNameSurnameEmailFromUser(email));
-        sendInvitations();
-        //todo: azzerare stringa email
-        return "addInvitation"; 
+        email = ""; 
+        System.out.println(email + "ee");
+        
     }
     
     
@@ -124,15 +124,15 @@ public class AddInvitationBean {
             Invite invite = new Invite(); 
             invite.setUser(eventManager.findUser(element.getEmail()));
             invite.setStatus(Invite.InviteStatus.invited);
-            notificationManager.save(invite);
             Notification notification = new Notification(); 
             notification.setType(NotificationType.invite);
             notification.setNotificatedUser(eventManager.findUser(element.getEmail()));
             notification.setSeen(false);
             notification.setGenerationDate(new Date());
-            notificationManager.save(notification);
+            notificationManager.sendNotification(invite, notification); 
         }
         return "createdEvent";
     }
+    
     
 }

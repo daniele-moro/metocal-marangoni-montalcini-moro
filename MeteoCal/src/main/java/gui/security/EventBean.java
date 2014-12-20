@@ -61,13 +61,18 @@ public class EventBean {
         event.setOrganizer(eventManager.getLoggedUser());
         eventManager.save(acceptedWeatherCondition);
         event.setAcceptedWeatherConditions(acceptedWeatherCondition);
-        eventManager.save(event);
+        eventManager.createEvent(event);
         notificationManager.setEvent(event); 
         return "addInvitation";
     }
     
     public void createdEvent() {
-        eventManager.findCreatedEvent();
+        eventManager.findCreatedEvents();
+    }
+    
+    
+    public boolean checkDateConsistency() {
+        return eventManager.checkDateConsistency(event.getTimeStart(), event.getTimeEnd()); 
     }
 
     

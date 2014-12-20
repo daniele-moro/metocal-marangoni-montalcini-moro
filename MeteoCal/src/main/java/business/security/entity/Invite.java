@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author DanieleMarangoni
  */
-@Entity
+@Entity(name = "INVITE")
 public class Invite implements Serializable {
     private static final long serialVersionUID = 1L;
     
