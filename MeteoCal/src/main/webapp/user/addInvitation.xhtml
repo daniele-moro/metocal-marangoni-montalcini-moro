@@ -37,11 +37,15 @@
             <p:commandButton id="add" action="#{addInvitationBean.addUserThroughNameSurname()}" value="Add" />            
             </p:panel>
         </h:form>
+        <h:body>
         <h:form>
-            <p:panel header="Added users">
+            <p:panel header="Added Users">
+                <p:panelGrid columns="1">
                     <p:outputLabel value="#{addInvitationBean.invitedPeople}"/>
+                </p:panelGrid>
             </p:panel>
         </h:form>
+    </h:body>
         
         <p:commandButton id="finish" action="#{addInvitationBean.sendInvitations()}" value="Finish" />            
         <div id="footer">
