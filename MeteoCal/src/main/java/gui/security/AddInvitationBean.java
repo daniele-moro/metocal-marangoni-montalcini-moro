@@ -38,17 +38,14 @@ public class AddInvitationBean {
     public AddInvitationBean() {
     }
 
-    
     public String getName() {
         return name;
     }
 
-    
     public void setName(String name) {
         this.name = name;
     }
 
-   
     public String getSurname() {
         return surname;
     }
@@ -65,12 +62,10 @@ public class AddInvitationBean {
         this.email = email;
     }
     
-    
     public List<NameSurnameEmail> getInvitedPeople() {
         return notificationManager.getInvitedPeople();
         
     }
-
 
     public List<NameSurnameEmail> getPartialResults() {
         return notificationManager.getPartialResults();
@@ -81,8 +76,6 @@ public class AddInvitationBean {
         notificationManager.addInvitation(email);
         return "addInvitation"; 
     }
-    
-    
     
     public String addUserThroughNameSurname() {
         System.out.println("appena dentro add User");
@@ -99,7 +92,6 @@ public class AddInvitationBean {
         
     }
 
-    
     public String sendInvitations() {
         notificationManager.sendNotifications();
         return "createdEvent";

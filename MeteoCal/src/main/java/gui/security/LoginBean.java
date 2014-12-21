@@ -53,6 +53,6 @@ public class LoginBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         request.getSession().invalidate();
-        return "/index?faces-redirect=true";
+        return "/login?faces-redirect=true";
     }
 }

@@ -105,3 +105,9 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+
+.ContentSideSections {
+    display:block; 
+    border-bottom:solid 1px #bcc7cf; 
+    padding:30px;
+}

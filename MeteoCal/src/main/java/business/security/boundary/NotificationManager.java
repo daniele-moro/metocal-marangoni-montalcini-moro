@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package business.security.boundary;
 
 import business.security.control.MailManager;
@@ -53,8 +49,6 @@ public class NotificationManager {
         partialResults = new ArrayList<>(); 
     }
   
-
-    
     public Event getEvent() {
         return event;
     }
@@ -139,16 +133,10 @@ public class NotificationManager {
             getNotification().setGenerationDate(new Date());
     }
 
-    /**
-     * @return the mailManager
-     */
     public MailManager getMailManager() {
         return mailManager;
     }
 
-    /**
-     * @param mailManager the mailManager to set
-     */
     public void setMailManager(MailManager mailManager) {
         this.mailManager = mailManager;
     }

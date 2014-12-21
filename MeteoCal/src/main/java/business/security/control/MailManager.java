@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package business.security.control;
 
 
@@ -16,14 +11,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message.RecipientType;
 
-/**
- *
- * @author Daniele Moro
- */
 @Stateless
 public class MailManager {
     
-   @Resource (name = "mail/SendMail")
+   @Resource (name = "mail/sendMail")
    private Session mailSession;
    
     public void sendMail (String destination, String subject, String text){
