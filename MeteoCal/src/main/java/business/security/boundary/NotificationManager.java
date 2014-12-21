@@ -5,6 +5,7 @@
  */
 package business.security.boundary;
 
+import business.security.control.MailManager;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.Notification;
@@ -32,6 +33,9 @@ public class NotificationManager {
     
     @EJB
     private SearchManager searchManager; 
+    
+    @EJB
+    private MailManager mailManager; 
     
     private Event event; 
     
@@ -114,13 +118,15 @@ public class NotificationManager {
     }
     
       public void sendNotifications() {
-        createInviteNotifications(); 
-        em.persist(getInvite());
-        em.persist(getNotification());
+        for(NameSurnameEmail element : invitedPeople) {
+            createInviteNotifications(element); 
+            em.persist(getInvite());
+            em.persist(getNotification());
+            mailManager.sendMail(element.getEmail(), "New Invite", "Hi! You have received a new invite");
+        }
     }
     
-    public void createInviteNotifications() {
-        for(NameSurnameEmail element : invitedPeople) {
+    public void createInviteNotifications(NameSurnameEmail element) {
             setInvite(new Invite()); 
             getInvite().setUser(searchManager.findUser(element.getEmail()));
             getInvite().setStatus(Invite.InviteStatus.invited);
@@ -131,6 +137,19 @@ public class NotificationManager {
             getNotification().setRelatedEvent(event);
             getNotification().setSeen(false);
             getNotification().setGenerationDate(new Date());
-        }   
+    }
+
+    /**
+     * @return the mailManager
+     */
+    public MailManager getMailManager() {
+        return mailManager;
+    }
+
+    /**
+     * @param mailManager the mailManager to set
+     */
+    public void setMailManager(MailManager mailManager) {
+        this.mailManager = mailManager;
     }
 }

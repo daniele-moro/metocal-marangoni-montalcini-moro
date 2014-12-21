@@ -21,7 +21,7 @@ import javax.mail.Message.RecipientType;
  * @author Daniele Moro
  */
 @Stateless
-public class mailManager {
+public class MailManager {
     
    @Resource (name = "mail/SendMail")
    private Session mailSession;
