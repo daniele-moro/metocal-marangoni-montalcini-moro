@@ -74,19 +74,22 @@ public class AddInvitationBean {
     public String addUserThroughEmail() {
         System.out.println(email + "dentro addInvitationBeanaddUserThroughemail");
         notificationManager.addInvitation(email);
-        return "addInvitation"; 
+        return "addInvitation?faces-redirect=true"; 
+    }
+    
+    public String addUser(NameSurnameEmail element) {
+        notificationManager.addInvitation(element);
+        return "addInvitation?faces-redirect=true";
     }
     
     public String addUserThroughNameSurname() {
         System.out.println("appena dentro add User");
         notificationManager.setPartialResults(searchManager.findNameEmailSurnameFromNameSurname(name, surname));
         if(notificationManager.getPartialResults().size() == 1) {
+            notificationManager.getPartialResults().remove(0);
             notificationManager.addInvitation(name, surname);
-        } else {
-            return "searchResults"; 
-        }
-        
-        return "addInvitation";
+        }         
+        return "addInvitation?faces-redirect=true";
         
         //TODO: azzerare le stringhe name e surname
         
@@ -95,6 +98,11 @@ public class AddInvitationBean {
     public String sendInvitations() {
         notificationManager.sendNotifications();
         return "createdEvent";
+    }
+    
+    public String removeUser(NameSurnameEmail object) {
+        notificationManager.removeUser(object);
+        return "addInvitation?faces-redirect=true";
     }
 
     

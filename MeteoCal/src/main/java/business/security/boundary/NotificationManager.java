@@ -111,6 +111,11 @@ public class NotificationManager {
         invitedPeople.add(searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0));
     }
     
+    public void addInvitation(NameSurnameEmail element) {
+        invitedPeople.add(element);
+        partialResults = new ArrayList<>(); 
+    }
+    
       public void sendNotifications() {
         for(NameSurnameEmail element : invitedPeople) {
             createInviteNotifications(element); 
@@ -139,5 +144,9 @@ public class NotificationManager {
 
     public void setMailManager(MailManager mailManager) {
         this.mailManager = mailManager;
+    }
+    
+    public void removeUser(NameSurnameEmail object) {
+        invitedPeople.remove(object);
     }
 }

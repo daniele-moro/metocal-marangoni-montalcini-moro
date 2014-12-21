@@ -63,7 +63,7 @@ public class EventBean {
         event.setAcceptedWeatherConditions(acceptedWeatherCondition);
         eventManager.createEvent(event);
         notificationManager.setEvent(event); 
-        return "addInvitation";
+        return "addInvitation?faces-redirect=true";
     }
     
     public void createdEvent() {
