@@ -6,6 +6,7 @@
 package business.security.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 @Entity(name = "EVENT")
 public class Event implements Serializable {
@@ -26,11 +28,11 @@ public class Event implements Serializable {
     
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date timeStart;
+    private Calendar timeStart;
 
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date timeEnd;
+    private Calendar timeEnd;
      
     private String description;
     
@@ -80,19 +82,19 @@ public class Event implements Serializable {
         this.name = name;
     }
 
-    public Date getTimeStart() {
+    public Calendar getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(Date timeStart) {
+    public void setTimeStart(Calendar timeStart) {
         this.timeStart = timeStart;
     }
 
-    public Date getTimeEnd() {
+    public Calendar getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(Date timeEnd) {
+    public void setTimeEnd(Calendar timeEnd) {
         this.timeEnd = timeEnd;
     }
 
