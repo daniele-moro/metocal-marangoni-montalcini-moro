@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 @Entity(name = "EVENT")
 public class Event implements Serializable {
@@ -28,11 +27,11 @@ public class Event implements Serializable {
     
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Calendar timeStart;
+    private Date timeStart;
 
     @NotNull(message = "May not be empty")
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Calendar timeEnd;
+    private Date timeEnd;
      
     private String description;
     
@@ -82,19 +81,19 @@ public class Event implements Serializable {
         this.name = name;
     }
 
-    public Calendar getTimeStart() {
+    public Date getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(Calendar timeStart) {
+    public void setTimeStart(Date timeStart) {
         this.timeStart = timeStart;
     }
 
-    public Calendar getTimeEnd() {
+    public Date getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(Calendar timeEnd) {
+    public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
     }
 

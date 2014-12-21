@@ -12,6 +12,7 @@ import business.security.entity.WeatherCondition;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -89,7 +90,7 @@ public class EventManager {
    }
    
  
- public boolean checkDateConsistency(Calendar dateStart, Calendar dateEnd) {
+ public boolean checkDateConsistency(Date dateStart, Date dateEnd) {
       if (dateStart.after(dateEnd)) {
           return false;
       } else {
