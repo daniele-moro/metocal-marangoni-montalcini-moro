@@ -4,15 +4,28 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Searched User Profile</title>
+        <link rel="stylesheet" href="../css/style.css" type="text/css"/>
     </h:head>
     <h:body>
-        Logged user: #{userBean.name}<br/>
-        <p:link outcome="home" value="home"/><br />
-        <p:link outcome="modifyProfile" value="modifyProfile"/><br />
         <h:form>
-            <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+            <p:panel>
+                <h:panelGrid columns="1">
+                    <h:outputLabel for="name" value = "Name: #{searchResultsBean.searchedUser.name}"/>
+                    
+                    <h:outputLabel for="surname" value = "Surname: #{searchResultsBean.searchedUser.surname}"/>
+
+                    <h:outputLabel for="birthday" value = "Birthday: #{searchResultsBean.searchedUser.birthday}"/>
+
+                    <h:outputLabel for="phoneNumber" value = "Phone Number: #{searchResultsBean.searchedUser.phoneNumber}"/>
+
+                    <h:outputLabel for="residenceTown" value = "Residence Town: #{searchResultsBean.searchedUser.residenceTown}"/>
+
+                    <h:outputLabel for="email" value = "Email: #{searchResultsBean.searchedUser.email}"/>
+
+                </h:panelGrid>
+                <p:commandButton value="Home" action="#{searchResultsBean.navigateTo()}" />
+            </p:panel>
         </h:form>
     </h:body>
 </html>
-

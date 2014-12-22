@@ -7,12 +7,8 @@ package gui.security;
 
 import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
-import business.security.boundary.UserManager;
 import business.security.entity.Event;
-import business.security.entity.PredefinedTypology;
-import business.security.entity.User;
 import business.security.entity.WeatherCondition;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;

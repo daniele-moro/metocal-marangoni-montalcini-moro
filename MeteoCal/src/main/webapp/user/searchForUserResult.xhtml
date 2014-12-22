@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Search for a user</title>
+    </h:head>
+    <h:body>
+        <h:form id="searchForAUser">
+            <p:panel header="Insert the email of the user you want to search">
+                <p:panelGrid columns="4">
+                    <p:outputLabel for="email" value="Email"/>
+                    <p:inputText id="email" value="#{searchResultsBean.email}">
+                        <p:ajax update="emailmsg"/>
+                    </p:inputText>
+                    <p:message id="emailmsg" for="email" />
+                </p:panelGrid>
+                <p:commandButton id="add" action="#{searchResultsBean.showUserProfile()}" value="Search" />
+            </p:panel>
+        </h:form>
+        <h:form>
+            <p:panel header="Insert name and email of the user you want to search">
+                <p:panelGrid columns="7">
+                    <p:outputLabel for="name" value="Name"/>
+                    <p:inputText id="name" value="#{searchResultsBean.name}">
+                         <p:ajax update="namemsg"/>
+                    </p:inputText>
+                    <p:message id="namemsg" for="name" />
+                    <p:outputLabel for="surname" value="Surname"/>
+                    <p:inputText id="surname" value="#{searchResultsBean.surname}">
+                        <p:ajax update="surnamemsg"/>
+                    </p:inputText>
+                    <p:message id="surnamemsg" for="surname" />
+                </p:panelGrid>
+                <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search" />
+            </p:panel>
+            
+        </h:form>
+        <h:form>
+            <h:dataTable value="#{searchResultsBean.searchedUsers}" var="o"
+                        styleClass="order-table"
+                        headerClass="order-table-header"
+                        rowClasses="order-table-odd-row,order-table-even-row"
+                >
+                    <h:column>
+                        #{o.name}
+                    </h:column>
+
+                    <h:column>
+                        #{o.surname}
+                    </h:column>
+
+                    <h:column>
+                        #{o.email}
+                    </h:column>
+                    <h:column>
+                        <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o.email)}" />
+                    </h:column>
+            </h:dataTable>
+        </h:form>
+        <p:commandButton id="home" action="#{searchResultBean.navigateTo()}" value="Home" />            
+        <div id="footer">
+        Daniele Marangoni - Matteo Montalcini - Daniele Moro
+        </div>
+    </h:body>
+</html>
+

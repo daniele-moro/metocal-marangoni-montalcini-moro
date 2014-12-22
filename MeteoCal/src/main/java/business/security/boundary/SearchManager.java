@@ -18,7 +18,11 @@ import javax.persistence.Query;
 
 @Stateless
 public class SearchManager {
-
+    
+    private List<NameSurnameEmail> searchedUsers; 
+    
+    private User searchedUser; 
+    
     @PersistenceContext
     EntityManager em;
     
@@ -26,6 +30,7 @@ public class SearchManager {
     Principal principal;
     
     public SearchManager() {
+        searchedUsers = new ArrayList<>(); 
     }
    
    
@@ -63,4 +68,31 @@ public class SearchManager {
        return list; 
   }
     
+    public List<NameSurnameEmail> getSearchedUsers() {
+        return searchedUsers;
+    }
+    
+    public void setSearchedUsers(List<NameSurnameEmail> searchedUsers) {
+        this.searchedUsers = searchedUsers;
+    }
+    
+    
+    public User getSearchedUser() {
+        return searchedUser;
+    }
+
+    public void setSearchedUser(User searchedUser) {
+        this.searchedUser = searchedUser;
+    }
+    
+    public void loadSearchedUser(String name, String surname) {
+        searchedUsers = findNameEmailSurnameFromNameSurname(name, surname);
+    }
+    
+    public void searchedUserProfile(String email) {
+        
+        this.searchedUser = findUser(email);   
+        System.out.println("nome utente" + searchedUser.getName() + " cognome" + searchedUser.getSurname());
+    }
+
 }
