@@ -116,16 +116,46 @@ public class NotificationManager {
         partialResults = new ArrayList<>(); 
     }
     
-      public void sendNotifications() {
-        for(NameSurnameEmail element : invitedPeople) {
-            createInviteNotifications(element); 
-            em.persist(getInvite());
-            em.persist(getNotification());
-            mailManager.sendMail(element.getEmail(), "New Invite", "Hi! You have received a new invite");
+      public void sendNotifications(NotificationType notificationType) {
+        switch (notificationType) { 
+            case invite:
+                for(NameSurnameEmail element : invitedPeople) {
+                    createInviteNotification(element); 
+                    em.persist(getInvite());
+                    em.persist(getNotification());
+                    mailManager.sendMail(element.getEmail(), "New Invite", "Hi! You have received a new invite");
+                }
+                break;
+            case delayedEvent:
+                //MANCA DA CONSIDERARE LA PARTE: SE L'UTENTE HA SOVRAPPOSIZIONI CON ALTRI EVENTI
+                for(Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
+                    if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited) {
+                        createDelayNotification(inv);
+                        em.persist(getNotification());
+                        mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
+                    }
+                }
+                break;
+            case deletedEvent:
+                for(Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
+                    if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited) {
+                        createDeleteNotification(inv);
+                        em.persist(getNotification());
+                        mailManager.sendMail(inv.getUser().getEmail(), "Deleted Event", "Hi! An event for which you have received an invite has been cancelled. Join MeteoCal to discover it.");
+                        em.remove(inv);
+                    }
+                }
+                break;
+            case weatherConditionChanged:
+                break;
+            default:
+                throw new AssertionError(notificationType.name());
+            
         }
     }
+
     
-    public void createInviteNotifications(NameSurnameEmail element) {
+    public void createInviteNotification(NameSurnameEmail element) {
             setInvite(new Invite()); 
             getInvite().setUser(searchManager.findUser(element.getEmail()));
             getInvite().setStatus(Invite.InviteStatus.invited);
@@ -136,6 +166,25 @@ public class NotificationManager {
             getNotification().setRelatedEvent(event);
             getNotification().setSeen(false);
             getNotification().setGenerationDate(new Date());
+    }
+    
+    public void createDeleteNotification (Invite inv) {
+        setNotification(new Notification()); 
+        getNotification().setRelatedEvent(inv.getEvent());
+        getNotification().setNotificatedUser(inv.getUser());
+        getNotification().setSeen(false);
+        getNotification().setType(NotificationType.deletedEvent);
+        getNotification().setGenerationDate(new Date());
+    }
+    
+    public void createDelayNotification (Invite inv) {
+        setNotification(new Notification()); 
+        getNotification().setRelatedEvent(inv.getEvent());
+        getNotification().setNotificatedUser(inv.getUser());
+        getNotification().setSeen(false);
+        getNotification().setType(NotificationType.delayedEvent);
+        getNotification().setGenerationDate(new Date());
+        
     }
 
     public MailManager getMailManager() {

@@ -7,6 +7,7 @@ package gui.security;
 
 import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
+import business.security.entity.NotificationType;
 import business.security.object.NameSurnameEmail;
 import java.util.List;
 import javax.ejb.EJB;
@@ -96,7 +97,7 @@ public class AddInvitationBean {
     }
 
     public String sendInvitations() {
-        notificationManager.sendNotifications();
+        notificationManager.sendNotifications(NotificationType.invite);
         return "createdEvent";
     }
     

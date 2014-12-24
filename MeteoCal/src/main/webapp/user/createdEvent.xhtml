@@ -35,7 +35,7 @@
                     </h:column>
                 
                     <h:column>
-                        <h:commandLink value="Modify Event" action="#{createdEventsBean.showModifyEvent(o)}" />
+                        <h:commandLink value="Modify Event" action="#{createdEventsBean.showModifyEvent(o, o.acceptedWeatherConditions)}" />
                     </h:column>
             </h:dataTable>
         </h:form>

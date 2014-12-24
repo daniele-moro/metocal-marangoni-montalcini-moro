@@ -41,6 +41,16 @@ public class EventBean {
         return event;
     }
     
+    public Event getEventToModify() {
+        return eventManager.getEvent();
+    }
+    
+    public WeatherCondition getAcceptedWeatherConditionsToModify() {
+        return eventManager.getAcceptedWeatherConditions();
+    }
+    
+    
+    
     public void setEvent(Event event) {
         this.event = event;
     }

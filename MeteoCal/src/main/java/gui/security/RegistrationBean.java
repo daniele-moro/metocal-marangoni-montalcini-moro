@@ -6,6 +6,7 @@
 package gui.security;
 
 import business.security.boundary.UserManager;
+import business.security.control.MailManager;
 import business.security.entity.User;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -17,6 +18,9 @@ public class RegistrationBean {
 
     @EJB
     private UserManager um;
+    
+    @EJB
+    private MailManager mailManager; 
 
     private User user;
 
@@ -36,6 +40,7 @@ public class RegistrationBean {
 
     public String register() {
         um.save(user);
+        mailManager.sendMail(user.getEmail(), "Registration to MeteoCal", "Welcome in Meteocal! Your registration has been succesfully completed.");
         return "login?faces-redirect=true";
     }
 

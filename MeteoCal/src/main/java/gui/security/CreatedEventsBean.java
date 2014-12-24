@@ -8,6 +8,7 @@ package gui.security;
 import business.security.boundary.EventManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
+import business.security.entity.WeatherCondition;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -47,16 +48,19 @@ public class CreatedEventsBean {
         return userInformationLoader.loadCreatedEvents();
     }
     
-    public String showModifyEvent(Event event) {
+    public String showModifyEvent(Event event, WeatherCondition acceptedWeatherConditions) {
         eventManager.setEvent(event);
+        eventManager.setAcceptedWeatherConditions(acceptedWeatherConditions);
         return "modifyEvent?faces-redirect=true";
     }
     
-    public String modifyEventsInformation() {
+    public String modifyEventInformation() {
+        eventManager.updateEventInformation();
         return "createdEvent?faces-redirect=true";
     }
     
     public String deleteEvent() {
+        eventManager.removeEvent(); 
         return "createdEvent?faces-redirect=true";
     }
     

@@ -5,6 +5,8 @@
  */
 package business.security.boundary;
 
+import business.security.entity.Event;
+import business.security.entity.Invite;
 import business.security.entity.User;
 import business.security.object.NameSurnameEmail;
 import java.security.Principal;
@@ -93,6 +95,12 @@ public class SearchManager {
         
         this.searchedUser = findUser(email);   
         System.out.println("nome utente" + searchedUser.getName() + " cognome" + searchedUser.getSurname());
+    }
+    
+    public List<Invite> findInviteRelatedToAnEvent (Event event) {
+        Query findInvites = em.createQuery("SELECT i from INVITE i WHERE i.event.id = " + event.getId());
+        List<Invite> invites = (List<Invite>) findInvites.getResultList(); 
+        return invites;
     }
 
 }
