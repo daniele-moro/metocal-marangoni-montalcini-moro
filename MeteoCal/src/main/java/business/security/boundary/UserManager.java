@@ -22,6 +22,8 @@ public class UserManager {
     
     @Inject
     Principal principal;
+    
+    private User u; 
 
     public void save(User user) {
         user.setGroupName(Group.USER);
@@ -36,16 +38,31 @@ public class UserManager {
         return em.find(User.class, principal.getName());
     }
     
-    public void updateUser(User user) {
-        System.out.println(user.getName());
-        Query q = em.createQuery("UPDATE USER u SET u.name = '" + user.getName() + 
-                "', u.surname = '" + user.getSurname() + 
+    public void updateUser() {
+        System.out.println(u.getName());
+        Query q = em.createQuery("UPDATE USER u SET u.name = '" + u.getName() + 
+                "', u.surname = '" + u.getSurname() + 
                 //"', u.birthday = " + user.getBirthday() + 
-                "', u.phoneNumber = ' " + user.getPhoneNumber() + 
-                "', u.residenceTown = '" + user.getResidenceTown() +
-                "', u.email = '" + user.getEmail() + 
-                "' WHERE u.email = '" +user.getEmail() + "'");
+                "', u.phoneNumber = ' " + u.getPhoneNumber() + 
+                "', u.residenceTown = '" + u.getResidenceTown() +
+                "', u.email = '" + u.getEmail() + 
+                "' WHERE u.email = '" +u.getEmail() + "'");
         q.executeUpdate();
     }
+
+    /**
+     * @return the u
+     */
+    public User getU() {
+        return u;
+    }
+
+    /**
+     * @param u the u to set
+     */
+    public void setU(User u) {
+        this.u = u;
+    }
+    
     
 }

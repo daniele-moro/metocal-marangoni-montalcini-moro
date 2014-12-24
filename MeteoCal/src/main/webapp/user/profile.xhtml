@@ -29,7 +29,7 @@
                 
             </p:panel>
         </h:form>
-        <p:link outcome="modifyProfile" value="modifyProfile"/><br />
+        <p:commandButton value="Modify Profile" action="#{userBean.modifyProfile()}"/>
         <h:form>
             <p:commandLink action="#{loginBean.logout()}" value="logout"/>
         </h:form>

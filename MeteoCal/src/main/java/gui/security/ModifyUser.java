@@ -21,18 +21,20 @@ public class ModifyUser {
     private User user; 
     
     public User getUser() {
-        if (user == null) {
+        return um.getU();
+        /*if (user == null) {
             user = new User();
         }
-        return user; 
+        return user; */
     }
+    
     
     public void setUser(User u) {
         user = u; 
     }
     
     public String updateProfile () {
-        um.updateUser(user);
+        um.updateUser();
         return "home?faces-redirect=true";
     }
 }

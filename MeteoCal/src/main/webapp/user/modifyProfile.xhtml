@@ -25,13 +25,13 @@
             <p:panel header="Modify Data">
                 <h:panelGrid columns="3" id="regGrid">
                     <h:outputLabel for="name">Name: </h:outputLabel>
-                    <p:inputText id="name" placeholder="#{userBean.user.name}" value="#{modifyUser.user.name}">
+                    <p:inputText id="name" value="#{modifyUser.user.name}">
                         <p:ajax update="namemsg"/>
                     </p:inputText>
                     <p:message id="namemsg" for="name" />
                     
                     <h:outputLabel for="surname">Surname:</h:outputLabel>
-                    <p:inputText id="surname" placeholder="#{userBean.user.surname}" value="#{modifyUser.user.surname}">
+                    <p:inputText id="surname" value="#{modifyUser.user.surname}">
                         <p:ajax update="surnamemsg"/>
                     </p:inputText>
                     <p:message id="surnamemsg" for="surname" />
@@ -41,19 +41,19 @@
                     <p:message id="birthdaymsg" for="birthday" />
                    
                     <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
-                    <p:inputText id="phoneNumber" placeholder="#{userBean.user.phoneNumber}" value="#{modifyUser.user.phoneNumber}">
+                    <p:inputText id="phoneNumber" value="#{modifyUser.user.phoneNumber}">
                         <p:ajax update="phoneNumbermsg"/>
                     </p:inputText>
                     <p:message id="phoneNumbermsg" for="phoneNumber" />
                     
                     <h:outputLabel for="residenceTown">Residence Town:</h:outputLabel>
-                    <p:inputText id="residenceTown" placeholder="#{userBean.user.residenceTown}" value="#{modifyUser.user.residenceTown}">
+                    <p:inputText id="residenceTown" value="#{modifyUser.user.residenceTown}">
                         <p:ajax update="residenceTownmsg"/>
                     </p:inputText>
                     <p:message id="residenceTownmsg" for="residenceTown" />
                    
                     <h:outputLabel for="email">Email:</h:outputLabel>
-                    <p:inputText id="email" placeholder="#{userBean.user.email}" value="#{modifyUser.user.email}">
+                    <p:inputText id="email" value="#{modifyUser.user.email}">
                         <p:ajax update="emailmsg"/>
                     </p:inputText>
                     <p:message id="emailmsg" for="email" />

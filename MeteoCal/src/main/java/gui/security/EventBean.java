@@ -7,6 +7,7 @@ package gui.security;
 
 import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
+import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
 import javax.ejb.EJB;
@@ -22,6 +23,9 @@ public class EventBean {
     
     @EJB
     private NotificationManager notificationManager; 
+    
+    @EJB
+    private UserInformationLoader userInformationLoader; 
     
     private Event event; 
     
@@ -63,7 +67,7 @@ public class EventBean {
     }
     
     public void createdEvent() {
-        eventManager.findCreatedEvents();
+        userInformationLoader.loadCreatedEvents();
     }
     
     

@@ -31,4 +31,9 @@ public class UserBean{
         return um.getLoggedUser();
     }
     
+    public String modifyProfile () {
+        um.setU(um.getLoggedUser());
+        return "modifyProfile?faces-redirect=true";
+    }
+    
 }
