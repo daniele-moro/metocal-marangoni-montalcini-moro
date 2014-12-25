@@ -64,6 +64,11 @@ public class CreatedEventsBean {
         return "createdEvent?faces-redirect=true";
     }
     
+    public String addInvitations() {
+        eventManager.addInvitation(); 
+        return "addInvitation?faces-redirect=true";
+    }
+    
     public String navigateTo() {
         return "home?faces-redirect=true"; 
     }

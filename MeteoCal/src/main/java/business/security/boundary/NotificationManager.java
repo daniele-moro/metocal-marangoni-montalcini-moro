@@ -17,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Stateless
 public class NotificationManager {
@@ -133,6 +134,19 @@ public class NotificationManager {
                         createDelayNotification(inv);
                         em.persist(getNotification());
                         mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
+                        for(Event e : searchManager.findUserEvent(inv.getUser())) {
+                            if(event.getTimeStart().after(e.getTimeStart()) && event.getTimeStart().before(e.getTimeEnd()) || event.getTimeEnd().after(e.getTimeStart()) && event.getTimeEnd().before(e.getTimeEnd())) {
+                                Query updateInvitationStatus = em.createQuery("UPDATE INVITE invite SET invite.status= ?1 WHERE invite.event = ?2 AND invite.user = ?3"); 
+                                updateInvitationStatus.setParameter(1, Invite.InviteStatus.delayedEvent);
+                                updateInvitationStatus.setParameter(2, event);
+                                updateInvitationStatus.setParameter(3, inv.getUser());
+                                updateInvitationStatus.executeUpdate();
+                                mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. According to the new date, "
+                                        + "the event is overlapping respect to an event to which you are going to participate. So, now you are not considered among the participants of the event of which the date has been modified. "
+                                        + "If you want to participate to this event, you have to delete your participation to the other event and accept another time the invitation to this one.");
+                                break; 
+                            }
+                        }
                     }
                 }
                 break;

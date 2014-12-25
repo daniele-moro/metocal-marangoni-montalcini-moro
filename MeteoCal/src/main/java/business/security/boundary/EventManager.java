@@ -114,27 +114,46 @@ public class EventManager {
     }
     
     public void updateEventInformation() {
-        /*Query findWeatherCondition = em.createQuery("SELECT w from WeatherCondition w WHERE w.precipitation = " + acceptedWeatherConditions.getPrecipitation() + ", w.wind = " + acceptedWeatherConditions.getWind() + ", w.temperature = " + acceptedWeatherConditions.getTemperature());   
-        if(((List<WeatherCondition>) findWeatherCondition.getResultList()).isEmpty()) {
-            em.persist(acceptedWeatherConditions);
-            e.setAcceptedWeatherConditions(acceptedWeatherConditions);
-        }*/
-         
-        System.out.println("dentro updateEventInformation" + e.getName());
-        Query updateEventInformation = em.createQuery ("UPDATE EVENT event SET event.name =?1, event.town =?2, event.address =?3, event.description =?4 WHERE event.id =?5"); 
+        Query updateWeatherCondition = em.createQuery("UPDATE WeatherCondition w SET w.precipitation =?1, w.wind =?2, w.temperature =?3 WHERE w.id =?4");   
+        updateWeatherCondition.setParameter(1, acceptedWeatherConditions.getPrecipitation()); 
+        updateWeatherCondition.setParameter(2, acceptedWeatherConditions.getWind()); 
+        updateWeatherCondition.setParameter(3, acceptedWeatherConditions.getTemperature()); 
+        updateWeatherCondition.setParameter(4, acceptedWeatherConditions.getId());
+        updateWeatherCondition.executeUpdate();
+        
+        Query updateEventInformation = em.createQuery ("UPDATE EVENT event SET event.name =?1, event.town =?2, event.address =?3, event.description =?4, event.predefinedTypology = ?5 WHERE event.id =?6"); 
         updateEventInformation.setParameter(1, e.getName());
         updateEventInformation.setParameter(2, e.getTown());
         updateEventInformation.setParameter(3, e.getAddress());
         updateEventInformation.setParameter(4, e.getDescription());
-        updateEventInformation.setParameter(5, e.getId());
+        updateEventInformation.setParameter(5, e.getPredefinedTypology());
+        updateEventInformation.setParameter(6, e.getId());
         updateEventInformation.executeUpdate();
         
         
         //if the date is changed
-        
+        Query findEventThroughId = em.createQuery("SELECT event from EVENT event WHERE event.id =?1 ");
+        findEventThroughId.setParameter(1, e.getId()); 
+        Event ev = ((List<Event>) findEventThroughId.getResultList()).get(0); 
+        if (!ev.getTimeStart().equals(e.getTimeStart()) || !ev.getTimeEnd().equals(e.getTimeEnd())) {
+            notificationManager.setEvent(e);
+            notificationManager.sendNotifications(NotificationType.delayedEvent);
+            Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
+            updateDateOfEvent.setParameter(1, e.getTimeStart());
+            updateDateOfEvent.setParameter(2, e.getTimeEnd());
+            updateDateOfEvent.setParameter(3, e.getId());
+            updateDateOfEvent.executeUpdate();
+        }
         /*notificationManager.setEvent(e);
         notificationManager.sendNotifications(NotificationType.delayedEvent);*/
     }
+    
+    public void addInvitation() {
+        notificationManager.setEvent(e);
+    }
+
+    
+
 
     
 

@@ -101,5 +101,12 @@ public class SearchManager {
         List<Invite> invites = (List<Invite>) findInvites.getResultList(); 
         return invites;
     }
+    
+    public List<Event> findUserEvent(User user) {
+        Query findUserEvent = em.createQuery("SELECT invite.event FROM INVITE invite WHERE invite.user = ?1 AND invite.status =?2");
+        findUserEvent.setParameter(1, user); 
+        findUserEvent.setParameter(2, Invite.InviteStatus.accepted);
+        return findUserEvent.getResultList();
+    }
 
 }
