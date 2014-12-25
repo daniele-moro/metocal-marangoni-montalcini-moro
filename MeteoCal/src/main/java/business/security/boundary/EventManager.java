@@ -105,7 +105,9 @@ public class EventManager {
     }
     
     public void removeEvent() {
-        Query setEventDeleted = em.createQuery("UPDATE EVENT event SET event.deleted = true WHERE event.id = " + e.getId());
+        Query setEventDeleted = em.createQuery("UPDATE EVENT event SET event.deleted =?1 WHERE event.id = ?2");
+        setEventDeleted.setParameter(1, true); 
+        setEventDeleted.setParameter(2, e.getId());
         setEventDeleted.executeUpdate();
         notificationManager.setEvent(e);
         notificationManager.sendNotifications(NotificationType.deletedEvent);
@@ -119,9 +121,14 @@ public class EventManager {
         }*/
          
         System.out.println("dentro updateEventInformation" + e.getName());
-        Query updateEventInformation = em.createQuery ("UPDATE EVENT e SET e.name = '" + e.getName() + "', e.town = '" + e.getTown() + "', e.address = '" + e.getAddress() + "', "
-                + "e.description = '" + e.getDescription() + "' WHERE e.id = " + e.getId()); 
+        Query updateEventInformation = em.createQuery ("UPDATE EVENT event SET event.name =?1, event.town =?2, event.address =?3, event.description =?4 WHERE event.id =?5"); 
+        updateEventInformation.setParameter(1, e.getName());
+        updateEventInformation.setParameter(2, e.getTown());
+        updateEventInformation.setParameter(3, e.getAddress());
+        updateEventInformation.setParameter(4, e.getDescription());
+        updateEventInformation.setParameter(5, e.getId());
         updateEventInformation.executeUpdate();
+        
         
         //if the date is changed
         

@@ -38,19 +38,25 @@ public class UserInformationLoader {
     
     
    public List<Event> loadCreatedEvents() {
-        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email = '" + getLoggedUser().getEmail() + "'");
+        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1");
+        qCreatedEvents.setParameter(1, getLoggedUser().getEmail());
         List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList(); 
         return createdEvents; 
    }
    
    public List<Event> loadAcceptedEvents() {
-       Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email = '" + getLoggedUser().getEmail() + "' AND i.event.id = e.id AND i.status = '" + Invite.InviteStatus.accepted + "'");
+       Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
+       qAcceptedEvents.setParameter(1, getLoggedUser().getEmail());
+       qAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
+       
        List<Event> acceptedEvents = (List<Event>) qAcceptedEvents.getResultList(); 
        return acceptedEvents; 
    }
    
    public List<Event> loadEventsWithNoAnswer() {
-       Query qNoAnswerEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email = '" + getLoggedUser().getEmail() + "' AND i.event.id = e.id AND i.status = '" + Invite.InviteStatus.invited + "'");
+       Query qNoAnswerEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
+       qNoAnswerEvents.setParameter(1, getLoggedUser().getEmail());
+       qNoAnswerEvents.setParameter(2, Invite.InviteStatus.invited);
        List<Event> noAnswerEvents = (List<Event>) qNoAnswerEvents.getResultList(); 
        return noAnswerEvents; 
    }

@@ -33,6 +33,7 @@ public class UserBean{
     
     public String modifyProfile () {
         um.setU(um.getLoggedUser());
+        um.setOldEmail(um.getLoggedUser().getEmail());
         return "modifyProfile?faces-redirect=true";
     }
     

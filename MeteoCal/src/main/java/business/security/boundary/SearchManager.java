@@ -37,17 +37,13 @@ public class SearchManager {
    
    
    public User findUser(String email) {
-       System.out.println(email + "dentro find User");
-       System.out.println("" + em);
-       Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.email = '" + email + "'"); 
-       System.out.println("ciao");
-       //Query qFindUserThroughEmail = em.createQuery("SELECT u FROM USER u WHERE u.email = '" + email + "'");
+       Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.email =?1");
+       qFindUser.setParameter(1, email); 
        List <User> user = (List<User>) qFindUser.getResultList();
        return user.get(0);
    }
    
    public NameSurnameEmail findNameSurnameEmailFromUser(String email) {
-       System.out.println(email + "searchManager dentro find name surame email from user");
        User u = findUser(email);
        NameSurnameEmail nameSurnameEmail = new NameSurnameEmail();
        nameSurnameEmail.setNameSurnameEmail(u.getName(), u.getSurname(), u.getEmail());
@@ -56,7 +52,9 @@ public class SearchManager {
    }
   
     public List<NameSurnameEmail> findNameEmailSurnameFromNameSurname(String name, String surname) {
-       Query qFindUserEmail = em.createQuery("SELECT u.email FROM USER u WHERE u.name = '" + name + "' AND u.surname = '" + surname + "'"); 
+       Query qFindUserEmail = em.createQuery("SELECT u.email FROM USER u WHERE u.name =?1 AND u.surname =?2"); 
+       qFindUserEmail.setParameter(1, name); 
+       qFindUserEmail.setParameter(2, surname);
        List<String> emails;
        List<NameSurnameEmail> list = new ArrayList<>(); 
        emails = (List<String>) qFindUserEmail.getResultList(); 
@@ -98,7 +96,8 @@ public class SearchManager {
     }
     
     public List<Invite> findInviteRelatedToAnEvent (Event event) {
-        Query findInvites = em.createQuery("SELECT i from INVITE i WHERE i.event.id = " + event.getId());
+        Query findInvites = em.createQuery("SELECT i from INVITE i WHERE i.event.id =?1");
+        findInvites.setParameter(1, event.getId());
         List<Invite> invites = (List<Invite>) findInvites.getResultList(); 
         return invites;
     }
