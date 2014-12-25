@@ -34,31 +34,30 @@
                     </p:inputText>
                     <p:message id="surnamemsg" for="surname" />
                 </p:panelGrid>
-                <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search" />
+                <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search"/>
             </p:panel>
             
         </h:form>
         <h:form>
-            <h:dataTable value="#{searchResultsBean.searchedUsers}" var="o"
+            <p:dataTable value="#{searchResultsBean.searchedUsers}" var="o"
                         styleClass="order-table"
-                        headerClass="order-table-header"
-                        rowClasses="order-table-odd-row,order-table-even-row"
+                        rendered="#{searchResultsBean.isUserFound==true}"
                 >
-                    <h:column>
-                        #{o.name}
-                    </h:column>
+                <p:column headerText="Name">
+                    #{o.name}
+                </p:column>
 
-                    <h:column>
-                        #{o.surname}
-                    </h:column>
+                <p:column headerText="Surname">
+                    #{o.surname}
+                </p:column>
 
-                    <h:column>
-                        #{o.email}
-                    </h:column>
-                    <h:column>
-                        <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o.email)}" />
-                    </h:column>
-            </h:dataTable>
+                <p:column headerText="Email">
+                    #{o.email}
+                </p:column>
+                <p:column headerText="Profile">
+                    <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o.email)}" />
+                </p:column>
+            </p:dataTable>
         </h:form>
         <p:commandButton id="home" action="#{searchResultBean.navigateTo()}" value="Home" />            
         <div id="footer">

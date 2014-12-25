@@ -25,6 +25,8 @@ public class SearchManager {
     
     private User searchedUser; 
     
+    private boolean userFound = false;
+    
     @PersistenceContext
     EntityManager em;
     
@@ -107,6 +109,14 @@ public class SearchManager {
         findUserEvent.setParameter(1, user); 
         findUserEvent.setParameter(2, Invite.InviteStatus.accepted);
         return findUserEvent.getResultList();
+    }
+    
+    public boolean isUserFound() {
+        return userFound;
+    }
+
+    public void setUserFound(boolean userFound) {
+        this.userFound = userFound;
     }
 
 }

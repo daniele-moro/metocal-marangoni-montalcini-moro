@@ -78,6 +78,11 @@ public class SearchResultsBean {
             searchManager.searchedUserProfile(searchManager.getSearchedUsers().get(0).getEmail());
             return "userProfile?faces-redirect=true";
         } 
+        if(searchManager.getSearchedUsers() != null) {
+            searchManager.setUserFound(true);
+        } else {
+            searchManager.setUserFound(false);
+        }
         return "searchForUserResult?faces-redirect=true";
         
     }
@@ -101,7 +106,9 @@ public class SearchResultsBean {
         return "home?faces-redirect=true";
     }
 
-    
+    public boolean getIsUserFound() {
+        return searchManager.isUserFound();
+    }
    
 
     
