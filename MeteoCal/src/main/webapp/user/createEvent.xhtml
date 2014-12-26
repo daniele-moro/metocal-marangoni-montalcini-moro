@@ -5,115 +5,150 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Registration</title>
-        <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+        <title>Create Event</title>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="../css/dashboard.css" type="text/css"/>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"/>
     </h:head>
     <h:body>
-        <div id="header">
-            <h1>MeteoCal</h1>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">MeteoCal</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                    <h:form id="searchForm" class="navbar-form navbar-right" role="form">
+                        <div class="form-group">
+                            <p:inputText type="text" placeholder="Search..." class="form-control" id="search" required="true"/>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+    
+		<div class="row">
+		
+			<div class="col-md-12">
+			
+					
+                                        <hr/>
+					
+			</div>
+		
+		</div>
+		
+		
+		<div class="row">
+		
+			<!-- sidebar -->
+			<div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+			    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
+                                <li><p:link outcome="profile" value="Profile"/></li>
+			      <li><p:link outcome="createEvent" value="Create Event"/></li>
+			      <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
+			      <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
+			      <li><p:link outcome="createdEvent" value="Created Event"/></li> 
+                              <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
+                              <li><p:link outcome="searchForUserResult" value="Search For A User"/></li>
+			      <li><h:form>
+                                    <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+                                  </h:form>
+                              </li>
+			    </ul>
+			</div>
+			
+			<!-- content -->
+			<div class="main">
+                            <h3>Create Event:</h3>
+                            <h:form id="registrationform">
+                                <h:panelGrid columns="2" id="regGrid">
+                                    <h:outputLabel for="name">Name:</h:outputLabel>
+                                    <p:inputText id="name" value="#{eventBean.event.name}"/>
+
+                                    <h:outputLabel for="dateStart" value="Date Start:" />
+                                    <p:calendar id="dateStart" value="#{eventBean.event.timeStart}"/>
+
+                                    <h:outputLabel for="dateEnd" value="Date End:" />
+                                    <p:calendar id="dateEnd" value="#{eventBean.event.timeEnd}" />
+
+                                    <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
+                                    <p:selectOneMenu id="predefinedTypology" value="#{eventBean.event.predefinedTypology}" style="width:125px">
+                                            <f:selectItem itemLabel="Aperitif" itemValue="aperitif" />
+                                            <f:selectItem itemLabel="Dinner" itemValue="dinner" />
+                                            <f:selectItem itemLabel="Lunch" itemValue="lunch" />
+                                            <f:selectItem itemLabel="Breakfast" itemValue="breakfast" />
+                                            <f:selectItem itemLabel="Baptism" itemValue="baptism" />
+                                            <f:selectItem itemLabel="Communion" itemValue="communion" />
+                                            <f:selectItem itemLabel="Confirmation" itemValue="confirmation" />
+                                            <f:selectItem itemLabel="Marriage" itemValue="marriage" />
+                                            <f:selectItem itemLabel="Graduation" itemValue="graduation" />
+                                            <f:selectItem itemLabel="Party" itemValue="party" />
+                                            <f:selectItem itemLabel="Birthday" itemValue="birthday" />
+                                            <f:selectItem itemLabel="Sport" itemValue="sport" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="description" value="Description:" />
+                                    <p:inputTextarea rows="6" cols="33" id="description" value="#{eventBean.event.description}" />
+
+                                    <p:outputLabel for="town" value ="Place:" />
+                                    <p:inputText id="town" value="#{eventBean.event.town}"/>
+
+                                    <p:outputLabel for="address" value ="Address:" />
+                                    <p:inputText id="address" value="#{eventBean.event.address}"/>
+
+                                    <p:outputLabel for="privacy" value="Privacy:" />
+                                    <p:selectOneRadio id="privacy" value="#{eventBean.event.publicEvent}">
+                                        <f:selectItem itemLabel="Public" itemValue="true" />
+                                        <f:selectItem itemLabel="Private" itemValue="false" />
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel for="wind" value="Wind:" />
+                                    <p:selectOneRadio id="wind" value="#{eventBean.acceptedWeatherCondition.wind}" >
+                                        <f:selectItem itemLabel="Absent" itemValue="0" />
+                                        <f:selectItem itemLabel="Medium" itemValue="1" />
+                                        <f:selectItem itemLabel="Strong" itemValue="2" />
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel for="precipitation" value="Precipitation:" />
+                                    <p:selectOneRadio id="precipitation" value="#{eventBean.acceptedWeatherCondition.precipitation}">
+                                        <f:selectItem itemLabel="Absent" itemValue="0" />
+                                        <f:selectItem itemLabel="Medium" itemValue="1" />
+                                        <f:selectItem itemLabel="Strong" itemValue="2" />
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel for="temperature" value="Temperature:" />
+                                    <p:selectOneRadio id="temperature" value="#{eventBean.acceptedWeatherCondition.temperature}">
+                                        <f:selectItem itemLabel= "less 0" itemValue="0" />
+                                        <f:selectItem itemLabel="0-10" itemValue="1" />
+                                        <f:selectItem itemLabel="10-20" itemValue="2" />
+                                        <f:selectItem itemLabel="greater 20" itemValue="3" />
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+                                <p:commandButton id="createEvent" value="CreateEvent" update="regGrid"
+                                                 action="#{eventBean.createEvent()}" />
+                            </h:form>
+                        </div>
+		</div>
         </div>
-        <div id="nav">
-            <br>Descrizione</br>
-            <br>Descrizione</br>
-            <br>Descrizione</br>
-            <br>Descrizione</br>
-            <br>Descrizione</br>
-            <br>Descrizione</br>
-            <br>Descrizione</br>
-        </div>
-        <div id="section">
-        <h:form id="registrationform">
-            <p:panel header="Registration Form">
-                <h:panelGrid columns="3" id="regGrid">
-                    <h:outputLabel for="name">Name:</h:outputLabel>
-                    <p:inputText id="name" value="#{eventBean.event.name}">
-                        <p:ajax update="namemsg"/>
-                    </p:inputText>
-                    <p:message id="namemsg" for="name" />
-                    
-                    <h:outputLabel for="dateStart" value="Date Start:" />
-                    <p:calendar id="dateStart" value="#{eventBean.event.timeStart}" />
-                    <p:message id="dateStartemsg" for="dateStart" />
-                    
-                    <h:outputLabel for="dateEnd" value="Date End:" />
-                    <p:calendar id="dateEnd" value="#{eventBean.event.timeEnd}" />
-                    <p:message id="dateEndemsg" for="dateEnd" />
-                    
-                    <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
-                    <p:selectOneMenu id="predefinedTypology" value="#{eventBean.event.predefinedTypology}" style="width:125px">
-                            <f:selectItem itemLabel="Aperitif" itemValue="aperitif" />
-                            <f:selectItem itemLabel="Dinner" itemValue="dinner" />
-                            <f:selectItem itemLabel="Lunch" itemValue="lunch" />
-                            <f:selectItem itemLabel="Breakfast" itemValue="breakfast" />
-                            <f:selectItem itemLabel="Baptism" itemValue="baptism" />
-                            <f:selectItem itemLabel="Communion" itemValue="communion" />
-                            <f:selectItem itemLabel="Confirmation" itemValue="confirmation" />
-                            <f:selectItem itemLabel="Marriage" itemValue="marriage" />
-                            <f:selectItem itemLabel="Graduation" itemValue="graduation" />
-                            <f:selectItem itemLabel="Party" itemValue="party" />
-                            <f:selectItem itemLabel="Birthday" itemValue="birthday" />
-                            <f:selectItem itemLabel="Sport" itemValue="sport" />
-                    </p:selectOneMenu>
-                    <p:message id="predefinedTypologymsg" for="predefinedTypology"/>
-                   
-                    <p:outputLabel for="description" value="Description:" />
-                    <p:inputTextarea rows="6" cols="33" id="description" value="#{eventBean.event.description}" />
-                    <!--<p:message id="descriptionmsg" for="description" />-->
-                    
-                    <p:outputLabel for="town" value ="Place:" />
-                    <p:inputText id="town" value="#{eventBean.event.town}">
-                        <!--<p:ajax update="townmsg"/>-->
-                    </p:inputText>
-                    <!--<p:message id="townmsg" for="town" />-->
-                    
-                    <p:outputLabel for="address" value ="Address:" />
-                     <p:inputText id="address" value="#{eventBean.event.address}">
-                        <!--<p:ajax update="addressmsg"/>-->
-                    </p:inputText>
-                    <!--<p:message id="addressmsg" for="address" />-->
-                    
-                    
-                    <p:outputLabel for="privacy" value="Privacy:" />
-                    <p:selectOneRadio id="privacy" value="#{eventBean.event.publicEvent}">
-                        <f:selectItem itemLabel="Public" itemValue="true" />
-                        <f:selectItem itemLabel="Private" itemValue="false" />
-                    </p:selectOneRadio>
-                    
-                    <h:panelGrid columns="3" style="margin-bottom:0px" cellpadding="5">
-                    <p:outputLabel for="wind" value="Wind:" />
-                    <p:selectOneRadio id="wind" value="#{eventBean.acceptedWeatherCondition.wind}">
-                        <f:selectItem itemLabel="Absent" itemValue="0" />
-                        <f:selectItem itemLabel="Medium" itemValue="1" />
-                        <f:selectItem itemLabel="Strong" itemValue="2" />
-                    </p:selectOneRadio>
-                    </h:panelGrid>
-                    
-                    <h:panelGrid columns="3" style="margin-bottom:0px" cellpadding="5">
-                    <p:outputLabel for="precipitation" value="Precipitation:" />
-                    <p:selectOneRadio id="precipitation" value="#{eventBean.acceptedWeatherCondition.precipitation}">
-                        <f:selectItem itemLabel="Absent" itemValue="0" />
-                        <f:selectItem itemLabel="Medium" itemValue="1" />
-                        <f:selectItem itemLabel="Strong" itemValue="2" />
-                    </p:selectOneRadio>
-                    </h:panelGrid>
-                    
-                    <h:panelGrid columns="4" style="margin-bottom:0px" cellpadding="5">
-                    <p:outputLabel for="temperature" value="Temperature:" />
-                    <p:selectOneRadio id="temperature" value="#{eventBean.acceptedWeatherCondition.temperature}">
-                        <f:selectItem itemLabel= "less 0" itemValue="0" />
-                        <f:selectItem itemLabel="0-10" itemValue="1" />
-                        <f:selectItem itemLabel="10-20" itemValue="2" />
-                        <f:selectItem itemLabel="greater 20" itemValue="3" />
-                    </p:selectOneRadio>
-                    </h:panelGrid>
-                <p:commandButton id="createEvent" value="CreateEvent" update="regGrid"
-                                 action="#{eventBean.createEvent()}" />
-                </h:panelGrid>
-            </p:panel>
-        </h:form>
-        </div>
-        <div id="footer">
-        Daniele Marangoni - Matteo Montalcini - Daniele Moro
-        </div>
+        <hr/>
+        <footer>
+            <center><p>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</p></center>
+        </footer>
     </h:body>
 </html>
+

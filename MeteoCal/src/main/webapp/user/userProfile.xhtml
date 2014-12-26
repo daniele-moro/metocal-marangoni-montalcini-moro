@@ -2,30 +2,101 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Searched User Profile</title>
-        <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+        <title>User Profile</title>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="../css/dashboard.css" type="text/css"/>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"/>
     </h:head>
     <h:body>
-        <h:form>
-            <p:panel>
-                <h:panelGrid columns="1">
-                    <h:outputLabel for="name" value = "Name: #{searchResultsBean.searchedUser.name}"/>
-                    
-                    <h:outputLabel for="surname" value = "Surname: #{searchResultsBean.searchedUser.surname}"/>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">MeteoCal</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                    <h:form id="searchForm" class="navbar-form navbar-right" role="form">
+                        <div class="form-group">
+                            <p:inputText type="text" placeholder="Search..." class="form-control" id="search" required="true"/>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+    
+		<div class="row">
+		
+			<div class="col-md-12">
+			
+					
+                                        <hr/>
+					
+			</div>
+		
+		</div>
+		
+		
+		<div class="row">
+		
+			<!-- sidebar -->
+			<div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+			    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
+                                <li><p:link outcome="profile" value="Profile"/></li>
+			      <li><p:link outcome="createEvent" value="Create Event"/></li>
+			      <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
+			      <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
+			      <li><p:link outcome="createdEvent" value="Created Event"/></li> 
+                              <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
+                              <li><p:link outcome="searchForUserResult" value="Search For A User"/></li>
+			      <li><h:form>
+                                    <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+                                  </h:form>
+                              </li>
+			    </ul>
+			</div>
+			
+			<!-- content -->
+			<div class="main">
+			<h:form>
+                            <h:panelGrid columns="1">
+                                <h:outputLabel for="name" value = "Name: #{searchResultsBean.searchedUser.name}"/>
 
-                    <h:outputLabel for="birthday" value = "Birthday: #{searchResultsBean.searchedUser.birthday}"/>
+                                <h:outputLabel for="surname" value = "Surname: #{searchResultsBean.searchedUser.surname}"/>
 
-                    <h:outputLabel for="phoneNumber" value = "Phone Number: #{searchResultsBean.searchedUser.phoneNumber}"/>
+                                <h:outputLabel for="birthday" value = "Birthday: #{searchResultsBean.searchedUser.birthday}"/>
 
-                    <h:outputLabel for="residenceTown" value = "Residence Town: #{searchResultsBean.searchedUser.residenceTown}"/>
+                                <h:outputLabel for="phoneNumber" value = "Phone Number: #{searchResultsBean.searchedUser.phoneNumber}"/>
 
-                    <h:outputLabel for="email" value = "Email: #{searchResultsBean.searchedUser.email}"/>
+                                <h:outputLabel for="residenceTown" value = "Residence Town: #{searchResultsBean.searchedUser.residenceTown}"/>
 
-                </h:panelGrid>
-                <p:commandButton value="Home" action="#{searchResultsBean.navigateTo()}" />
-            </p:panel>
-        </h:form>
+                                <h:outputLabel for="email" value = "Email: #{searchResultsBean.searchedUser.email}"/>
+
+                            </h:panelGrid>
+                        </h:form>
+			</div>
+		</div>
+        </div>
+        <hr/>
+        <footer>
+            <center><p>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</p></center>
+        </footer>
     </h:body>
 </html>
+

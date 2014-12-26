@@ -5,64 +5,130 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Search for a user</title>
+        <title>Search</title>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="../css/dashboard.css" type="text/css"/>
+        <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"/>
     </h:head>
     <h:body>
-        <h:form id="searchForAUser">
-            <p:panel header="Insert the email of the user you want to search">
-                <p:panelGrid columns="4">
-                    <p:outputLabel for="email" value="Email"/>
-                    <p:inputText id="email" value="#{searchResultsBean.email}">
-                        <p:ajax update="emailmsg"/>
-                    </p:inputText>
-                    <p:message id="emailmsg" for="email" />
-                </p:panelGrid>
-                <p:commandButton id="add" action="#{searchResultsBean.showUserProfile()}" value="Search" />
-            </p:panel>
-        </h:form>
-        <h:form>
-            <p:panel header="Insert name and email of the user you want to search">
-                <p:panelGrid columns="7">
-                    <p:outputLabel for="name" value="Name"/>
-                    <p:inputText id="name" value="#{searchResultsBean.name}">
-                         <p:ajax update="namemsg"/>
-                    </p:inputText>
-                    <p:message id="namemsg" for="name" />
-                    <p:outputLabel for="surname" value="Surname"/>
-                    <p:inputText id="surname" value="#{searchResultsBean.surname}">
-                        <p:ajax update="surnamemsg"/>
-                    </p:inputText>
-                    <p:message id="surnamemsg" for="surname" />
-                </p:panelGrid>
-                <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search"/>
-            </p:panel>
-            
-        </h:form>
-        <h:form>
-            <p:dataTable value="#{searchResultsBean.searchedUsers}" var="o"
-                        styleClass="order-table"
-                        rendered="#{searchResultsBean.isUserFound==true}"
-                >
-                <p:column headerText="Name">
-                    #{o.name}
-                </p:column>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">MeteoCal</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                    <h:form id="searchForm" class="navbar-form navbar-right" role="form">
+                        <div class="form-group">
+                            <p:inputText type="text" placeholder="Search..." class="form-control" id="search" required="true"/>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+    
+		<div class="row">
+		
+			<div class="col-md-12">
+			
+					
+                                        <hr/>
+					
+			</div>
+		
+		</div>
+		
+		
+		<div class="row">
+		
+			<!-- sidebar -->
+			<div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+			    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
+                                <li><p:link outcome="profile" value="Profile"/></li>
+			      <li><p:link outcome="createEvent" value="Create Event"/></li>
+			      <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
+			      <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
+			      <li><p:link outcome="createdEvent" value="Created Event"/></li> 
+                              <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
+                              <li><p:link outcome="searchForUserResult" value="Search For A User"/></li>
+			      <li><h:form>
+                                    <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+                                  </h:form>
+                              </li>
+			    </ul>
+			</div>
+			
+			<!-- content -->
+			<div class="main">
+                            <h:form id="searchForAUser">
+                                <h3>Insert the email of the user you want to search:</h3>
+                                <p:panelGrid columns="4">
+                                    <p:outputLabel for="email" value="Email"/>
+                                    <p:inputText id="email" value="#{searchResultsBean.email}">
+                                        <p:ajax update="emailmsg"/>
+                                    </p:inputText>
+                                    <p:message id="emailmsg" for="email" />
+                                </p:panelGrid>
+                                <p:commandButton id="add" action="#{searchResultsBean.showUserProfile()}" value="Search" />
+                            </h:form>
+                            <h:form>
+                                <h3>Insert name and email of the user you want to search</h3>
+                                <p:panelGrid columns="7">
+                                    <p:outputLabel for="name" value="Name"/>
+                                    <p:inputText id="name" value="#{searchResultsBean.name}">
+                                         <p:ajax update="namemsg"/>
+                                    </p:inputText>
+                                    <p:message id="namemsg" for="name" />
+                                    <p:outputLabel for="surname" value="Surname"/>
+                                    <p:inputText id="surname" value="#{searchResultsBean.surname}">
+                                        <p:ajax update="surnamemsg"/>
+                                    </p:inputText>
+                                    <p:message id="surnamemsg" for="surname" />
+                                </p:panelGrid>
+                                <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search"/>
+                            </h:form>
+                            <h:form>
+                                <p:dataTable value="#{searchResultsBean.searchedUsers}" var="o"
+                                            styleClass="order-table"
+                                            rendered="#{searchResultsBean.isUserFound==true}"
+                                    >
+                                    <p:column headerText="Name">
+                                        #{o.name}
+                                    </p:column>
 
-                <p:column headerText="Surname">
-                    #{o.surname}
-                </p:column>
+                                    <p:column headerText="Surname">
+                                        #{o.surname}
+                                    </p:column>
 
-                <p:column headerText="Email">
-                    #{o.email}
-                </p:column>
-                <p:column headerText="Profile">
-                    <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o.email)}" />
-                </p:column>
-            </p:dataTable>
-        </h:form>
-        <p:commandButton id="home" action="#{searchResultBean.navigateTo()}" value="Home" />            
-        <div id="footer">
-        Daniele Marangoni - Matteo Montalcini - Daniele Moro
+                                    <p:column headerText="Email">
+                                        #{o.email}
+                                    </p:column>
+                                    <p:column headerText="Profile">
+                                        <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o.email)}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+			</div>
+		</div>
         </div>
+        <hr/>
+        <footer>
+            <center><p>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</p></center>
+        </footer>
     </h:body>
 </html>
 
