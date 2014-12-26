@@ -9,6 +9,7 @@ import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
+import business.security.entity.User;
 import business.security.entity.WeatherCondition;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -29,7 +30,8 @@ public class EventBean {
     
     private Event event; 
     
-    private WeatherCondition acceptedWeatherCondition; 
+    private WeatherCondition acceptedWeatherCondition;
+    
 
     public EventBean() {
     }
@@ -49,12 +51,6 @@ public class EventBean {
         return eventManager.getAcceptedWeatherConditions();
     }
     
-    
-    
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-    
     public WeatherCondition getAcceptedWeatherCondition() {
         if (acceptedWeatherCondition == null) {
             acceptedWeatherCondition = new WeatherCondition();
@@ -62,17 +58,10 @@ public class EventBean {
         return acceptedWeatherCondition;
     }
     
-    public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
-        this.acceptedWeatherCondition = acceptedWeatherCondition;
-    }
     
     
     public String createEvent() {
-        event.setOrganizer(eventManager.getLoggedUser());
-        eventManager.save(acceptedWeatherCondition);
-        event.setAcceptedWeatherConditions(acceptedWeatherCondition);
-        eventManager.createEvent(event);
-        notificationManager.setEvent(event); 
+        eventManager.createEvent(event, acceptedWeatherCondition);
         return "addInvitation?faces-redirect=true";
     }
     
@@ -82,7 +71,21 @@ public class EventBean {
     
     
     public boolean checkDateConsistency() {
-        return eventManager.checkDateConsistency(event.getTimeStart(), event.getTimeEnd()); 
+        return eventManager.checkDateConsistency(); 
+    }
+
+    /**
+     * @param event the event to set
+     */
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    /**
+     * @param acceptedWeatherCondition the acceptedWeatherCondition to set
+     */
+    public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
+        this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
 
     

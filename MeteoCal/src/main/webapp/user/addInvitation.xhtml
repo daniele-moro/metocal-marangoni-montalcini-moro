@@ -145,11 +145,10 @@
                                         <f:facet name="header">Email</f:facet>
                                         #{o.email}
                                     </h:column>
-                                    <h:column>
-                                        <f:facet name="header">Action</f:facet>
-                                        <h:commandLink value="Delete" action="#{addInvitationBean.removeUser(o)}" />
-                                    </h:column>
                             </h:dataTable>
+                        </h:form>
+                        <h:form>
+                           <h:commandLink value="Finish" action="#{addInvitationBean.navigateTo()}" />     
                         </h:form>
 			</div>
 		</div>

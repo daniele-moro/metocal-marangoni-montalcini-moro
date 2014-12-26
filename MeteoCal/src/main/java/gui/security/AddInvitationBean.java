@@ -5,6 +5,7 @@
  */
 package gui.security;
 
+import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
 import business.security.entity.NotificationType;
@@ -25,6 +26,9 @@ public class AddInvitationBean {
     
     @EJB
     private SearchManager searchManager; 
+    
+    @EJB
+    private EventManager eventManager;
     
     @NotNull(message = "May not be empty")
     private String name; 
@@ -64,31 +68,31 @@ public class AddInvitationBean {
     }
     
     public List<NameSurnameEmail> getInvitedPeople() {
-        return notificationManager.getInvitedPeople();
+        return eventManager.getInvitedPeople();
         
     }
 
     public List<NameSurnameEmail> getPartialResults() {
-        return notificationManager.getPartialResults();
+        return eventManager.getPartialResults();
     }
     
     public String addUserThroughEmail() {
         System.out.println(email + "dentro addInvitationBeanaddUserThroughemail");
-        notificationManager.addInvitation(email);
+        eventManager.addInvitation(email);
         return "addInvitation?faces-redirect=true"; 
     }
     
     public String addUser(NameSurnameEmail element) {
-        notificationManager.addInvitation(element);
+        eventManager.addInvitation(element);
         return "addInvitation?faces-redirect=true";
     }
     
     public String addUserThroughNameSurname() {
         System.out.println("appena dentro add User");
-        notificationManager.setPartialResults(searchManager.findNameEmailSurnameFromNameSurname(name, surname));
-        if(notificationManager.getPartialResults().size() == 1) {
-            notificationManager.getPartialResults().remove(0);
-            notificationManager.addInvitation(name, surname);
+        eventManager.setPartialResults(searchManager.findNameEmailSurnameFromNameSurname(name, surname));
+        if(eventManager.getPartialResults().size() == 1) {
+            eventManager.getPartialResults().remove(0);
+            eventManager.addInvitation(name, surname);
         }         
         return "addInvitation?faces-redirect=true";
         
@@ -101,9 +105,8 @@ public class AddInvitationBean {
         return "createdEvent";
     }
     
-    public String removeUser(NameSurnameEmail object) {
-        notificationManager.removeUser(object);
-        return "addInvitation?faces-redirect=true";
+    public String navigateTo() {
+        return "home?faces-redirect=true";
     }
 
     

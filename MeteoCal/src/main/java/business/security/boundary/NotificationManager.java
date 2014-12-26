@@ -40,14 +40,8 @@ public class NotificationManager {
     
     private Notification notification; 
     
-    private List<NameSurnameEmail> invitedPeople;
-    
-    private List<NameSurnameEmail> partialResults;
-    
     public NotificationManager() {
         searchManager = new SearchManager(); 
-        invitedPeople = new ArrayList<>(); 
-        partialResults = new ArrayList<>(); 
     }
   
     public Event getEvent() {
@@ -58,27 +52,6 @@ public class NotificationManager {
         this.event = event;
     }
     
-    public List<NameSurnameEmail> getPartialResults() {
-        if (partialResults == null) {
-            partialResults = new ArrayList<>();
-        }
-        return partialResults;
-    }
-
-    public void setPartialResults(List<NameSurnameEmail> partialResults) {
-        this.partialResults = partialResults;
-    }
-  
-    public List<NameSurnameEmail> getInvitedPeople() {
-        if (invitedPeople == null) {
-            invitedPeople = new ArrayList<>();
-        }
-        return invitedPeople;
-    }
-
-    public void setInvitedPeople(List<NameSurnameEmail> invitedPeople) {
-        this.invitedPeople = invitedPeople;
-    }
     
     public SearchManager getSearchManager() {
         return searchManager;
@@ -104,28 +77,11 @@ public class NotificationManager {
         this.notification = notification;
     }
     
-    public void addInvitation(String email) {
-        invitedPeople.add(searchManager.findNameSurnameEmailFromUser(email)); 
-    }
     
-    public void addInvitation(String name, String surname) {
-        invitedPeople.add(searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0));
-    }
-    
-    public void addInvitation(NameSurnameEmail element) {
-        invitedPeople.add(element);
-        partialResults = new ArrayList<>(); 
-    }
     
       public void sendNotifications(NotificationType notificationType) {
         switch (notificationType) { 
             case invite:
-                for(NameSurnameEmail element : invitedPeople) {
-                    createInviteNotification(element); 
-                    em.persist(getInvite());
-                    em.persist(getNotification());
-                    mailManager.sendMail(element.getEmail(), "New Invite", "Hi! You have received a new invite");
-                }
                 break;
             case delayedEvent:
                 //MANCA DA CONSIDERARE LA PARTE: SE L'UTENTE HA SOVRAPPOSIZIONI CON ALTRI EVENTI
@@ -174,12 +130,15 @@ public class NotificationManager {
             getInvite().setUser(searchManager.findUser(element.getEmail()));
             getInvite().setStatus(Invite.InviteStatus.invited);
             getInvite().setEvent(event);
+            em.persist(getInvite());
             setNotification(new Notification()); 
             getNotification().setType(NotificationType.invite);
             getNotification().setNotificatedUser(searchManager.findUser(element.getEmail()));
             getNotification().setRelatedEvent(event);
             getNotification().setSeen(false);
             getNotification().setGenerationDate(new Date());
+            em.persist(getNotification());
+            mailManager.sendMail(element.getEmail(), "New Invite", "Hi! You have received a new invite");
     }
     
     public void createDeleteNotification (Invite inv) {
@@ -209,7 +168,4 @@ public class NotificationManager {
         this.mailManager = mailManager;
     }
     
-    public void removeUser(NameSurnameEmail object) {
-        invitedPeople.remove(object);
-    }
 }

@@ -6,10 +6,13 @@
 package business.security.boundary;
 
 import business.security.entity.Event;
+import business.security.entity.Invite;
 import business.security.entity.NotificationType;
 import business.security.entity.User;
 import business.security.entity.WeatherCondition;
+import business.security.object.NameSurnameEmail;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -34,18 +37,33 @@ public class EventManager {
     @EJB
     private UserInformationLoader userInformationLoader; 
     
+   @EJB
+   private SearchManager searchManager; 
+   
+   private List<NameSurnameEmail> invitedPeople;
+    
+    private List<NameSurnameEmail> partialResults;
+    
     private Event e; 
     
     private WeatherCondition acceptedWeatherConditions; 
     
     public EventManager() {
+        e = new Event(); 
+        acceptedWeatherConditions = new WeatherCondition();
+        invitedPeople = new ArrayList<>(); 
+        partialResults = new ArrayList<>(); 
         notificationManager = new NotificationManager();
     }
     
 
-    public void createEvent(Event event) {
-        getNotificationManager().setEvent(event);
+    public void createEvent(Event event, WeatherCondition awc) {
+        event.setOrganizer(getLoggedUser());
+        save(awc);
+        event.setAcceptedWeatherConditions(awc);
         em.persist(event);
+        setEvent(event);
+        notificationManager.setEvent(event);
     }
     
     public void save(WeatherCondition weatherCondition) {
@@ -62,17 +80,17 @@ public class EventManager {
 
    
  
- public boolean checkDateConsistency(Date dateStart, Date dateEnd) {
-      if (dateStart.after(dateEnd)) {
+ public boolean checkDateConsistency() {
+      if (e.getTimeStart().after(e.getTimeEnd())) {
           return false;
       } else {
           for(Event ev : userInformationLoader.loadCreatedEvents()) {
-              if(dateStart.after(ev.getTimeStart()) && dateStart.before(ev.getTimeEnd()) || dateEnd.after(ev.getTimeStart()) && dateEnd.before(ev.getTimeEnd())) {
+              if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd()) || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())) {
                   return false; 
               }
           }
           for(Event ev : userInformationLoader.loadAcceptedEvents()) {
-              if(dateStart.after(ev.getTimeStart()) && dateStart.before(ev.getTimeEnd()) || dateEnd.after(ev.getTimeStart()) && dateEnd.before(ev.getTimeEnd())) {
+              if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd()) || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())) {
                   return false; 
               }
           }
@@ -95,6 +113,30 @@ public class EventManager {
     public void setEvent(Event event) {
         this.e = event;
     }
+    
+    public List<NameSurnameEmail> getPartialResults() {
+        if (partialResults == null) {
+            partialResults = new ArrayList<>();
+        }
+        return partialResults;
+    }
+
+    public void setPartialResults(List<NameSurnameEmail> partialResults) {
+        this.partialResults = partialResults;
+    }
+  
+    public List<NameSurnameEmail> getInvitedPeople() {
+        if (invitedPeople == null) {
+            invitedPeople = new ArrayList<>();
+        }
+        return invitedPeople;
+    }
+
+    public void setInvitedPeople(List<NameSurnameEmail> invitedPeople) {
+        this.invitedPeople = invitedPeople;
+    }
+    
+    
 
     public WeatherCondition getAcceptedWeatherConditions() {
         return acceptedWeatherConditions;
@@ -102,6 +144,24 @@ public class EventManager {
 
     public void setAcceptedWeatherConditions(WeatherCondition acceptedWeatherConditions) {
         this.acceptedWeatherConditions = acceptedWeatherConditions;
+    }
+    
+    public void addInvitation(String email) {
+        NameSurnameEmail element = searchManager.findNameSurnameEmailFromUser(email);
+        notificationManager.createInviteNotification(element);
+        invitedPeople.add(element);
+    }
+    
+    public void addInvitation(String name, String surname) {
+        NameSurnameEmail element = searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0);
+        notificationManager.createInviteNotification(element);
+        invitedPeople.add(element);
+    }
+    
+    public void addInvitation(NameSurnameEmail element) {
+        notificationManager.createInviteNotification(element);
+        invitedPeople.add(element);
+        partialResults = new ArrayList<>(); 
     }
     
     public void removeEvent() {
