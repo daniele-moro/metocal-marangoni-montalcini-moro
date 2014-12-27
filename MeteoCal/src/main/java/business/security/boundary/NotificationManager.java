@@ -34,7 +34,7 @@ public class NotificationManager {
     @EJB
     private MailManager mailManager; 
     
-    private Event event; 
+    //private Event event; 
     
     private Invite invite; 
     
@@ -44,13 +44,13 @@ public class NotificationManager {
         searchManager = new SearchManager(); 
     }
   
-    public Event getEvent() {
+    /*public Event getEvent() {
         return event;
     }
 
     public void setEvent(Event event) {
         this.event = event;
-    }
+    }*/
     
     
     public SearchManager getSearchManager() {
@@ -79,7 +79,8 @@ public class NotificationManager {
     
     
     
-      public void sendNotifications(NotificationType notificationType) {
+      /*//Metodo tolto, perchè non serviva, sono da sistemare i casi di DELETE e UPDATE event che vanno fatti direttamente dall'event manager
+    public void sendNotifications(NotificationType notificationType) {
         switch (notificationType) { 
             case invite:
                 break;
@@ -122,19 +123,19 @@ public class NotificationManager {
                 throw new AssertionError(notificationType.name());
             
         }
-    }
+    }*/
 
     
-    public void createInviteNotification(NameSurnameEmail element) {
+    public void createInviteNotification(Event e, NameSurnameEmail element) {
             setInvite(new Invite()); 
             getInvite().setUser(searchManager.findUser(element.getEmail()));
             getInvite().setStatus(Invite.InviteStatus.invited);
-            getInvite().setEvent(event);
+            getInvite().setEvent(e);
             em.persist(getInvite());
             setNotification(new Notification()); 
             getNotification().setType(NotificationType.invite);
             getNotification().setNotificatedUser(searchManager.findUser(element.getEmail()));
-            getNotification().setRelatedEvent(event);
+            getNotification().setRelatedEvent(e);
             getNotification().setSeen(false);
             getNotification().setGenerationDate(new Date());
             em.persist(getNotification());
@@ -148,7 +149,11 @@ public class NotificationManager {
         getNotification().setSeen(false);
         getNotification().setType(NotificationType.deletedEvent);
         getNotification().setGenerationDate(new Date());
+        em.persist(getNotification());
+        //I send the notification mail to the user
+        mailManager.sendMail(inv.getUser().getEmail(), "Deleted Event", "Hi! An event for which you have received an invite has been cancelled. Join MeteoCal to discover it.");
     }
+
     
     public void createDelayNotification (Invite inv) {
         setNotification(new Notification()); 
@@ -157,7 +162,10 @@ public class NotificationManager {
         getNotification().setSeen(false);
         getNotification().setType(NotificationType.delayedEvent);
         getNotification().setGenerationDate(new Date());
+        em.persist(getNotification());
         
+        //Invio della mail
+        mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
     }
 
     public MailManager getMailManager() {

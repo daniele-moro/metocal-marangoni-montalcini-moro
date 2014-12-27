@@ -100,10 +100,10 @@ public class AddInvitationBean {
         
     }
 
-    public String sendInvitations() {
+ /*   public String sendInvitations() {
         notificationManager.sendNotifications(NotificationType.invite);
         return "createdEvent";
-    }
+    }*/
     
     public String navigateTo() {
         return "home?faces-redirect=true";

@@ -65,7 +65,7 @@ public class CreatedEventsBean {
     }
     
     public String addInvitations() {
-        eventManager.addInvitation(); 
+        //eventManager.addInvitation(); 
         return "addInvitation?faces-redirect=true";
     }
     
