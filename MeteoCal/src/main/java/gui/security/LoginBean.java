@@ -47,7 +47,7 @@ public class LoginBean {
             context.addMessage(null, new FacesMessage("Login failed."));
             return "login";
         }
-        return "/user/home";
+        return "/user/home?faces-redirect=true";
     }
     public String logout() {
         FacesContext context = FacesContext.getCurrentInstance();
