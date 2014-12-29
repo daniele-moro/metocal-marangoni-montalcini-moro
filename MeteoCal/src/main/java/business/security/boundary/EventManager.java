@@ -81,12 +81,16 @@ public class EventManager {
             return false;
         } else {
             for(Event ev : userInformationLoader.loadCreatedEvents()) {
-                if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd()) || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())) {
+                if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd())
+                        || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())
+                        || e.getTimeStart().equals(ev.getTimeStart()) && e.getTimeEnd().equals(ev.getTimeEnd())) {
                     return false; 
                 }
             }
             for(Event ev : userInformationLoader.loadAcceptedEvents()) {
-                if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd()) || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())) {
+                if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd()) 
+                        || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())
+                        || e.getTimeStart().equals(ev.getTimeStart()) && e.getTimeEnd().equals(ev.getTimeEnd())) {
                     return false; 
                 }
             }
