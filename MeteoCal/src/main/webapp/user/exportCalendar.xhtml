@@ -70,13 +70,18 @@
                                   </h:form>
                               </li>
 			    </ul>
-			</div>
-			
-			<!-- content -->
-			<div class="main">
-			<div>TODO write content</div>
-			</div>
-		</div>
+                        </div>
+                            
+                        <!-- content -->
+                        <div class="main">
+                            <h:form>
+                                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                                <p:commandButton value="Download" ajax="false" icon="ui-icon-arrowthick-1-s" onclick="PrimeFaces.monitorDownload(start, stop)">
+                                    <p:fileDownload value="#{importExportCalendarBean.handleExportCalendar()}" />  
+                                </p:commandButton>
+                            </h:form>
+                        </div>
+                </div>
         </div>
         <hr/>
         <footer>

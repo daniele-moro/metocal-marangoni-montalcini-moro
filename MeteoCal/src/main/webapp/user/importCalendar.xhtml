@@ -40,43 +40,47 @@
             </div>
         </nav>
         <div class="container">
-    
-		<div class="row">
-		
-			<div class="col-md-12">
-			
-					
-                                        <hr/>
-					
-			</div>
-		
-		</div>
-		
-		
-		<div class="row">
-		
-			<!-- sidebar -->
-			<div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
-			    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
-                                <li><p:link outcome="profile" value="Profile"/></li>
-			      <li><p:link outcome="createEvent" value="Create Event"/></li>
-			      <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
-			      <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
-			      <li><p:link outcome="createdEvent" value="Created Event"/></li> 
-                              <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
-                              <li><p:link outcome="searchForUserResult" value="Search For A User"/></li>
-			      <li><h:form>
-                                    <p:commandLink action="#{loginBean.logout()}" value="logout"/>
-                                  </h:form>
-                              </li>
-			    </ul>
-			</div>
-			
-			<!-- content -->
-			<div class="main">
-			<div>TODO write content</div>
-			</div>
-		</div>
+            
+            <div class="row">
+                
+                <div class="col-md-12">
+                    
+                    
+                    <hr/>
+                        
+                </div>
+                    
+            </div>
+                
+                
+            <div class="row">
+                
+                <!-- sidebar -->
+                <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+                    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
+                        <li><p:link outcome="profile" value="Profile"/></li>
+                        <li><p:link outcome="createEvent" value="Create Event"/></li>
+                        <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
+                        <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
+                        <li><p:link outcome="createdEvent" value="Created Event"/></li> 
+                        <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
+                        <li><p:link outcome="searchForUserResult" value="Search For A User"/></li>
+                        <li><h:form>
+                                <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+                            </h:form>
+                        </li>
+                    </ul>
+                </div>
+                    
+                <!-- content -->
+                <div class="main">
+                    <h:form enctype="multipart/form-data">
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                        <p:fileUpload fileUploadListener="#{importExportCalendarBean.handleFileUpload}" allowTypes="/(\.|\/)(xml|mtc)$/" fileLimit="1"/>
+                        
+                    </h:form>
+                </div>
+            </div>
         </div>
         <hr/>
         <footer>
