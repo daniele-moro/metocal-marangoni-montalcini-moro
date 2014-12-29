@@ -6,17 +6,17 @@
 package business.security.entity;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+@XmlRootElement(name = "event")
 @Entity(name = "EVENT")
 public class Event implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -67,6 +67,7 @@ public class Event implements Serializable {
     
     private WeatherCondition weatherForecast;
     
+    @XmlTransient
     public Long getId() {
         return id;
     }
@@ -171,6 +172,7 @@ public class Event implements Serializable {
         this.deleted = deleted;
     }
 
+    @XmlTransient
     public User getOrganizer() {
         return organizer;
     }
@@ -195,6 +197,7 @@ public class Event implements Serializable {
         this.acceptedWeatherConditions = acceptedWeatherConditions;
     }
 
+    @XmlTransient
     public WeatherCondition getWeatherForecast() {
         return weatherForecast;
     }

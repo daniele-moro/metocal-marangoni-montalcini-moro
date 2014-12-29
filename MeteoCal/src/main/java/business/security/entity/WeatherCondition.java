@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class WeatherCondition implements Serializable {
@@ -30,6 +31,7 @@ public class WeatherCondition implements Serializable {
     @NotNull(message = "May not be empty")
     private float temperature;
     
+    @XmlTransient
     public Long getId() {
         return id;
     }
