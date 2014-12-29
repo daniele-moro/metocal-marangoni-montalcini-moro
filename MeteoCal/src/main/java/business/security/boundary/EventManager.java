@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package business.security.boundary;
 
 import business.security.entity.Event;
@@ -12,6 +7,7 @@ import business.security.entity.WeatherCondition;
 import business.security.object.NameSurnameEmail;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -96,6 +92,43 @@ public class EventManager {
             }
         }
         return true; 
+    }
+    /**
+     * Metodo per controllare la consistenza di un'intervallo, 
+     * cioè se l'evento con questo intervallo di tempi può essere creato senza creare problemi
+     * @param start Inzio dell'evento
+     * @param end Fine dell'evento
+     * @return 
+     */
+    public boolean checkDateConsistency(Date start, Date end) {
+        if (start.after((end))) {
+            return false;
+        } else {
+            for(Event ev : userInformationLoader.loadCreatedEvents()) {
+                if(start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd()) 
+                        || end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd())
+                   || start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd())) {
+                    return false; 
+                }
+            }
+            for(Event ev : userInformationLoader.loadAcceptedEvents()) {
+                if(start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd()) 
+                        || end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd())
+                        || start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd())) {
+                    return false; 
+                }
+            }
+        }
+        return true; 
+    }
+    
+    /**
+     * Overload of the previous method, passing an event instead of date start and date end
+     * @param event Event to control
+     * @return
+     */
+    public boolean checkDateConsistency(Event event){
+        return checkDateConsistency(event.getTimeStart(), event.getTimeEnd());
     }
 
     public NotificationManager getNotificationManager() {

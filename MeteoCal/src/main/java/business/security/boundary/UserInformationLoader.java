@@ -26,11 +26,6 @@ public class UserInformationLoader {
     @Inject
     Principal principal;
     
-  public UserInformationLoader() {
-      
-  }
-    
-
     public User getLoggedUser() {
         System.out.println("ciao " + em);
         return em.find(User.class, principal.getName());
