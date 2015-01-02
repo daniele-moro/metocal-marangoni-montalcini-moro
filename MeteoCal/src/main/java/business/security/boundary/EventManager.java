@@ -218,7 +218,7 @@ public class EventManager {
         setEventDeleted.executeUpdate();
         //Invio delle notifiche a tutti gli utenti che erano stati invitati
         for(Invite inv : searchManager.findInviteRelatedToAnEvent(e)) {
-            if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited) {
+            if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited || inv.getStatus() == Invite.InviteStatus.delayedEvent) {
                 notificationManager.createDeleteNotification(inv);
                 //Rimozione dell'invito
             }
