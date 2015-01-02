@@ -7,6 +7,7 @@ package business.security.boundary;
 
 import business.security.entity.Event;
 import business.security.entity.Invite;
+import business.security.entity.Notification;
 import business.security.entity.User;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -25,6 +26,18 @@ public class UserInformationLoader {
     
     @Inject
     Principal principal;
+    
+    private boolean notificationsFound = false; 
+    
+    private boolean inviteStatusInvited; 
+    
+    private boolean inviteStatusAccepted; 
+    
+    private boolean inviteStatusDelayedEvent; 
+    
+    private boolean inviteStatusNotAccepted;
+    
+    
     
     public User getLoggedUser() {
         System.out.println("ciao " + em);
@@ -71,6 +84,104 @@ public class UserInformationLoader {
        return userEvents;
    }
    
+   public List<Notification> loadNotifications() {
+       Query findUserNotifications = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.notificatedUser = ?1 ORDER BY n.generationDate DESC");
+       findUserNotifications.setParameter(1, getLoggedUser()); 
+       List<Notification> notifications = findUserNotifications.getResultList();
+       if (notifications.size() > 0) {
+           setNotificationsFound(true);
+       } else {
+           setNotificationsFound(false);
+       }
+       return notifications;
+   }
+
+    public boolean isNotificationsFound() {
+        return notificationsFound;
+    }
+
+    public void setNotificationsFound(boolean notificationsFound) {
+        this.notificationsFound = notificationsFound;
+    }
+
+
+    public void findInviteStatus(Event event) {
+        Query findInvite = em.createQuery("SELECT i FROM INVITE i WHERE i.event =?1 AND i.user =?2"); 
+        findInvite.setParameter(1, event);
+        findInvite.setParameter(2, getLoggedUser());
+        switch (((Invite) findInvite.getResultList().get(0)).getStatus()) {
+            case accepted:
+                setInviteStatusAccepted(true);
+                setInviteStatusInvited(false);
+                setInviteStatusNotAccepted(false);
+                setInviteStatusDelayedEvent(false);
+                break;
+            case notAccepted:
+                setInviteStatusNotAccepted(true);
+                setInviteStatusAccepted(false);
+                setInviteStatusInvited(false);
+                setInviteStatusDelayedEvent(false);
+                break;
+            case delayedEvent:
+                setInviteStatusDelayedEvent(true);
+                setInviteStatusInvited(false);
+                setInviteStatusAccepted(false);
+                setInviteStatusNotAccepted(false);
+                break;
+            case invited:
+                setInviteStatusInvited(true);
+                setInviteStatusDelayedEvent(false);
+                setInviteStatusAccepted(false);
+                setInviteStatusNotAccepted(false);
+                break;
+            default:
+                throw new AssertionError(((Invite) findInvite.getResultList().get(0)).getStatus().name());
+        }
+    }
+
+    
+    public boolean isInviteStatusInvited() {
+        return inviteStatusInvited;
+    }
+    
+    public void setInviteStatusInvited(boolean inviteStatusInvited) {
+        this.inviteStatusInvited = inviteStatusInvited;
+    }
+
+    
+    public boolean isInviteStatusAccepted() {
+        return inviteStatusAccepted;
+    }
+
+    public void setInviteStatusAccepted(boolean inviteStatusAccepted) {
+        this.inviteStatusAccepted = inviteStatusAccepted;
+    }
+
+    
+    public boolean isInviteStatusDelayedEvent() {
+        return inviteStatusDelayedEvent;
+    }
+
+    
+    public void setInviteStatusDelayedEvent(boolean inviteStatusDelayedEvent) {
+        this.inviteStatusDelayedEvent = inviteStatusDelayedEvent;
+    }
+
+    public boolean isInviteStatusNotAccepted() {
+        return inviteStatusNotAccepted;
+    }
+
+    public void setInviteStatusNotAccepted(boolean inviteStatusNotAccepted) {
+        this.inviteStatusNotAccepted = inviteStatusNotAccepted;
+    }
+    
+    public void setNotificationSeen(Notification notification) {
+        Query updateNotificationSeen = em.createQuery("UPDATE NOTIFICATION n SET n.seen =?1 WHERE n.id =?2"); 
+        updateNotificationSeen.setParameter(1, true); 
+        updateNotificationSeen.setParameter(2, notification.getId()); 
+        updateNotificationSeen.executeUpdate();
+    }
+
  
  
 }

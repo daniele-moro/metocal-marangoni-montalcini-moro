@@ -33,6 +33,8 @@ public class EventManager {
     
     @EJB
     private SearchManager searchManager; 
+    
+    private boolean deletedEvent = false;
    
     private List<NameSurnameEmail> invitedPeople;
     
@@ -179,6 +181,14 @@ public class EventManager {
         this.acceptedWeatherConditions = acceptedWeatherConditions;
     }
     
+    public boolean isDeletedEvent() {
+        return deletedEvent;
+    }
+
+    public void setDeletedEvent(boolean deletedEvent) {
+        this.deletedEvent = deletedEvent;
+    }
+    
     public void addInvitation(String email) {
         NameSurnameEmail element = searchManager.findNameSurnameEmailFromUser(email);
         notificationManager.createInviteNotification(e, element);
@@ -282,5 +292,31 @@ public class EventManager {
     public void addInvitation() {
     //notificationManager.setEvent(e);
     }*/
+    
+    public void addParticipantToEvent() {
+        Query updateInviteStatus = em.createQuery ("UPDATE INVITE i SET i.status =?1 WHERE i.event =?2 AND i.user = ?3");
+        updateInviteStatus.setParameter(1, Invite.InviteStatus.accepted); 
+        updateInviteStatus.setParameter(2, e);
+        updateInviteStatus.setParameter(3, getLoggedUser()); 
+        updateInviteStatus.executeUpdate();
+        userInformationLoader.setInviteStatusAccepted(true);
+        userInformationLoader.setInviteStatusDelayedEvent(false);
+        userInformationLoader.setInviteStatusInvited(false);
+        userInformationLoader.setInviteStatusNotAccepted(false);
+    }
+    
+    public void removeParticipantFromEvent() {
+        Query updateInviteStatus = em.createQuery ("UPDATE INVITE i SET i.status =?1 WHERE i.event =?2 AND i.user = ?3");
+        updateInviteStatus.setParameter(1, Invite.InviteStatus.notAccepted); 
+        updateInviteStatus.setParameter(2, e);
+        updateInviteStatus.setParameter(3, getLoggedUser()); 
+        updateInviteStatus.executeUpdate();
+        userInformationLoader.setInviteStatusNotAccepted(true);
+        userInformationLoader.setInviteStatusAccepted(false);
+        userInformationLoader.setInviteStatusDelayedEvent(false);
+        userInformationLoader.setInviteStatusInvited(false);
+    }
 
+    
+    
 }

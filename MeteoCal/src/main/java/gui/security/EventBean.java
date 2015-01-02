@@ -9,6 +9,7 @@ import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
+import business.security.entity.Invite;
 import business.security.entity.User;
 import business.security.entity.WeatherCondition;
 import javax.ejb.EJB;
@@ -87,6 +88,51 @@ public class EventBean {
     public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
+    
+    public Event loadEventInformation() {
+        return eventManager.getEvent();
+    }
+    
+    public String acceptInvitation() {
+        eventManager.addParticipantToEvent();
+        return "event?faces-redirect=true";
+    }
+    
+    public String refuseInvitation() {
+        eventManager.removeParticipantFromEvent();
+        return "event?faces-redirect=true";
+    }
+    
+    public String reAcceptInvitation() {
+        eventManager.addParticipantToEvent();
+        return "event?faces-redirect=true";
+    }
+    
+    public String deleteParticipation() {
+        eventManager.removeParticipantFromEvent(); 
+        return "event?faces-redirect=true";
+    }
+    
+    public boolean getInvitationStatusInvited() {
+        return userInformationLoader.isInviteStatusInvited();
+    }
+    
+    public boolean getInvitationStatusRefused() {
+        return userInformationLoader.isInviteStatusNotAccepted();
+    }
+    
+    public boolean getInvitationStatusDelayedEvent() {
+        return userInformationLoader.isInviteStatusDelayedEvent();
+    }
+    
+    public boolean getInvitationStatusAccepted() {
+        return userInformationLoader.isInviteStatusAccepted();
+    }
+    
+    public boolean getEventDeleted() {
+        return eventManager.isDeletedEvent();
+    }
+    
 
     
 
