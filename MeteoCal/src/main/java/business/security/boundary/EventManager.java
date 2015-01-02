@@ -221,8 +221,8 @@ public class EventManager {
             if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited) {
                 notificationManager.createDeleteNotification(inv);
                 //Rimozione dell'invito
-                em.remove(inv);
             }
+            em.remove(inv);
         }
     }
     
