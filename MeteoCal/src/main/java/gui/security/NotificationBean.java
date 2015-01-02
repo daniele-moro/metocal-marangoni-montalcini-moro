@@ -67,6 +67,11 @@ public class NotificationBean {
         return "notifications?faces-redirect=true";
     }
     
+    public String deleteNotification(Notification notification) {
+        userInformationLoader.removeNotification(notification); 
+        return "notifications?faces-redirect=true";
+    }
+    
     public String navigateTo() {
         return "home?faces-redirect=true";
     }

@@ -181,6 +181,13 @@ public class UserInformationLoader {
         updateNotificationSeen.setParameter(2, notification.getId()); 
         updateNotificationSeen.executeUpdate();
     }
+    
+    public void removeNotification(Notification notification) {
+        Query findNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.id =?1"); 
+        findNotification.setParameter(1, notification.getId());
+        Notification not = (Notification) findNotification.getResultList().get(0);
+        em.remove(not);
+    }
 
  
  

@@ -47,6 +47,10 @@
                                     <p:column headerText="See Related Event">
                                         <h:commandLink value="View Event" action="#{notificationBean.showEventRelatedToNotification(o)}" />
                                     </p:column>
+                                    
+                                     <p:column headerText="Delete Notification">
+                                         <h:commandButton value="Delete Notification" action="#{notificationBean.deleteNotification(o)}" />
+                                    </p:column>
                                 </p:dataTable>
                                 <h:outputLabel value="There are no notifications to display" rendered="#{notificationBean.isNotificationsFound==false}">
                                 </h:outputLabel> 
