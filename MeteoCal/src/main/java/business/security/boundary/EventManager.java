@@ -320,6 +320,42 @@ public class EventManager {
         userInformationLoader.setInviteStatusDelayedEvent(false);
         userInformationLoader.setInviteStatusInvited(false);
     }
+    
+    public List<Event> loadUserCreatedEvents(User user) {
+        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1");
+        qCreatedEvents.setParameter(1, user.getEmail());
+        List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList(); 
+        return createdEvents; 
+   }
+   
+   public List<Event> loadUserAcceptedEvents(User user) {
+       Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
+       qAcceptedEvents.setParameter(1, user.getEmail());
+       qAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
+       
+       List<Event> acceptedEvents = (List<Event>) qAcceptedEvents.getResultList(); 
+       return acceptedEvents; 
+   }
+   
+   public List<Event> loadEvent() {
+       User u = searchManager.getSearchedUser(); 
+       List<Event> userEvents = new ArrayList<>();
+       if (u.isCalendarPublic()) {
+            for(Event e : loadUserCreatedEvents(u)) {
+                if(e.isPublicEvent()) {
+                    userEvents.add(e); 
+                }
+            }          
+            for (Event e : loadUserAcceptedEvents(searchManager.getSearchedUser())) {
+                 if(e.isPublicEvent()) {
+                    userEvents.add(e); 
+                }
+             }
+       }
+      //TODO: va aggiunto un ordinamento qui
+       return userEvents;
+   }
+   
 
     
     

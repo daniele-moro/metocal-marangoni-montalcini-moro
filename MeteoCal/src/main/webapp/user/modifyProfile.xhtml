@@ -91,9 +91,13 @@
 
                                     <h:outputLabel for="residenceTown">Residence Town:</h:outputLabel>
                                     <p:inputText id="residenceTown" value="#{modifyUser.user.residenceTown}"/>
+                                    
+                                    <p:outputLabel for="privacy" value="Calendar Visibility: " />
+                                    <p:selectOneRadio id="privacy" value="#{modifyUser.user.calendarPublic}">
+                                        <f:selectItem itemLabel="Public" itemValue="true" />
+                                        <f:selectItem itemLabel="Private" itemValue="false" />
+                                    </p:selectOneRadio>
 
-                                    <h:outputLabel for="email">Email:</h:outputLabel>
-                                    <p:inputText id="email" value="#{modifyUser.user.email}"/>
                                 </h:panelGrid>
                                 <h:panelGrid columns="3" id="regGrid1">
                                     <h:outputLabel for="password">Password:</h:outputLabel>

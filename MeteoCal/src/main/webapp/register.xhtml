@@ -88,6 +88,13 @@
                                         <p:ajax update="residenceTownmsg"/>
                                     </p:inputText>
                                     <p:message id="residenceTownmsg" for="residenceTown" />
+                                    
+                                    <p:outputLabel for="privacy" value="Calendar Visibility: " />
+                                    <p:selectOneRadio id="privacy" value="#{registrationBean.user.calendarPublic}">
+                                        <f:selectItem itemLabel="Public" itemValue="true" />
+                                        <f:selectItem itemLabel="Private" itemValue="false" />
+                                    </p:selectOneRadio>
+                                    <p:message id="privacymsg" for="privacy" />
 
                                     <h:outputLabel for="email">Email:</h:outputLabel>
                                     <p:inputText id="email" value="#{registrationBean.user.email}" >

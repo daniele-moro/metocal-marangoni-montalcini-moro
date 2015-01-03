@@ -28,11 +28,11 @@ public class Event implements Serializable {
     private String name;
     
     @NotNull(message = "May not be empty")
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date timeStart;
 
     @NotNull(message = "May not be empty")
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date timeEnd;
      
     private String description;

@@ -44,15 +44,14 @@ public class UserManager {
         // Bisogna impostare update on cascade se si vuole modificare la password: nel parametro 6, 
         // al posto di u.getEmail(), bisogna mettere oldEmail, che è il valore vecchio dell'email. 
         // Ma se non si imposta update on cascade, non si può fare la modifica dell'email 
-        Query q = em.createQuery("UPDATE USER user SET user.name =?1, user.surname = ?2" + 
-            //"', u.birthday = " + user.getBirthday() + 
-            ", user.phoneNumber =?3, user.residenceTown =?4, user.email =?5 WHERE user.email =?6");
+        Query q = em.createQuery("UPDATE USER user SET user.name =?1, user.surname = ?2, user.birthday =?3, user.phoneNumber =?4, user.residenceTown =?5, user.calendarPublic =?6 WHERE user.email =?7");
         q.setParameter(1, u.getName()); 
         q.setParameter(2, u.getSurname()); 
-        q.setParameter(3, u.getPhoneNumber()); 
-        q.setParameter(4, u.getResidenceTown()); 
-        q.setParameter(5, u.getEmail()); 
-        q.setParameter(6, u.getEmail()); 
+        q.setParameter(3, u.getBirthday()); 
+        q.setParameter(4, u.getPhoneNumber()); 
+        q.setParameter(5, u.getResidenceTown()); 
+        q.setParameter(6, u.isCalendarPublic()); 
+        q.setParameter(7, u.getEmail()); 
         q.executeUpdate();
     }
 

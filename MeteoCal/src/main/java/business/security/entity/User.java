@@ -39,6 +39,8 @@ public class User implements Serializable {
     
     private String residenceTown;
     
+    private boolean calendarPublic; 
+    
     @NotNull(message = "May not be empty")
     private String password;
     
@@ -77,60 +79,47 @@ public class User implements Serializable {
         this.password = PasswordEncrypter.encryptPassword(password);
     }
 
-    /**
-     * @return the surname
-     */
     public String getSurname() {
         return surname;
     }
 
-    /**
-     * @param surname the surname to set
-     */
+    
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    /**
-     * @return the phoneNumber
-     */
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    /**
-     * @param phoneNumber the phoneNumber to set
-     */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    /**
-     * @return the residenceTown
-     */
     public String getResidenceTown() {
         return residenceTown;
     }
 
-    /**
-     * @param residenceTown the residenceTown to set
-     */
     public void setResidenceTown(String residenceTown) {
         this.residenceTown = residenceTown;
     }
 
-    /**
-     * @return the birthday
-     */
     public Date getBirthday() {
         return birthday;
     }
 
-    /**
-     * @param birthday the birthday to set
-     */
+    
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
+    }
+
+    
+    public boolean isCalendarPublic() {
+        return calendarPublic;
+    }
+
+    public void setCalendarPublic(boolean calendarPublic) {
+        this.calendarPublic = calendarPublic;
     }
 
 }

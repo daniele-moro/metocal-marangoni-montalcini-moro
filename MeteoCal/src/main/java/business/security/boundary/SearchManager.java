@@ -94,7 +94,6 @@ public class SearchManager {
     public void searchedUserProfile(String email) {
         
         this.searchedUser = findUser(email);   
-        System.out.println("nome utente" + searchedUser.getName() + " cognome" + searchedUser.getSurname());
     }
     
     public List<Invite> findInviteRelatedToAnEvent (Event event) {
