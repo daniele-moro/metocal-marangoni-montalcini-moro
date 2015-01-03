@@ -79,12 +79,12 @@
                                 <h:panelGrid columns="2" id="regGrid">
                                     <h:outputLabel for="name">Name:</h:outputLabel>
                                     <p:inputText id="name" value="#{eventBean.event.name}"/>
-
-                                    <h:outputLabel for="dateStart" value="Date Start:" />
-                                    <p:calendar id="dateStart" value="#{eventBean.event.timeStart}"/>
-
-                                    <h:outputLabel for="dateEnd" value="Date End:" />
-                                    <p:calendar id="dateEnd" value="#{eventBean.event.timeEnd}" />
+                                    
+                                    <p:outputLabel for="timeStart" value="Time Start:" />
+                                    <p:calendar id="timeStart" value="#{eventBean.event.timeStart}" pattern="dd/MM/yyyy HH:mm:ss" />
+                                    
+                                    <p:outputLabel for="timeEnd" value="Time End:" />
+                                    <p:calendar id="timeEnd" value="#{eventBean.event.timeEnd}" pattern="dd/MM/yyyy HH:mm:ss" />
 
                                     <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
                                     <p:selectOneMenu id="predefinedTypology" value="#{eventBean.event.predefinedTypology}" style="width:125px">

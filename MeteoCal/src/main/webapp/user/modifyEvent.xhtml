@@ -80,11 +80,11 @@
                                 <h:outputLabel for="name">Name:</h:outputLabel>
                                 <p:inputText id="name" value="#{eventBean.eventToModify.name}"/>
 
-                                <h:outputLabel for="dateStart" value="Date Start:" />
-                                <p:calendar id="dateStart" value="#{eventBean.eventToModify.timeStart}" />
+                                <p:outputLabel for="timeStart" value="Time Start:" />
+                                <p:calendar id="timeStart" value="#{eventBean.eventToModify.timeStart}" pattern="dd/MM/yyyy HH:mm:ss" />
 
-                                <h:outputLabel for="dateEnd" value="Date End:" />
-                                <p:calendar id="dateEnd" value="#{eventBean.eventToModify.timeEnd}" />
+                                <p:outputLabel for="timeEnd" value="Time End:" />
+                                <p:calendar id="timeEnd" value="#{eventBean.eventToModify.timeEnd}" pattern="dd/MM/yyyy HH:mm:ss" />
 
                                 <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
                                 <p:selectOneMenu id="predefinedTypology" value="#{eventBean.eventToModify.predefinedTypology}" style="width:125px">
