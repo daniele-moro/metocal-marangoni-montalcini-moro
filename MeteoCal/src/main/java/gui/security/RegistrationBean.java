@@ -11,6 +11,7 @@ import business.security.entity.User;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 
 @Named
 @RequestScoped
@@ -39,6 +40,8 @@ public class RegistrationBean {
     }
 
     public String register() {
+        String residenceTown = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
+        user.setResidenceTown(residenceTown);
         um.save(user);
         mailManager.sendMail(user.getEmail(), "Registration to MeteoCal", "Welcome in Meteocal! Your registration has been succesfully completed.");
         return "login?faces-redirect=true";

@@ -21,7 +21,7 @@ public class User implements Serializable {
 
     @Id
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
-            message = "invalid email")
+            message = "Invalid email")
     @NotNull(message = "May not be empty")
     private String email;
    
@@ -35,6 +35,8 @@ public class User implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthday; 
     
+    @Pattern(regexp="([+]39)?[0-9]{9,10}",
+            message="Invalid phone number")
     private String phoneNumber;
     
     private String residenceTown;

@@ -12,6 +12,17 @@
         <link rel="stylesheet" href="css/dashboard.css" type="text/css"/>
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
     </h:head>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+    <script src="geocomplete/jquery.geocomplete.js"/>
+    <script>
+        $(function(){
+            $("#geocomplete").geocomplete({
+                details: "center",
+                types: ["geocode", "establishment"],
+            });
+        });
+    </script>
     <h:body>
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
@@ -74,7 +85,7 @@
                                     <p:message id="surnamemsg" for="surname" />
 
                                     <h:outputLabel for="birthday" value="Birthday:" />
-                                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" />
+                                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" pattern="dd/MM/yyyy" placeholder="dd/mm/yy"/>
                                     <p:message id="birthdaymsg" for="birthday" />
 
                                     <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
@@ -84,10 +95,8 @@
                                     <p:message id="phoneNumbermsg" for="phoneNumber" />
 
                                     <h:outputLabel for="residenceTown">Residence Town:</h:outputLabel>
-                                    <p:inputText id="residenceTown" value="#{registrationBean.user.residenceTown}">
-                                        <p:ajax update="residenceTownmsg"/>
-                                    </p:inputText>
-                                    <p:message id="residenceTownmsg" for="residenceTown" />
+                                    <input id="geocomplete" name="geocomplete" type="text" placeholder="Type in an address"/>
+                                    <h:outputLabel></h:outputLabel>
                                     
                                     <p:outputLabel for="privacy" value="Calendar Visibility: " />
                                     <p:selectOneRadio id="privacy" value="#{registrationBean.user.calendarPublic}">
