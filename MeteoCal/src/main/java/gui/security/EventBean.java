@@ -9,8 +9,6 @@ import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
-import business.security.entity.Invite;
-import business.security.entity.User;
 import business.security.entity.WeatherCondition;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -63,7 +61,7 @@ public class EventBean {
     
     public String createEvent() {
         eventManager.createEvent(event, acceptedWeatherCondition);
-        return "addInvitation?faces-redirect=true";
+        return "addInvitation?faces-redirect=true&amp;id="+event.getId();
     }
     
     public void createdEvent() {

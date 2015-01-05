@@ -8,12 +8,12 @@ package gui.security;
 import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
-import business.security.entity.NotificationType;
 import business.security.object.NameSurnameEmail;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -39,6 +39,7 @@ public class AddInvitationBean {
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
             message = "invalid email")
     private String email; 
+
 
     public AddInvitationBean() {
     }
@@ -77,9 +78,12 @@ public class AddInvitationBean {
     }
     
     public String addUserThroughEmail() {
-        System.out.println(email + "dentro addInvitationBeanaddUserThroughemail");
-        eventManager.addInvitation(email);
-        return "addInvitation?faces-redirect=true"; 
+        String idEvent = FacesContext.getCurrentInstance().
+		getExternalContext().getRequestParameterMap().get("idEvent");
+        System.out.println(idEvent);
+        System.out.println(email + " dentro addInvitationBeanaddUserThroughemail");
+        eventManager.addInvitation(email, Integer.parseInt(idEvent));
+        return "addInvitation?faces-redirect=true&amp;id="+idEvent; 
     }
     
     public String addUser(NameSurnameEmail element) {
@@ -88,22 +92,21 @@ public class AddInvitationBean {
     }
     
     public String addUserThroughNameSurname() {
+        
+        String idEvent = FacesContext.getCurrentInstance().
+		getExternalContext().getRequestParameterMap().get("idEvent");
+        
         System.out.println("appena dentro add User");
         eventManager.setPartialResults(searchManager.findNameEmailSurnameFromNameSurname(name, surname));
         if(eventManager.getPartialResults().size() == 1) {
             eventManager.getPartialResults().remove(0);
-            eventManager.addInvitation(name, surname);
+            eventManager.addInvitation(name, surname, Integer.parseInt(idEvent));
         }         
-        return "addInvitation?faces-redirect=true";
+        return "addInvitation?faces-redirect=true&amp;id="+idEvent;
         
         //TODO: azzerare le stringhe name e surname
         
     }
-
- /*   public String sendInvitations() {
-        notificationManager.sendNotifications(NotificationType.invite);
-        return "createdEvent";
-    }*/
     
     public String navigateTo() {
         return "home?faces-redirect=true";

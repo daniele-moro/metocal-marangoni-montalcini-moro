@@ -193,15 +193,17 @@ public class EventManager {
         this.deletedEvent = deletedEvent;
     }
     
-    public void addInvitation(String email) {
+    public void addInvitation(String email, int idEvent) {
         NameSurnameEmail element = searchManager.findNameSurnameEmailFromUser(email);
-        notificationManager.createInviteNotification(e, element);
+        Event event = getEventById(idEvent);
+        notificationManager.createInviteNotification(event, element);
         invitedPeople.add(element);
     }
     
-    public void addInvitation(String name, String surname) {
+    public void addInvitation(String name, String surname, int idEvent) {
+        Event event = getEventById(idEvent);
         NameSurnameEmail element = searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0);
-        notificationManager.createInviteNotification(e, element);
+        notificationManager.createInviteNotification(event, element);
         invitedPeople.add(element);
     }
     
@@ -226,6 +228,12 @@ public class EventManager {
         }
     }
     
+    public Event getEventById(int idEvent){
+        Query findEventThroughId = em.createQuery("SELECT event from EVENT event WHERE event.id =?1 ");
+        findEventThroughId.setParameter(1, idEvent);
+        return ((List<Event>) findEventThroughId.getResultList()).get(0);
+    }
+    
     public void updateEventInformation() {
         Query updateWeatherCondition = em.createQuery("UPDATE WeatherCondition w SET w.precipitation =?1, w.wind =?2, w.temperature =?3 WHERE w.id =?4");
         updateWeatherCondition.setParameter(1, acceptedWeatherConditions.getPrecipitation());
@@ -245,6 +253,7 @@ public class EventManager {
         
         
         //if the date is changed
+        //si puo usare il metodo getEvetnById
         Query findEventThroughId = em.createQuery("SELECT event from EVENT event WHERE event.id =?1 ");
         findEventThroughId.setParameter(1, e.getId());
         Event ev = ((List<Event>) findEventThroughId.getResultList()).get(0);
