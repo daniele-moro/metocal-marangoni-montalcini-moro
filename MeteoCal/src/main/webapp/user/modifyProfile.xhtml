@@ -78,22 +78,22 @@
                             <h3>Modify Data:</h3>
                                 <h:panelGrid columns="2" id="regGrid">
                                     <h:outputLabel for="name">Name: </h:outputLabel>
-                                    <p:inputText id="name" value="#{modifyUser.user.name}"/>
+                                    <p:inputText id="name" value="#{userBean.user.name}"/>
 
                                     <h:outputLabel for="surname">Surname:</h:outputLabel>
-                                    <p:inputText id="surname" value="#{modifyUser.user.surname}"/>
+                                    <p:inputText id="surname" value="#{userBean.user.surname}"/>
 
                                     <h:outputLabel for="birthday" value="Birthday:" />
-                                    <p:calendar id="birthday" value="#{modifyUser.user.birthday}"/>
+                                    <p:calendar id="birthday" value="#{userBean.user.birthday}"/>
 
                                     <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
-                                    <p:inputText id="phoneNumber" value="#{modifyUser.user.phoneNumber}"/>
+                                    <p:inputText id="phoneNumber" value="#{userBean.user.phoneNumber}"/>
 
                                     <h:outputLabel for="residenceTown">Residence Town:</h:outputLabel>
-                                    <p:inputText id="residenceTown" value="#{modifyUser.user.residenceTown}"/>
+                                    <p:inputText id="residenceTown" value="#{userBean.user.residenceTown}"/>
                                     
                                     <p:outputLabel for="privacy" value="Calendar Visibility: " />
-                                    <p:selectOneRadio id="privacy" value="#{modifyUser.user.calendarPublic}">
+                                    <p:selectOneRadio id="privacy" value="#{userBean.user.calendarPublic}">
                                         <f:selectItem itemLabel="Public" itemValue="true" />
                                         <f:selectItem itemLabel="Private" itemValue="false" />
                                     </p:selectOneRadio>
@@ -101,7 +101,7 @@
                                 </h:panelGrid>
                                 <h:panelGrid columns="3" id="regGrid1">
                                     <h:outputLabel for="password">Password:</h:outputLabel>
-                                    <p:password id="password" value="#{registrationBean.user.password}"
+                                    <p:password id="password" value="#{userBean.user.password}"
                                                 feedback="true" match="pwd2" label="Password"/>
                                     <p:message for="password" />
 
@@ -109,7 +109,7 @@
                                     <p:password id="pwd2" label="Confirm Password"/>
                                 </h:panelGrid>
                                 <p:commandButton id="submit" value="Submit" update="regGrid"
-                                                 action="#{modifyUser.updateProfile()}" />
+                                                 action="#{userBean.updateProfile()}" />
                         </h:form>
                         </div>
 		</div>

@@ -22,8 +22,7 @@ public class UserManager {
     
     @Inject
     Principal principal;
-    
-    private User u; 
+     
     
     private String oldEmail; 
 
@@ -40,33 +39,19 @@ public class UserManager {
         return em.find(User.class, principal.getName());
     }
     
-    public void updateUser() {
+    public void updateUser(User usr) {
         // Bisogna impostare update on cascade se si vuole modificare la password: nel parametro 6, 
         // al posto di u.getEmail(), bisogna mettere oldEmail, che è il valore vecchio dell'email. 
         // Ma se non si imposta update on cascade, non si può fare la modifica dell'email 
         Query q = em.createQuery("UPDATE USER user SET user.name =?1, user.surname = ?2, user.birthday =?3, user.phoneNumber =?4, user.residenceTown =?5, user.calendarPublic =?6 WHERE user.email =?7");
-        q.setParameter(1, u.getName()); 
-        q.setParameter(2, u.getSurname()); 
-        q.setParameter(3, u.getBirthday()); 
-        q.setParameter(4, u.getPhoneNumber()); 
-        q.setParameter(5, u.getResidenceTown()); 
-        q.setParameter(6, u.isCalendarPublic()); 
-        q.setParameter(7, u.getEmail()); 
+        q.setParameter(1, usr.getName()); 
+        q.setParameter(2, usr.getSurname()); 
+        q.setParameter(3, usr.getBirthday()); 
+        q.setParameter(4, usr.getPhoneNumber()); 
+        q.setParameter(5, usr.getResidenceTown()); 
+        q.setParameter(6, usr.isCalendarPublic()); 
+        q.setParameter(7, usr.getEmail()); 
         q.executeUpdate();
-    }
-
-    /**
-     * @return the u
-     */
-    public User getU() {
-        return u;
-    }
-
-    /**
-     * @param u the u to set
-     */
-    public void setU(User u) {
-        this.u = u;
     }
 
     /**

@@ -7,34 +7,49 @@ package gui.security;
 
 import business.security.boundary.UserManager;
 import business.security.entity.User;
+import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 
 @Named
-@RequestScoped
-public class UserBean{
+@SessionScoped
+public class UserBean implements Serializable{
 
     @EJB
     UserManager um;
     
     private User user; 
-    
-    public UserBean() {
-    }
-    
+
     public String getName() {
         return um.getLoggedUser().getName();
     }
     
     public User getUser() {
-        return um.getLoggedUser();
+        if(user==null){
+            user=new User();
+            User u= um.getLoggedUser();
+            user.setBirthday(u.getBirthday());
+            user.setCalendarPublic(u.isCalendarPublic());
+            user.setEmail(u.getEmail());
+            user.setGroupName(u.getGroupName());
+            user.setName(u.getName());
+            user.setPassword(u.getPassword());
+            user.setPhoneNumber(u.getPhoneNumber());
+            user.setResidenceTown(u.getResidenceTown());
+            user.setSurname(u.getSurname());
+        }
+        return user;
     }
     
     public String modifyProfile () {
-        um.setU(um.getLoggedUser());
-        um.setOldEmail(um.getLoggedUser().getEmail());
         return "modifyProfile?faces-redirect=true";
+    }
+    
+    public String updateProfile(){
+        um.updateUser(user);
+        user=null;
+        return "profile?faces-redirect=true";
     }
     
 }
