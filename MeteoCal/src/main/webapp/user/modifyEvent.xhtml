@@ -73,21 +73,22 @@
 			</div>
 			
 			<!-- content -->
+                       
 			<div class="main">
 			<h:form id="modifyEventForm">
                             <h3>Modify Event Form:</h3>
                             <h:panelGrid columns="2" id="regGrid">
                                 <h:outputLabel for="name">Name:</h:outputLabel>
-                                <p:inputText id="name" value="#{eventBean.eventToModify.name}"/>
+                                <p:inputText id="name" value="#{createdEventsBean.eventToModify.name}"/>
 
                                 <p:outputLabel for="timeStart" value="Time Start:" />
-                                <p:calendar id="timeStart" value="#{eventBean.eventToModify.timeStart}" pattern="dd/MM/yyyy HH:mm:ss" />
+                                <p:calendar id="timeStart" value="#{createdEventsBean.eventToModify.timeStart}" pattern="dd/MM/yyyy HH:mm:ss" />
 
                                 <p:outputLabel for="timeEnd" value="Time End:" />
-                                <p:calendar id="timeEnd" value="#{eventBean.eventToModify.timeEnd}" pattern="dd/MM/yyyy HH:mm:ss" />
+                                <p:calendar id="timeEnd" value="#{createdEventsBean.eventToModify.timeEnd}" pattern="dd/MM/yyyy HH:mm:ss" />
 
                                 <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
-                                <p:selectOneMenu id="predefinedTypology" value="#{eventBean.eventToModify.predefinedTypology}" style="width:125px">
+                                <p:selectOneMenu id="predefinedTypology" value="#{createdEventsBean.eventToModify.predefinedTypology}" style="width:125px">
                                         <f:selectItem itemLabel="Aperitif" itemValue="aperitif" />
                                         <f:selectItem itemLabel="Dinner" itemValue="dinner" />
                                         <f:selectItem itemLabel="Lunch" itemValue="lunch" />
@@ -103,37 +104,37 @@
                                 </p:selectOneMenu>
 
                                 <p:outputLabel for="description" value="Description:" />
-                                <p:inputTextarea rows="6" cols="33" id="description" value="#{eventBean.eventToModify.description}" />
+                                <p:inputTextarea rows="6" cols="33" id="description" value="#{createdEventsBean.eventToModify.description}" />
 
                                 <p:outputLabel for="town" value ="Place:" />
-                                <p:inputText id="town" value="#{eventBean.eventToModify.town}"/>
+                                <p:inputText id="town" value="#{createdEventsBean.eventToModify.town}"/>
 
                                 <p:outputLabel for="address" value ="Address:" />
-                                <p:inputText id="address" value="#{eventBean.eventToModify.address}"/>
+                                <p:inputText id="address" value="#{createdEventsBean.eventToModify.address}"/>
 
 
                                 <p:outputLabel for="privacy" value="Privacy:" />
-                                <p:selectOneRadio id="privacy" value="#{eventBean.eventToModify.publicEvent}">
+                                <p:selectOneRadio id="privacy" value="#{createdEventsBean.eventToModify.publicEvent}">
                                     <f:selectItem itemLabel="Public" itemValue="true" />
                                     <f:selectItem itemLabel="Private" itemValue="false" />
                                 </p:selectOneRadio>
 
                                 <p:outputLabel for="wind" value="Wind:" />
-                                <p:selectOneRadio id="wind" value="#{eventBean.acceptedWeatherConditionsToModify.wind}">
+                                <p:selectOneRadio id="wind" value="#{createdEventsBean.acceptedWeatherConditionToModify.wind}">
                                     <f:selectItem itemLabel="Absent" itemValue="0" />
                                     <f:selectItem itemLabel="Medium" itemValue="1" />
                                     <f:selectItem itemLabel="Strong" itemValue="2" />
                                 </p:selectOneRadio>
 
                                 <p:outputLabel for="precipitation" value="Precipitation:" />
-                                <p:selectOneRadio id="precipitation" value="#{eventBean.acceptedWeatherConditionsToModify.precipitation}">
+                                <p:selectOneRadio id="precipitation" value="#{createdEventsBean.acceptedWeatherConditionToModify.precipitation}">
                                     <f:selectItem itemLabel="Absent" itemValue="0" />
                                     <f:selectItem itemLabel="Medium" itemValue="1" />
                                     <f:selectItem itemLabel="Strong" itemValue="2" />
                                 </p:selectOneRadio>
 
                                 <p:outputLabel for="temperature" value="Temperature:" />
-                                <p:selectOneRadio id="temperature" value="#{eventBean.acceptedWeatherConditionsToModify.temperature}">
+                                <p:selectOneRadio id="temperature" value="#{createdEventsBean.acceptedWeatherConditionToModify.temperature}">
                                     <f:selectItem itemLabel= "less 0" itemValue="0" />
                                     <f:selectItem itemLabel="0-10" itemValue="1" />
                                     <f:selectItem itemLabel="10-20" itemValue="2" />

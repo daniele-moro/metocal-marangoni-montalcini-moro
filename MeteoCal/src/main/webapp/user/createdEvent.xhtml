@@ -100,7 +100,8 @@
                                         #{o.address}
                                     </p:column>
                                     <p:column headerText="Modify">
-                                        <h:commandLink value="Modify Event" action="#{createdEventsBean.showModifyEvent(o, o.acceptedWeatherConditions)}" />
+                                        <h:commandLink value="Modify Event" action="#{createdEventsBean.showModifyEvent(o, o.acceptedWeatherConditions)}" rendered="#{o.deleted==false}" />
+                                        <h:outputLabel value="DELETED EVENT" rendered="#{o.deleted == true}"/>
                                     </p:column>
                                 </p:dataTable>
                             </h:form>

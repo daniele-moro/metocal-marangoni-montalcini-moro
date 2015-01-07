@@ -35,8 +35,6 @@ public class EventManager {
     private SearchManager searchManager; 
     
     private boolean deletedEvent = false;
-   
-    private List<NameSurnameEmail> invitedPeople;
     
     private List<NameSurnameEmail> partialResults;
     
@@ -47,7 +45,6 @@ public class EventManager {
     public EventManager() {
         e = new Event(); 
         acceptedWeatherConditions = new WeatherCondition();
-        invitedPeople = new ArrayList<>(); 
         partialResults = new ArrayList<>(); 
         notificationManager = new NotificationManager();
     }
@@ -69,11 +66,7 @@ public class EventManager {
     public void save(WeatherCondition weatherCondition) {
         em.persist(weatherCondition);
     }
-
-    public void deleteEvent() {
-        em.remove(getLoggedUser());
-    }
-
+    
     public User getLoggedUser() {
         return em.find(User.class, principal.getName());
     }
@@ -163,24 +156,12 @@ public class EventManager {
     public void setPartialResults(List<NameSurnameEmail> partialResults) {
         this.partialResults = partialResults;
     }
-  
-    public List<NameSurnameEmail> getInvitedPeople() {
-        if (invitedPeople == null) {
-            invitedPeople = new ArrayList<>();
-        }
-        return invitedPeople;
-    }
     
     public List<User> getInvitedPeople(int idEvent) {
         Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event.id = ?1 AND i.user.email = u.email");
         findInvitedPeopleThroughIDev.setParameter(1, idEvent);
         return ((List<User>) findInvitedPeopleThroughIDev.getResultList());
     }
-
-    public void setInvitedPeople(List<NameSurnameEmail> invitedPeople) {
-        this.invitedPeople = invitedPeople;
-    }
-    
     
 
     public WeatherCondition getAcceptedWeatherConditions() {
@@ -203,28 +184,23 @@ public class EventManager {
         NameSurnameEmail element = searchManager.findNameSurnameEmailFromUser(email);
         Event event = getEventById(idEvent);
         notificationManager.createInviteNotification(event, element);
-        invitedPeople.add(element);
     }
     
     public void addInvitation(String name, String surname, int idEvent) {
         Event event = getEventById(idEvent);
         NameSurnameEmail element = searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0);
         notificationManager.createInviteNotification(event, element);
-        invitedPeople.add(element);
     }
     
     public void addInvitation(NameSurnameEmail element) {
         notificationManager.createInviteNotification(e, element);
-        invitedPeople.add(element);
         partialResults = new ArrayList<>(); 
     }
     
-    public void removeEvent() {
-        Query setEventDeleted = em.createQuery("UPDATE EVENT event SET event.deleted =?1 WHERE event.id = ?2");
-        setEventDeleted.setParameter(1, true); 
-        setEventDeleted.setParameter(2, e.getId());
-        setEventDeleted.executeUpdate();
-        //Invio delle notifiche a tutti gli utenti che erano stati invitati
+    public void removeEvent(Event event) {
+        event.setDeleted(true);
+        em.merge(event);
+        //Invio delle notifiche di cancellazione dell'evento
         for(Invite inv : searchManager.findInviteRelatedToAnEvent(e)) {
             if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited || inv.getStatus() == Invite.InviteStatus.delayedEvent) {
                 notificationManager.createDeleteNotification(inv);
@@ -240,47 +216,47 @@ public class EventManager {
         return ((List<Event>) findEventThroughId.getResultList()).get(0);
     }
     
-    public void updateEventInformation() {
+    public void updateEventInformation(Event event, WeatherCondition awc) {
         Query updateWeatherCondition = em.createQuery("UPDATE WeatherCondition w SET w.precipitation =?1, w.wind =?2, w.temperature =?3 WHERE w.id =?4");
-        updateWeatherCondition.setParameter(1, acceptedWeatherConditions.getPrecipitation());
-        updateWeatherCondition.setParameter(2, acceptedWeatherConditions.getWind());
-        updateWeatherCondition.setParameter(3, acceptedWeatherConditions.getTemperature());
-        updateWeatherCondition.setParameter(4, acceptedWeatherConditions.getId());
+        updateWeatherCondition.setParameter(1, awc.getPrecipitation());
+        updateWeatherCondition.setParameter(2, awc.getWind());
+        updateWeatherCondition.setParameter(3, awc.getTemperature());
+        updateWeatherCondition.setParameter(4, awc.getId());
         updateWeatherCondition.executeUpdate();
         
         Query updateEventInformation = em.createQuery ("UPDATE EVENT event SET event.name =?1, event.town =?2, event.address =?3, event.description =?4, event.predefinedTypology = ?5 WHERE event.id =?6");
-        updateEventInformation.setParameter(1, e.getName());
-        updateEventInformation.setParameter(2, e.getTown());
-        updateEventInformation.setParameter(3, e.getAddress());
-        updateEventInformation.setParameter(4, e.getDescription());
-        updateEventInformation.setParameter(5, e.getPredefinedTypology());
-        updateEventInformation.setParameter(6, e.getId());
+        updateEventInformation.setParameter(1, event.getName());
+        updateEventInformation.setParameter(2, event.getTown());
+        updateEventInformation.setParameter(3, event.getAddress());
+        updateEventInformation.setParameter(4, event.getDescription());
+        updateEventInformation.setParameter(5, event.getPredefinedTypology());
+        updateEventInformation.setParameter(6, event.getId());
         updateEventInformation.executeUpdate();
         
         
         //if the date is changed
         //si puo usare il metodo getEvetnById
         Query findEventThroughId = em.createQuery("SELECT event from EVENT event WHERE event.id =?1 ");
-        findEventThroughId.setParameter(1, e.getId());
+        findEventThroughId.setParameter(1, event.getId());
         Event ev = ((List<Event>) findEventThroughId.getResultList()).get(0);
-        if (!ev.getTimeStart().equals(e.getTimeStart()) || !ev.getTimeEnd().equals(e.getTimeEnd())) {
+        if (!ev.getTimeStart().equals(event.getTimeStart()) || !ev.getTimeEnd().equals(event.getTimeEnd())) {
             //notificationManager.setEvent(e);
             //notificationManager.sendNotifications(NotificationType.delayedEvent);
             
             
-            for(Invite inv : searchManager.findInviteRelatedToAnEvent(e)) {
+            for(Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
                 if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited) {
                     //Invio della notifica di DELAY
                     notificationManager.createDelayNotification(inv);
                     
                     //Controllo se ci sono sovrapposizioni
                     for(Event evv : searchManager.findUserEvent(inv.getUser())) {
-                        if((e.getTimeStart().after(evv.getTimeStart()) && e.getTimeStart().before(evv.getTimeEnd()))
-                                || (e.getTimeEnd().after(evv.getTimeStart()) && e.getTimeEnd().before(evv.getTimeEnd()))
-                                || (e.getTimeEnd().equals(evv.getTimeStart()) && e.getTimeEnd().equals(evv.getTimeEnd()))) {
+                        if((event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
+                                || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
+                                || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {
                             Query updateInvitationStatus = em.createQuery("UPDATE INVITE invite SET invite.status= ?1 WHERE invite.event = ?2 AND invite.user = ?3");
                             updateInvitationStatus.setParameter(1, Invite.InviteStatus.delayedEvent);
-                            updateInvitationStatus.setParameter(2, e);
+                            updateInvitationStatus.setParameter(2, event);
                             updateInvitationStatus.setParameter(3, inv.getUser());
                             updateInvitationStatus.executeUpdate();
                             /** @TODO: Manca da mandare la mail di notifica**/
@@ -298,9 +274,9 @@ public class EventManager {
         
         //@TODO: Manca da mandare le notifiche per il delayed event
         Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
-        updateDateOfEvent.setParameter(1, e.getTimeStart());
-        updateDateOfEvent.setParameter(2, e.getTimeEnd());
-        updateDateOfEvent.setParameter(3, e.getId());
+        updateDateOfEvent.setParameter(1, event.getTimeStart());
+        updateDateOfEvent.setParameter(2, event.getTimeEnd());
+        updateDateOfEvent.setParameter(3, event.getId());
         updateDateOfEvent.executeUpdate();
         /*notificationManager.setEvent(e);
         notificationManager.sendNotifications(NotificationType.delayedEvent);*/

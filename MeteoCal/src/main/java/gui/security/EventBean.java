@@ -61,7 +61,7 @@ public class EventBean {
     
     public String createEvent() {
         eventManager.createEvent(event, acceptedWeatherCondition);
-        return "addInvitation?faces-redirect=true&amp;id="+event.getId();
+        return "addInvitation?faces-redirect=true&amp;includeViewParams=true&amp;id="+event.getId();
     }
     
     public void createdEvent() {
@@ -131,7 +131,7 @@ public class EventBean {
         return eventManager.isDeletedEvent();
     }
     
-
     
 
+    
 }

@@ -49,6 +49,7 @@ public class AddInvitationBean implements Serializable{
             message = "invalid email")
     private String email;
     
+    //Lista degli invitati
     List<User> invitedPeople;
     List<User> partialResult;
     
@@ -80,7 +81,6 @@ public class AddInvitationBean implements Serializable{
     }
     
     public List<User> getInvitedPeople() {
-        //return eventManager.getInvitedPeople();
         return this.invitedPeople;
         
     }
@@ -100,7 +100,7 @@ public class AddInvitationBean implements Serializable{
         eventManager.addInvitation(email, Integer.parseInt(idEvent));
         
         //Prelevo dal db la lista degli invitati
-        invitedPeople= eventManager.getInvitedPeople(Integer.parseInt(idEvent));
+        invitedPeople = eventManager.getInvitedPeople(Integer.parseInt(idEvent));
         return "addInvitation?faces-redirect=true&amp;id="+idEvent;
     }
     
