@@ -105,38 +105,11 @@ public class UserInformationLoader {
     }
 
 
-    public void findInviteStatus(Event event) {
+    public Invite findInviteStatus(Event event) {
         Query findInvite = em.createQuery("SELECT i FROM INVITE i WHERE i.event =?1 AND i.user =?2"); 
         findInvite.setParameter(1, event);
         findInvite.setParameter(2, getLoggedUser());
-        switch (((Invite) findInvite.getResultList().get(0)).getStatus()) {
-            case accepted:
-                setInviteStatusAccepted(true);
-                setInviteStatusInvited(false);
-                setInviteStatusNotAccepted(false);
-                setInviteStatusDelayedEvent(false);
-                break;
-            case notAccepted:
-                setInviteStatusNotAccepted(true);
-                setInviteStatusAccepted(false);
-                setInviteStatusInvited(false);
-                setInviteStatusDelayedEvent(false);
-                break;
-            case delayedEvent:
-                setInviteStatusDelayedEvent(true);
-                setInviteStatusInvited(false);
-                setInviteStatusAccepted(false);
-                setInviteStatusNotAccepted(false);
-                break;
-            case invited:
-                setInviteStatusInvited(true);
-                setInviteStatusDelayedEvent(false);
-                setInviteStatusAccepted(false);
-                setInviteStatusNotAccepted(false);
-                break;
-            default:
-                throw new AssertionError(((Invite) findInvite.getResultList().get(0)).getStatus().name());
-        }
+        return (Invite)findInvite.getResultList().get(0);
     }
 
     
@@ -176,10 +149,12 @@ public class UserInformationLoader {
     }
     
     public void setNotificationSeen(Notification notification) {
-        Query updateNotificationSeen = em.createQuery("UPDATE NOTIFICATION n SET n.seen =?1 WHERE n.id =?2"); 
+        notification.setSeen(true);
+        em.merge(notification);
+        /*Query updateNotificationSeen = em.createQuery("UPDATE NOTIFICATION n SET n.seen =?1 WHERE n.id =?2"); 
         updateNotificationSeen.setParameter(1, true); 
         updateNotificationSeen.setParameter(2, notification.getId()); 
-        updateNotificationSeen.executeUpdate();
+        updateNotificationSeen.executeUpdate();*/
     }
     
     public void removeNotification(Notification notification) {

@@ -6,26 +6,27 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
-import business.security.boundary.NotificationManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
+import business.security.entity.Invite;
 import business.security.entity.Notification;
-import business.security.entity.User;
-import business.security.entity.WeatherCondition;
+import java.io.Serializable;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 
 @Named
-@RequestScoped
-public class NotificationBean {
+@SessionScoped
+public class NotificationBean implements Serializable{
         
     @EJB
     private UserInformationLoader userInformationLoader; 
     
     @EJB    
     private EventManager eventManager;
+    
+    private Event event;
 
     public NotificationBean() {
     }
@@ -56,14 +57,26 @@ public class NotificationBean {
     
     public String showEventRelatedToNotification(Notification notification) {
         userInformationLoader.setNotificationSeen(notification); 
-        eventManager.setEvent(notification.getRelatedEvent());
-        eventManager.setDeletedEvent(notification.getRelatedEvent().isDeleted());
-        userInformationLoader.findInviteStatus(notification.getRelatedEvent());
+        //eventManager.setEvent(notification.getRelatedEvent());
+        //eventManager.setDeletedEvent(notification.getRelatedEvent().isDeleted());
+        this.setEvent(notification.getRelatedEvent());
         return "event?faces-redirect=true";
     }
     
+    public boolean getFindInviteStatusInvited() {
+        return userInformationLoader.findInviteStatus(event).getStatus()== Invite.InviteStatus.invited;
+    }
+    
+     public boolean getFindInviteStatusAccepted() {
+        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.accepted;
+    }
+      public boolean getFindInviteStatusNotAccepted() {
+        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.notAccepted;
+    }
+       public boolean getFindInviteStatusDelayed() {
+        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.delayedEvent;
+    }
     public String showNotifications() {
-        userInformationLoader.setNotificationsFound(userInformationLoader.loadNotifications().size() > 0);
         return "notifications?faces-redirect=true";
     }
     
@@ -74,6 +87,20 @@ public class NotificationBean {
     
     public String navigateTo() {
         return "home?faces-redirect=true";
+    }
+
+    /**
+     * @return the event
+     */
+    public Event getEvent() {
+        return event;
+    }
+
+    /**
+     * @param event the event to set
+     */
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     
