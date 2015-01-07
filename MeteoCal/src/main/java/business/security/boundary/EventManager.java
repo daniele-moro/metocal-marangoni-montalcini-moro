@@ -170,6 +170,12 @@ public class EventManager {
         }
         return invitedPeople;
     }
+    
+    public List<User> getInvitedPeople(int idEvent) {
+        Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event.id = ?1 AND i.user.email = u.email");
+        findInvitedPeopleThroughIDev.setParameter(1, idEvent);
+        return ((List<User>) findInvitedPeopleThroughIDev.getResultList());
+    }
 
     public void setInvitedPeople(List<NameSurnameEmail> invitedPeople) {
         this.invitedPeople = invitedPeople;
