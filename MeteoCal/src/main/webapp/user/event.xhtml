@@ -64,7 +64,7 @@
 			      <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
 			      <li><p:link outcome="createdEvent" value="Created Event"/></li> 
                               <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
-                              <li><p:link outcome="searchForUserResult" value="Search For A User"/></li>
+                              <li><p:link outcome="searchForUser" value="Search For A User"/></li>
                               <li><p:link outcome="#{notificationBean.showNotifications()}" value="My Notifications"/></li>
 			      <li><h:form>
                                     <p:commandLink action="#{loginBean.logout()}" value="logout"/>
@@ -129,23 +129,23 @@
                             <h:form rendered="#{notificationBean.event.deleted==false}">
                                 <h:commandButton id="acceptInvitation" 
                                                  value="Accept Invitation" 
-                                                 action="#{eventBean.acceptInvitation()}"
+                                                 action="#{notificationBean.acceptInvitation()}"
                                                  rendered="#{notificationBean.findInviteStatusInvited==true}"/>
                                 <h:commandButton id="refuseInvitation" 
                                                  value="Refuse Invitation" 
-                                                 action="#{eventBean.refuseInvitation()}" 
+                                                 action="#{notificationBean.refuseInvitation()}" 
                                                  rendered="#{notificationBean.findInviteStatusInvited==true}"/>
                                 <h:commandButton id="reAcceptInvitation" 
                                                  value="Re-accept Invitation" 
-                                                 action="#{eventBean.reAcceptInvitation()}"
+                                                 action="#{notificationBean.reAcceptInvitation()}"
                                                  rendered="#{notificationBean.findInviteStatusDelayed==true}" />
                                 <h:commandButton id="deleteParticipation" 
                                                  value="Delete Participation" 
-                                                 action="#{eventBean.deleteParticipation()}"
+                                                 action="#{notificationBean.deleteParticipation()}"
                                                  rendered="#{notificationBean.findInviteStatusAccepted==true}" />
                                 <h:outputLabel value="You have refused to participate to this event" rendered="#{notificationBean.findInviteStatusNotAccepted==true}" />
                             </h:form>
-                            <h:form rendered="#{notificationBean.event.deleted==false}">
+                            <h:form rendered="#{notificationBean.event.deleted==true}">
                                 <h:outputText value="This event has been deleted by its organizer"/>
                             </h:form>
                         </div>

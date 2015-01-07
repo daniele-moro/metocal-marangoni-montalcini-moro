@@ -88,22 +88,35 @@ public class NotificationBean implements Serializable{
     public String navigateTo() {
         return "home?faces-redirect=true";
     }
-
-    /**
-     * @return the event
-     */
+    
     public Event getEvent() {
         return event;
     }
-
-    /**
-     * @param event the event to set
-     */
+    
     public void setEvent(Event event) {
         this.event = event;
     }
 
+     
+    public String acceptInvitation() {
+        eventManager.addParticipantToEvent(event);
+        return "event?faces-redirect=true";
+    }
     
+    public String refuseInvitation() {
+        eventManager.removeParticipantFromEvent(event);
+        return "event?faces-redirect=true";
+    }
+    
+    public String reAcceptInvitation() {
+        eventManager.addParticipantToEvent(event);
+        return "event?faces-redirect=true";
+    }
+    
+    public String deleteParticipation() {
+        eventManager.removeParticipantFromEvent(event); 
+        return "event?faces-redirect=true";
+    }
     
     
     

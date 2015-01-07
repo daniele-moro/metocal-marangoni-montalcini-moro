@@ -91,42 +91,6 @@ public class EventBean {
         return eventManager.getEvent();
     }
     
-    public String acceptInvitation() {
-        eventManager.addParticipantToEvent();
-        return "event?faces-redirect=true";
-    }
-    
-    public String refuseInvitation() {
-        eventManager.removeParticipantFromEvent();
-        return "event?faces-redirect=true";
-    }
-    
-    public String reAcceptInvitation() {
-        eventManager.addParticipantToEvent();
-        return "event?faces-redirect=true";
-    }
-    
-    public String deleteParticipation() {
-        eventManager.removeParticipantFromEvent(); 
-        return "event?faces-redirect=true";
-    }
-    
-    public boolean getInvitationStatusInvited() {
-        return userInformationLoader.isInviteStatusInvited();
-    }
-    
-    public boolean getInvitationStatusRefused() {
-        return userInformationLoader.isInviteStatusNotAccepted();
-    }
-    
-    public boolean getInvitationStatusDelayedEvent() {
-        return userInformationLoader.isInviteStatusDelayedEvent();
-    }
-    
-    public boolean getInvitationStatusAccepted() {
-        return userInformationLoader.isInviteStatusAccepted();
-    }
-    
     public boolean getEventDeleted() {
         return eventManager.isDeletedEvent();
     }

@@ -83,7 +83,7 @@ public class SearchResultsBean {
         } else {
             searchManager.setUserFound(false);
         }
-        return "searchForUserResult?faces-redirect=true";
+        return "searchForUser?faces-redirect=true";
         
     }
     

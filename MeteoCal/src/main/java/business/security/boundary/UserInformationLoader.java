@@ -29,13 +29,6 @@ public class UserInformationLoader {
     
     private boolean notificationsFound = false; 
     
-    private boolean inviteStatusInvited; 
-    
-    private boolean inviteStatusAccepted; 
-    
-    private boolean inviteStatusDelayedEvent; 
-    
-    private boolean inviteStatusNotAccepted;
     
     
     
@@ -111,50 +104,10 @@ public class UserInformationLoader {
         findInvite.setParameter(2, getLoggedUser());
         return (Invite)findInvite.getResultList().get(0);
     }
-
-    
-    public boolean isInviteStatusInvited() {
-        return inviteStatusInvited;
-    }
-    
-    public void setInviteStatusInvited(boolean inviteStatusInvited) {
-        this.inviteStatusInvited = inviteStatusInvited;
-    }
-
-    
-    public boolean isInviteStatusAccepted() {
-        return inviteStatusAccepted;
-    }
-
-    public void setInviteStatusAccepted(boolean inviteStatusAccepted) {
-        this.inviteStatusAccepted = inviteStatusAccepted;
-    }
-
-    
-    public boolean isInviteStatusDelayedEvent() {
-        return inviteStatusDelayedEvent;
-    }
-
-    
-    public void setInviteStatusDelayedEvent(boolean inviteStatusDelayedEvent) {
-        this.inviteStatusDelayedEvent = inviteStatusDelayedEvent;
-    }
-
-    public boolean isInviteStatusNotAccepted() {
-        return inviteStatusNotAccepted;
-    }
-
-    public void setInviteStatusNotAccepted(boolean inviteStatusNotAccepted) {
-        this.inviteStatusNotAccepted = inviteStatusNotAccepted;
-    }
     
     public void setNotificationSeen(Notification notification) {
         notification.setSeen(true);
         em.merge(notification);
-        /*Query updateNotificationSeen = em.createQuery("UPDATE NOTIFICATION n SET n.seen =?1 WHERE n.id =?2"); 
-        updateNotificationSeen.setParameter(1, true); 
-        updateNotificationSeen.setParameter(2, notification.getId()); 
-        updateNotificationSeen.executeUpdate();*/
     }
     
     public void removeNotification(Notification notification) {

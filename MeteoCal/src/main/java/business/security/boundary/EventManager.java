@@ -288,28 +288,20 @@ public class EventManager {
     //notificationManager.setEvent(e);
     }*/
     
-    public void addParticipantToEvent() {
+    public void addParticipantToEvent(Event ev) {
         Query updateInviteStatus = em.createQuery ("UPDATE INVITE i SET i.status =?1 WHERE i.event =?2 AND i.user = ?3");
         updateInviteStatus.setParameter(1, Invite.InviteStatus.accepted); 
-        updateInviteStatus.setParameter(2, e);
+        updateInviteStatus.setParameter(2, ev);
         updateInviteStatus.setParameter(3, getLoggedUser()); 
         updateInviteStatus.executeUpdate();
-        userInformationLoader.setInviteStatusAccepted(true);
-        userInformationLoader.setInviteStatusDelayedEvent(false);
-        userInformationLoader.setInviteStatusInvited(false);
-        userInformationLoader.setInviteStatusNotAccepted(false);
     }
     
-    public void removeParticipantFromEvent() {
+    public void removeParticipantFromEvent(Event ev) {
         Query updateInviteStatus = em.createQuery ("UPDATE INVITE i SET i.status =?1 WHERE i.event =?2 AND i.user = ?3");
         updateInviteStatus.setParameter(1, Invite.InviteStatus.notAccepted); 
-        updateInviteStatus.setParameter(2, e);
+        updateInviteStatus.setParameter(2, ev);
         updateInviteStatus.setParameter(3, getLoggedUser()); 
         updateInviteStatus.executeUpdate();
-        userInformationLoader.setInviteStatusNotAccepted(true);
-        userInformationLoader.setInviteStatusAccepted(false);
-        userInformationLoader.setInviteStatusDelayedEvent(false);
-        userInformationLoader.setInviteStatusInvited(false);
     }
     
     public List<Event> loadUserCreatedEvents(User user) {
