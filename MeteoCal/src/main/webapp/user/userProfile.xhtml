@@ -77,23 +77,23 @@
 			<div class="main">
 			<h:form>
                             <h:panelGrid columns="1">
-                                <h:outputLabel for="name" value = "Name: #{searchResultsBean.searchedUser.name}"/>
+                                <h:outputLabel for="name" value = "Name: #{searchResultsBean.user.name}"/>
 
-                                <h:outputLabel for="surname" value = "Surname: #{searchResultsBean.searchedUser.surname}"/>
+                                <h:outputLabel for="surname" value = "Surname: #{searchResultsBean.user.surname}"/>
 
-                                <h:outputLabel for="birthday" value = "Birthday: #{searchResultsBean.searchedUser.birthday}"/>
+                                <h:outputLabel for="birthday" value = "Birthday: #{searchResultsBean.user.birthday}"/>
 
-                                <h:outputLabel for="phoneNumber" value = "Phone Number: #{searchResultsBean.searchedUser.phoneNumber}"/>
+                                <h:outputLabel for="phoneNumber" value = "Phone Number: #{searchResultsBean.user.phoneNumber}"/>
 
-                                <h:outputLabel for="residenceTown" value = "Residence Town: #{searchResultsBean.searchedUser.residenceTown}"/>
+                                <h:outputLabel for="residenceTown" value = "Residence Town: #{searchResultsBean.user.residenceTown}"/>
 
-                                <h:outputLabel for="email" value = "Email: #{searchResultsBean.searchedUser.email}"/>
+                                <h:outputLabel for="email" value = "Email: #{searchResultsBean.user.email}"/>
 
                             </h:panelGrid>
                         </h:form>
                         <h:form>
                                 <h3>Calendar</h3>
-                                <p:schedule value="#{scheduleView.searchedUserEvents}" >
+                                <p:schedule value="#{scheduleView.getSearchedUserEvents(searchResultsBean.user)}" draggable="false" ignoreTimezone="false" >
                                     <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                                 </p:schedule>
                                 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">

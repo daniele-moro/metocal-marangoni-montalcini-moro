@@ -126,20 +126,20 @@ public class NotificationManager {
     }*/
 
     
-    public void createInviteNotification(Event e, NameSurnameEmail element) {
+    public void createInviteNotification(Event e, User u) {
             setInvite(new Invite()); 
-            getInvite().setUser(searchManager.findUser(element.getEmail()));
+            getInvite().setUser(u);
             getInvite().setStatus(Invite.InviteStatus.invited);
             getInvite().setEvent(e);
             em.persist(getInvite());
             setNotification(new Notification()); 
             getNotification().setType(NotificationType.invite);
-            getNotification().setNotificatedUser(searchManager.findUser(element.getEmail()));
+            getNotification().setNotificatedUser(u);
             getNotification().setRelatedEvent(e);
             getNotification().setSeen(false);
             getNotification().setGenerationDate(new Date());
             em.persist(getNotification());
-            mailManager.sendMail(element.getEmail(), "New Invite", "Hi! You have received a new invite");
+            mailManager.sendMail(u.getEmail(), "New Invite", "Hi! You have received a new invite");
     }
     
     public void createDeleteNotification (Invite inv) {

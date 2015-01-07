@@ -181,21 +181,16 @@ public class EventManager {
     }
     
     public void addInvitation(String email, int idEvent) {
-        NameSurnameEmail element = searchManager.findNameSurnameEmailFromUser(email);
+        User u = searchManager.findUser(email);
         Event event = getEventById(idEvent);
-        notificationManager.createInviteNotification(event, element);
+        notificationManager.createInviteNotification(event, u);
     }
     
-    public void addInvitation(String name, String surname, int idEvent) {
+    public void addInvitation(User u, int idEvent) {
         Event event = getEventById(idEvent);
-        NameSurnameEmail element = searchManager.findNameEmailSurnameFromNameSurname(name, surname).get(0);
-        notificationManager.createInviteNotification(event, element);
+        notificationManager.createInviteNotification(event, u);
     }
     
-    public void addInvitation(NameSurnameEmail element) {
-        notificationManager.createInviteNotification(e, element);
-        partialResults = new ArrayList<>(); 
-    }
     
     public void removeEvent(Event event) {
         event.setDeleted(true);
@@ -320,8 +315,7 @@ public class EventManager {
        return acceptedEvents; 
    }
    
-   public List<Event> loadEvent() {
-       User u = searchManager.getSearchedUser(); 
+   public List<Event> loadEvent(User u) {
        List<Event> userEvents = new ArrayList<>();
        if (u.isCalendarPublic()) {
             for(Event e : loadUserCreatedEvents(u)) {
@@ -329,7 +323,7 @@ public class EventManager {
                     userEvents.add(e); 
                 }
             }          
-            for (Event e : loadUserAcceptedEvents(searchManager.getSearchedUser())) {
+            for (Event e : loadUserAcceptedEvents(u)) {
                  if(e.isPublicEvent()) {
                     userEvents.add(e); 
                 }

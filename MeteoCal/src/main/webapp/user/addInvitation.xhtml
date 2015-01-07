@@ -124,6 +124,7 @@
                                 #{o.email}
                             </h:column>
                             <h:column>
+                                <input type="hidden" name="idEvent" value="#{param['id']}" />
                                 <h:commandLink value="Add" action="#{addInvitationBean.addUser(o)}" />
                             </h:column>
                         </h:dataTable>

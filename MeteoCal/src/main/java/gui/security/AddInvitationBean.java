@@ -95,18 +95,20 @@ public class AddInvitationBean implements Serializable{
     public String addUserThroughEmail() {
         String idEvent = FacesContext.getCurrentInstance().
                 getExternalContext().getRequestParameterMap().get("idEvent");
-        System.out.println(idEvent);
-        System.out.println(email + " dentro addInvitationBeanaddUserThroughemail");
         eventManager.addInvitation(email, Integer.parseInt(idEvent));
         
         //Prelevo dal db la lista degli invitati
         invitedPeople = eventManager.getInvitedPeople(Integer.parseInt(idEvent));
         return "addInvitation?faces-redirect=true&amp;id="+idEvent;
     }
-    
-    public String addUser(NameSurnameEmail element) {
-        eventManager.addInvitation(element);
-        return "addInvitation?faces-redirect=true";
+   
+    public String addUser(User u){
+        String idEvent = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap().get("idEvent");
+        eventManager.addInvitation(u, Integer.parseInt(idEvent));
+        //Prelevo dal db la lista degli invitati
+        invitedPeople = eventManager.getInvitedPeople(Integer.parseInt(idEvent));
+        return "addInvitation?faces-redirect=true&amp;id="+idEvent;
     }
     
     public String addUserThroughNameSurname() {
@@ -115,11 +117,10 @@ public class AddInvitationBean implements Serializable{
                 getExternalContext().getRequestParameterMap().get("idEvent");
         
         System.out.println("appena dentro add User");
-        eventManager.setPartialResults(searchManager.findNameEmailSurnameFromNameSurname(name, surname));
-        if(eventManager.getPartialResults().size() == 1) {
-            eventManager.getPartialResults().remove(0);
-            eventManager.addInvitation(name, surname, Integer.parseInt(idEvent));
-            
+        partialResult = searchManager.findUsersFromNameSurname(name, surname);
+        if(partialResult.size() == 1) {
+            eventManager.addInvitation(partialResult.get(0), Integer.parseInt(idEvent));
+            partialResult.remove(0);
             //Prelevo dal db la lista degli invitati
             invitedPeople= eventManager.getInvitedPeople(Integer.parseInt(idEvent));
         }

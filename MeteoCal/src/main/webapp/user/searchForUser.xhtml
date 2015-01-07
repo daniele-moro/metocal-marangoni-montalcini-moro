@@ -103,9 +103,9 @@
                                 <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search"/>
                             </h:form>
                             <h:form>
-                                <p:dataTable value="#{searchResultsBean.searchedUsers}" var="o"
+                                <p:dataTable value="#{searchResultsBean.partialResults}" var="o"
                                             styleClass="order-table"
-                                            rendered="#{searchResultsBean.isUserFound==true}"
+                                            rendered="#{(searchResultsBean.partialResults.size() > 0)==true}"
                                     >
                                     <p:column headerText="Name">
                                         #{o.name}
@@ -119,7 +119,7 @@
                                         #{o.email}
                                     </p:column>
                                     <p:column headerText="Profile">
-                                        <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o.email)}" />
+                                        <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o)}" />
                                     </p:column>
                                 </p:dataTable>
                             </h:form>

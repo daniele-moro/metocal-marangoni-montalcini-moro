@@ -9,17 +9,19 @@ import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
 import business.security.entity.User;
 import business.security.object.NameSurnameEmail;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Named
-@RequestScoped
-public class SearchResultsBean {
+@SessionScoped
+public class SearchResultsBean implements Serializable {
     
     @EJB 
     private SearchManager searchManager; 
@@ -34,11 +36,11 @@ public class SearchResultsBean {
             message = "invalid email")
     private String email; 
     
+    private User user; 
     
-    public List<NameSurnameEmail> getSearchedUsers() {
-        return searchManager.getSearchedUsers();
-    }
-
+    private List<User> partialResults; 
+    
+    
     public SearchResultsBean() {
     }
 
@@ -65,49 +67,62 @@ public class SearchResultsBean {
     public void setEmail(String email) {
         this.email = email;
     }
-    
-     public User getSearchedUser() {
-        return searchManager.getSearchedUser();
-    }
 
     
     
     public String showSearchResults() {
-        searchManager.loadSearchedUser(name, surname);
-        if(searchManager.getSearchedUsers().size() == 1) {
-            searchManager.searchedUserProfile(searchManager.getSearchedUsers().get(0).getEmail());
+        partialResults = searchManager.findUsersFromNameSurname(name, surname);
+        if(partialResults.size() == 1) {
+            user = partialResults.get(0); 
+            partialResults.remove(0); 
             return "userProfile?faces-redirect=true";
         } 
-        if(searchManager.getSearchedUsers() != null) {
-            searchManager.setUserFound(true);
-        } else {
-            searchManager.setUserFound(false);
-        }
         return "searchForUser?faces-redirect=true";
         
     }
     
     public String showUserProfile() {
         System.out.println("dentro al search bean prima della chiamata a search manager" );
-        searchManager.searchedUserProfile(this.email);
+        user = searchManager.findUser(this.email);
         System.out.println("dentro al search bean dopo chiamata" );
         return "userProfile?faces-redirect=true";
         
     }
     
-    public String showUserProfile(String email) {
-        searchManager.searchedUserProfile(email);
+    public String showUserProfile(User u) {
+        user = u; 
         return "userProfile?faces-redirect=true";
     }
     
     public String navigateTo() {
-        searchManager.setSearchedUsers(new ArrayList<>()); 
-        searchManager.setSearchedUser(new User());
+        partialResults = null; 
+        user = null; 
+        email = null; 
+        name = null; 
+        surname = null; 
         return "home?faces-redirect=true";
     }
 
-    public boolean getIsUserFound() {
-        return searchManager.isUserFound();
+
+    /**
+     * @return the user
+     */
+    public User getUser() {
+        return user;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    /**
+     * @return the partialResults
+     */
+    public List<User> getPartialResults() {
+        return partialResults;
     }
    
 

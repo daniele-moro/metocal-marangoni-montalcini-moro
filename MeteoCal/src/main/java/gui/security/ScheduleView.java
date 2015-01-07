@@ -80,11 +80,11 @@ public class ScheduleView implements Serializable {
         return loggedUserEvents;
     }
     
-   public ScheduleModel getSearchedUserEvents() {
+    public ScheduleModel getSearchedUserEvents(User user) {
             searchedUserEvents = new LazyScheduleModel(){
                 @Override
                 public void loadEvents(Date start, Date end) {
-                    for(Event event : eventManager.loadEvent()) {
+                    for(Event event : eventManager.loadEvent(user)) {
                         searchedUserEvents.addEvent(new DefaultScheduleEvent(event.getName(), event.getTimeStart(), event.getTimeEnd())); 
                     }
                 }

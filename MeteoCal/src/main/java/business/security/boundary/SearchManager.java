@@ -21,11 +21,7 @@ import javax.persistence.Query;
 @Stateless
 public class SearchManager {
     
-    private List<NameSurnameEmail> searchedUsers; 
     
-    private User searchedUser; 
-    
-    private boolean userFound = false;
     
     @PersistenceContext
     EntityManager em;
@@ -33,10 +29,6 @@ public class SearchManager {
     @Inject
     Principal principal;
     
-    public SearchManager() {
-        searchedUsers = new ArrayList<>(); 
-    }
-   
    
    public User findUser(String email) {
        Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.email =?1");
@@ -53,48 +45,12 @@ public class SearchManager {
        return nameSurnameEmail;
    }
   
-    public List<NameSurnameEmail> findNameEmailSurnameFromNameSurname(String name, String surname) {
-       Query qFindUserEmail = em.createQuery("SELECT u.email FROM USER u WHERE u.name =?1 AND u.surname =?2"); 
-       qFindUserEmail.setParameter(1, name); 
-       qFindUserEmail.setParameter(2, surname);
-       List<String> emails;
-       List<NameSurnameEmail> list = new ArrayList<>(); 
-       emails = (List<String>) qFindUserEmail.getResultList(); 
-       for (String email : emails) {
-           NameSurnameEmail element = new NameSurnameEmail(); 
-           element.setEmail(email);
-           element.setName(name);
-           element.setSurname(surname);
-           list.add(element); 
-       }
-       return list; 
+    public List<User> findUsersFromNameSurname(String name, String surname) {
+       Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.name =?1 AND u.surname =?2"); 
+       qFindUser.setParameter(1, name); 
+       qFindUser.setParameter(2, surname);
+       return qFindUser.getResultList(); 
   }
-    
-    public List<NameSurnameEmail> getSearchedUsers() {
-        return searchedUsers;
-    }
-    
-    public void setSearchedUsers(List<NameSurnameEmail> searchedUsers) {
-        this.searchedUsers = searchedUsers;
-    }
-    
-    
-    public User getSearchedUser() {
-        return searchedUser;
-    }
-
-    public void setSearchedUser(User searchedUser) {
-        this.searchedUser = searchedUser;
-    }
-    
-    public void loadSearchedUser(String name, String surname) {
-        searchedUsers = findNameEmailSurnameFromNameSurname(name, surname);
-    }
-    
-    public void searchedUserProfile(String email) {
-        
-        this.searchedUser = findUser(email);   
-    }
     
     public List<Invite> findInviteRelatedToAnEvent (Event event) {
         Query findInvites = em.createQuery("SELECT i from INVITE i WHERE i.event.id =?1");
@@ -110,12 +66,4 @@ public class SearchManager {
         return findUserEvent.getResultList();
     }
     
-    public boolean isUserFound() {
-        return userFound;
-    }
-
-    public void setUserFound(boolean userFound) {
-        this.userFound = userFound;
-    }
-
 }
