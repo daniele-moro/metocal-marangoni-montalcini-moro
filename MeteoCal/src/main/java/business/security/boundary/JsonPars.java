@@ -1,67 +1,53 @@
 package business.security.boundary;
 
-import java.math.BigDecimal;
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
-@Named
-@RequestScoped
-public class Parsing {
+@Stateless
+public class JsonPars {
     
     JSONObject jObj;
 
-    public String parsingWeather() throws JSONException {
-        RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/weather?q=");
+    public String parsingWeather(String lat, String lng) throws JSONException {
+        //Dovremo usare poi lat e lng al posto dei numeri per inizializzare l'URL
+        RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/weather?lat=", "45.44692999999999", "8.622161199999999");
         Location loc = new Location();
-       
-        jObj = new JSONObject(wm.getWeatherData("Milano"));
-    
-        JSONObject coordObj = getObject("coord", jObj);
-        loc.setLatitude(getString("lat", coordObj));
-        loc.setLongitude(getString("lon", coordObj));
         
-        JSONObject sysObj = getObject("sys", jObj);
-        loc.setCountry(getString("country", sysObj));
-        loc.setCity(getString("name", jObj));
-        
+        jObj = new JSONObject(wm.getData());
         JSONArray jArr = jObj.getJSONArray("weather");
-
         JSONObject JSONWeather = jArr.getJSONObject(0);
-        loc.setId(getInt("id", JSONWeather));
         loc.setDescription(getString("description", JSONWeather));
-        loc.setMain(getString("main", JSONWeather));
         loc.setIcon(getString("icon", JSONWeather));
 
         JSONObject mainObj = getObject("main", jObj);
-        loc.setHumidity(getInt("humidity", mainObj));
-        loc.setPressure(getInt("pressure", mainObj));
-        loc.setTempMax(getFloat("temp_max", mainObj));
-        loc.setTempMin(getFloat("temp_min", mainObj));
         loc.setTemp(getFloat("temp", mainObj));
 
         // Wind
         JSONObject wObj = getObject("wind", jObj);
         loc.setWindSpeed(getFloat("speed", wObj));
-        loc.setWindDeg(getFloat("deg", wObj));
 
         // Clouds
         JSONObject cObj = getObject("clouds", jObj);
         loc.setCloudPerc(getInt("all", cObj));
         
-        System.out.println("Temperatura: " + loc.getTemp());
-        System.out.println("Description: " + loc.getDescription());
-        
+        System.out.println(loc.getDescription());
+        System.out.println(loc.getTemp());
+        System.out.println(loc.getWindSpeed());
+        System.out.println(loc.getCloudPerc());
+
         return "login.xhtml";
     }
     
-    public String parsingLatitudeLongitude() throws JSONException {
-        RequestManager wm = new RequestManager("https://maps.googleapis.com/maps/api/geocode/json?address=");
+    public Location parsingLatitudeLongitude(String city) throws JSONException {
+        //Dovremo usare la city per inizializzare l'URL
+        RequestManager wm = new RequestManager("https://maps.googleapis.com/maps/api/geocode/json?address=", city);
         Location loc = new Location();
         
-        jObj = new JSONObject(wm.getWeatherData("Milano"));
+        jObj = new JSONObject(wm.getData());
         JSONArray jArr = jObj.getJSONArray("results");
         JSONObject JSONResults = jArr.getJSONObject(0);
         JSONObject geometry = getObject("geometry", JSONResults);
@@ -72,9 +58,7 @@ public class Parsing {
         System.out.println("Latitudine: " + loc.getLatitude());
         System.out.println("Longitudine: " + loc.getLongitude());
         
-        
-        
-        return "login.xhtml";
+        return loc;
     }
     
     private static JSONObject getObject(String tagName, JSONObject jObj)  throws JSONException {

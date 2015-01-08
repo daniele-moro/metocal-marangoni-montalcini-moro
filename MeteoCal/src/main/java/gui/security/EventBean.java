@@ -6,13 +6,17 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
+import business.security.boundary.Location;
 import business.security.boundary.NotificationManager;
+import business.security.boundary.JsonPars;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import org.codehaus.jettison.json.JSONException;
 
 @Named
 @RequestScoped
@@ -22,10 +26,10 @@ public class EventBean {
     private EventManager eventManager;
     
     @EJB
-    private NotificationManager notificationManager; 
+    private UserInformationLoader userInformationLoader; 
     
     @EJB
-    private UserInformationLoader userInformationLoader; 
+    private JsonPars p;
     
     private Event event; 
     
@@ -59,7 +63,14 @@ public class EventBean {
     
     
     
-    public String createEvent() {
+    public String createEvent() throws JSONException {
+        String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
+        event.setLocation(location);
+        //change backspace with %20 for the request
+        String replace = event.getLocation().replace(" ", "%20");
+        Location loc = p.parsingLatitudeLongitude(replace);
+        event.setLatitude(loc.getLatitude());
+        event.setLongitude(loc.getLongitude());
         eventManager.createEvent(event, acceptedWeatherCondition);
         return "addInvitation?faces-redirect=true&amp;includeViewParams=true&amp;id="+event.getId();
     }

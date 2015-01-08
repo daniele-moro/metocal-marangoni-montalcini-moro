@@ -11,6 +11,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="../css/dashboard.css" type="text/css"/>
         <link rel="stylesheet" href="../css/bootstrap.min.css" type="text/css"/>
+        <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"/>
+        <script>
+            function showSuggestions() {
+                var input = document.getElementById('geocomplete');
+                var autocomplete = new google.maps.places.Autocomplete(input);
+            }
+        </script>
     </h:head>
     <h:body>
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -108,10 +115,7 @@
                                 <p:inputTextarea rows="6" cols="33" id="description" value="#{createdEventsBean.eventToModify.description}" />
 
                                 <p:outputLabel for="town" value ="Place:" />
-                                <p:inputText id="town" value="#{createdEventsBean.eventToModify.town}"/>
-
-                                <p:outputLabel for="address" value ="Address:" />
-                                <p:inputText id="address" value="#{createdEventsBean.eventToModify.address}"/>
+                                <input id="geocomplete" name="geocomplete" class="controls" type="text" onfocus="showSuggestions()" value="#{createdEventsBean.eventToModify.location}"/>
 
 
                                 <p:outputLabel for="privacy" value="Privacy:" />

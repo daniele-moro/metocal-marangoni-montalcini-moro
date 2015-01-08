@@ -6,6 +6,8 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
+import business.security.boundary.JsonPars;
+import business.security.boundary.Location;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
@@ -14,6 +16,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
+import org.codehaus.jettison.json.JSONException;
 
 @Named
 @SessionScoped
@@ -25,10 +29,13 @@ public class CreatedEventsBean implements Serializable {
     @EJB
     private EventManager eventManager;
     
+    @EJB
+    private JsonPars p;
+    
     private Event event;
     
     private WeatherCondition acceptedWeatherCondition;
-    
+        
     
     public CreatedEventsBean() {
     }
@@ -59,7 +66,14 @@ public class CreatedEventsBean implements Serializable {
     return "modifyEvent?faces-redirect=true&amp;id"+event.getId();
     }*/
     
-    public String modifyEventInformation() {
+    public String modifyEventInformation() throws JSONException {
+        String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
+        event.setLocation(location);
+        //change backspace with %20
+        String replace = event.getLocation().replace(" ", "%20");
+        Location loc = p.parsingLatitudeLongitude(replace);
+        event.setLatitude(loc.getLatitude());
+        event.setLongitude(loc.getLongitude());
         eventManager.updateEventInformation(event, acceptedWeatherCondition);
         return "createdEvent?faces-redirect=true";
     }

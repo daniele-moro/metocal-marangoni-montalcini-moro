@@ -38,14 +38,11 @@ public class Event implements Serializable {
     private String description;
     
     @NotNull(message = "May not be empty")
-    private String town;
+    private String location;
     
     private String latitude;
     
     private String longitude;
-    
-    @NotNull(message = "May not be empty")
-    private String address;
     
     @NotNull(message = "May not be empty")
     private boolean publicEvent;
@@ -108,14 +105,6 @@ public class Event implements Serializable {
         this.description = description;
     }
 
-    public String getTown() {
-        return town;
-    }
-    
-    public void setTown(String town) {
-        this.town = town;
-    }
-
     public String getLatitude() {
         return latitude;
     }
@@ -130,14 +119,6 @@ public class Event implements Serializable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public boolean isPublicEvent() {
@@ -204,6 +185,20 @@ public class Event implements Serializable {
 
     public void setWeatherForecast(WeatherCondition weatherForecast) {
         this.weatherForecast = weatherForecast;
+    }
+
+    /**
+     * @return the location
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     

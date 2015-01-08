@@ -219,13 +219,12 @@ public class EventManager {
         updateWeatherCondition.setParameter(4, awc.getId());
         updateWeatherCondition.executeUpdate();
         
-        Query updateEventInformation = em.createQuery ("UPDATE EVENT event SET event.name =?1, event.town =?2, event.address =?3, event.description =?4, event.predefinedTypology = ?5 WHERE event.id =?6");
+        Query updateEventInformation = em.createQuery ("UPDATE EVENT event SET event.name =?1, event.location =?2, event.description =?3, event.predefinedTypology = ?4 WHERE event.id =?5");
         updateEventInformation.setParameter(1, event.getName());
-        updateEventInformation.setParameter(2, event.getTown());
-        updateEventInformation.setParameter(3, event.getAddress());
-        updateEventInformation.setParameter(4, event.getDescription());
-        updateEventInformation.setParameter(5, event.getPredefinedTypology());
-        updateEventInformation.setParameter(6, event.getId());
+        updateEventInformation.setParameter(2, event.getLocation());
+        updateEventInformation.setParameter(3, event.getDescription());
+        updateEventInformation.setParameter(4, event.getPredefinedTypology());
+        updateEventInformation.setParameter(5, event.getId());
         updateEventInformation.executeUpdate();
         
         

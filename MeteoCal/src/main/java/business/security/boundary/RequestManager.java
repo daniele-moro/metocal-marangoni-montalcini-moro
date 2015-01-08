@@ -10,17 +10,21 @@ public class RequestManager {
     
     private static String BASE_URL;
     
-    public RequestManager(String url) {
-        BASE_URL = url;
+    public RequestManager(String url, String city) {
+        BASE_URL = url + "" + city;
+    }
+    
+    public RequestManager(String url, String lat, String lng) {
+        BASE_URL = url + lat + "&lon=" + lng;
     }
 
-    public String getWeatherData(String location) {
+    public String getData() {
         
         HttpURLConnection con = null ;
         InputStream is = null;
 
         try {
-            con = (HttpURLConnection) ( new URL(BASE_URL + location)).openConnection();
+            con = (HttpURLConnection) (new URL(BASE_URL)).openConnection();
             con.setRequestMethod("GET");
             con.setDoInput(true);
             con.setDoOutput(true);

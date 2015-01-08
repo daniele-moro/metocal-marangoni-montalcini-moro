@@ -94,12 +94,9 @@
                                     </p:column>
                                     
                                     <p:column headerText="Town">
-                                        #{o.town}
+                                        #{o.location}
                                     </p:column>
                                     
-                                    <p:column headerText="Address">
-                                        #{o.address}
-                                    </p:column>
                                     <p:column headerText="Modify">
                                         <h:commandLink value="Modify Event" action="#{createdEventsBean.showModifyEvent(o, o.acceptedWeatherConditions)}" rendered="#{o.deleted==false}" />
                                         <h:outputLabel value="DELETED EVENT" rendered="#{o.deleted == true}"/>
