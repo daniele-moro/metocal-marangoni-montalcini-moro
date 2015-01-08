@@ -38,12 +38,9 @@ public class EventManager {
     
     private List<NameSurnameEmail> partialResults;
     
-    private Event e; 
-    
     private WeatherCondition acceptedWeatherConditions; 
     
     public EventManager() {
-        e = new Event(); 
         acceptedWeatherConditions = new WeatherCondition();
         partialResults = new ArrayList<>(); 
         notificationManager = new NotificationManager();
@@ -59,7 +56,6 @@ public class EventManager {
         save(awc);
         event.setAcceptedWeatherConditions(awc);
         em.persist(event);
-        setEvent(event);
        // notificationManager.setEvent(event);
     }
     
@@ -70,28 +66,7 @@ public class EventManager {
     public User getLoggedUser() {
         return em.find(User.class, principal.getName());
     }
-
-    public boolean checkDateConsistency() {
-        if (e.getTimeStart().after(e.getTimeEnd())) {
-            return false;
-        } else {
-            for(Event ev : userInformationLoader.loadCreatedEvents()) {
-                if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd())
-                        || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())
-                        || e.getTimeStart().equals(ev.getTimeStart()) && e.getTimeEnd().equals(ev.getTimeEnd())) {
-                    return false; 
-                }
-            }
-            for(Event ev : userInformationLoader.loadAcceptedEvents()) {
-                if(e.getTimeStart().after(ev.getTimeStart()) && e.getTimeStart().before(ev.getTimeEnd()) 
-                        || e.getTimeEnd().after(ev.getTimeStart()) && e.getTimeEnd().before(ev.getTimeEnd())
-                        || e.getTimeStart().equals(ev.getTimeStart()) && e.getTimeEnd().equals(ev.getTimeEnd())) {
-                    return false; 
-                }
-            }
-        }
-        return true; 
-    }
+    
     /**
      * Metodo per controllare la consistenza di un'intervallo, 
      * cioè se l'evento con questo intervallo di tempi può essere creato senza creare problemi
@@ -136,14 +111,6 @@ public class EventManager {
 
     public void setNotificationManager(NotificationManager notificationManager) {
         this.notificationManager = notificationManager;
-    }
-
-    public Event getEvent() {
-        return e;
-    }
-
-    public void setEvent(Event event) {
-        this.e = event;
     }
     
     public List<NameSurnameEmail> getPartialResults() {
@@ -196,7 +163,7 @@ public class EventManager {
         event.setDeleted(true);
         em.merge(event);
         //Invio delle notifiche di cancellazione dell'evento
-        for(Invite inv : searchManager.findInviteRelatedToAnEvent(e)) {
+        for(Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
             if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited || inv.getStatus() == Invite.InviteStatus.delayedEvent) {
                 notificationManager.createDeleteNotification(inv);
                 //Rimozione dell'invito

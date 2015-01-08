@@ -7,7 +7,6 @@ package gui.security;
 
 import business.security.boundary.EventManager;
 import business.security.boundary.Location;
-import business.security.boundary.NotificationManager;
 import business.security.boundary.JsonPars;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
@@ -46,10 +45,6 @@ public class EventBean {
         return event;
     }
     
-    public Event getEventToModify() {
-        return eventManager.getEvent();
-    }
-    
     public WeatherCondition getAcceptedWeatherConditionsToModify() {
         return eventManager.getAcceptedWeatherConditions();
     }
@@ -60,8 +55,6 @@ public class EventBean {
         }
         return acceptedWeatherCondition;
     }
-    
-    
     
     public String createEvent() throws JSONException {
         String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
@@ -78,11 +71,6 @@ public class EventBean {
     public void createdEvent() {
         userInformationLoader.loadCreatedEvents();
     }
-    
-    
-    public boolean checkDateConsistency() {
-        return eventManager.checkDateConsistency(); 
-    }
 
     /**
      * @param event the event to set
@@ -96,10 +84,6 @@ public class EventBean {
      */
     public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
-    }
-    
-    public Event loadEventInformation() {
-        return eventManager.getEvent();
     }
     
     public boolean getEventDeleted() {
