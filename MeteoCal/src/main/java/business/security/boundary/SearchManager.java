@@ -29,12 +29,16 @@ public class SearchManager {
     @Inject
     Principal principal;
     
-   
-   public User findUser(String email) {
-       Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.email =?1");
-       qFindUser.setParameter(1, email); 
-       List <User> user = (List<User>) qFindUser.getResultList();
-       return user.get(0);
+    
+    public User findUser(String email) {
+        Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.email =?1");
+        qFindUser.setParameter(1, email);
+        List <User> users = (List<User>) qFindUser.getResultList();
+        if(users.size()>=1){
+            return users.get(0);
+        } else {
+            return null;
+        }
    }
    
    public NameSurnameEmail findNameSurnameEmailFromUser(String email) {
