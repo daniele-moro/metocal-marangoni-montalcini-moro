@@ -41,25 +41,33 @@
                         </p:inputText>
                         <p:message id="surnamemsg" for="surname" />
                     </p:panelGrid>
-                    <p:commandButton id="add" actionListener="#{searchResultsBean.showPartialResults}" action="#{searchResultsBean.showUserProfileResult}" update="result" value="Search"/>
-                    <p:dataTable id="result" value="#{searchResultsBean.partialResults}" var="o"
-                                 styleClass="order-table"
-                                 >
-                        <p:column headerText="Name">
+                    <p:commandButton id="add" actionListener="#{searchResultsBean.showPartialResults}" 
+                                     action="#{searchResultsBean.showUserProfileResult}" update="resultPanel" value="Search">
+                    </p:commandButton>
+                    
+                    <p:messages id="message" showDetail="true" autoUpdate="true" closable="true" />
+                    
+                    <h:panelGrid id="resultPanel">
+                        <p:dataTable id="resultSearch" value="#{searchResultsBean.partialResults}" var="o"
+                                     styleClass="order-table"
+                                     rendered="#{(searchResultsBean.partialResults.size()>1)==true}"
+                                     >
+                            <p:column headerText="Name">
                                         #{o.name}
-                        </p:column>
-                        
-                        <p:column headerText="Surname">
+                            </p:column>
+                            
+                            <p:column headerText="Surname">
                                         #{o.surname}
-                        </p:column>
-                        
-                        <p:column headerText="Email">
+                            </p:column>
+                            
+                            <p:column headerText="Email">
                                         #{o.email}
-                        </p:column>
-                        <p:column headerText="Profile">
-                            <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o)}" />
-                        </p:column>
-                    </p:dataTable>
+                            </p:column>
+                            <p:column headerText="Profile">
+                                <h:commandLink value="View Profile" action="#{searchResultsBean.showUserProfile(o)}" />
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
                 </h:form>          
             </ui:define>
             

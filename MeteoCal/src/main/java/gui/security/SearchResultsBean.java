@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.faces.event.ActionEvent;
@@ -68,6 +70,12 @@ public class SearchResultsBean implements Serializable {
      */
     public void showPartialResults(ActionEvent actionEvent) {
         partialResults = searchManager.findUsersFromNameSurname(name, surname); 
+        //Se la lista del risultato è vuota, visualizzo un messaggio di informatione
+        if(partialResults==null || partialResults.isEmpty()){
+            FacesMessage message;
+            message = new FacesMessage("No results","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
     }
     
     /**
