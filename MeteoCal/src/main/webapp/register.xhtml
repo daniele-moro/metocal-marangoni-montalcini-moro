@@ -13,14 +13,10 @@
         <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css"/>
         <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"/>
         <script>
-
-            function initialize() {
+            function mostraSuggerimenti() {
                 var input = document.getElementById('geocomplete');
                 var autocomplete = new google.maps.places.Autocomplete(input);
             }
-
-            google.maps.event.addDomListener(window, 'load', initialize);
-
         </script>
     </h:head>
     <h:body>
@@ -95,7 +91,7 @@
                                     <p:message id="phoneNumbermsg" for="phoneNumber" />
 
                                     <h:outputLabel for="geocomplete">Residence Town:</h:outputLabel>
-                                    <input id="geocomplete" name="geocomplete" class="controls" type="text" placeholder="Type in an address"/>
+                                    <input id="geocomplete" name="geocomplete" class="controls" type="text" placeholder="Type in an address" onfocus="mostraSuggerimenti()"/>
                                     <h:outputLabel></h:outputLabel>
                                     
                                     <p:outputLabel for="privacy" value="Calendar Visibility: " />
