@@ -51,10 +51,6 @@ public class NotificationBean implements Serializable{
         this.eventManager = eventManager;
     }
     
-    public boolean getIsNotificationsFound() {
-        return userInformationLoader.isNotificationsFound();
-    }
-    
     public String showEventRelatedToNotification(Notification notification) {
         userInformationLoader.setNotificationSeen(notification); 
         //eventManager.setEvent(notification.getRelatedEvent());
