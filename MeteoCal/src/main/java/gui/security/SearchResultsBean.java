@@ -100,10 +100,12 @@ public class SearchResultsBean implements Serializable {
         if(u!=null){
             System.out.println("dentro al search bean dopo chiamata" );
             return "userProfile?faces-redirect=true&amp;email="+u.getEmail();
-        }
-        return "";
-        
-        
+        } else {
+            FacesMessage message;
+            message = new FacesMessage("Error","Mail inexistent");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        } 
     }
     
     public String showUserProfile(User u) {

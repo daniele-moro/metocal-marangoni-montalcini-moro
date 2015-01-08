@@ -27,7 +27,7 @@
                     <p:commandButton id="add" action="#{searchResultsBean.showUserProfile()}" value="Search" />
                 </h:form>
                                 
-                <h:form>
+                <h:form id="searchForAUserWithNameSurname">
                     <h3>Insert name and email of the user you want to search</h3>
                     <p:panelGrid columns="7">
                         <p:outputLabel for="name" value="Name"/>
@@ -45,7 +45,7 @@
                                      action="#{searchResultsBean.showUserProfileResult}" update="resultPanel" value="Search">
                     </p:commandButton>
                     
-                    <p:messages id="message" showDetail="true" autoUpdate="true" closable="true" />
+                    <p:messages id="messageNameSurname" globalOnly="true" showDetail="true" autoUpdate="true" closable="true" />
                     
                     <h:panelGrid id="resultPanel">
                         <p:dataTable id="resultSearch" value="#{searchResultsBean.partialResults}" var="o"
