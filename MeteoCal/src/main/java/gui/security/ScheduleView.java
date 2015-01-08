@@ -6,21 +6,15 @@ import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.User;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
- 
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
+import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
@@ -32,7 +26,7 @@ public class ScheduleView implements Serializable {
      
     private ScheduleModel loggedUserEvents;
     
-    private ScheduleModel searchedUserEvents; 
+    private User user;
  
     private ScheduleEvent event = new DefaultScheduleEvent();
     
@@ -40,25 +34,50 @@ public class ScheduleView implements Serializable {
     private UserInformationLoader userInformationLoader; 
     
     @EJB
-    private EventManager eventManager; 
- 
+    private EventManager eventManager;
+    
+    @EJB
+    private SearchManager srcManager;
+    
     @PostConstruct
     public void init() {
-        loggedUserEvents = new LazyScheduleModel() {
-             
-            @Override
-            public void loadEvents(Date start, Date end) {
-                for(Event event : userInformationLoader.loadAcceptedEvents()) {
-                    loggedUserEvents.addEvent(new DefaultScheduleEvent(event.getName(), event.getTimeStart(), event.getTimeEnd())); 
-                }
-                for(Event event : userInformationLoader.loadCreatedEvents()) {
-                    loggedUserEvents.addEvent(new DefaultScheduleEvent(event.getName(), event.getTimeStart(), event.getTimeEnd())); 
-                }
-                
-            }   
-        };
+        
+        temp();
     }
-     
+    
+    private void temp(){
+        HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance()
+                .getExternalContext().getRequest();
+        String email=req.getParameter("email");
+        if(email==null){
+            loggedUserEvents = new LazyScheduleModel() {
+                
+                @Override
+                public void loadEvents(Date start, Date end) {
+                    for(Event ev : userInformationLoader.loadAcceptedEvents()) {
+                        loggedUserEvents.addEvent(new DefaultScheduleEvent(ev.getName(), ev.getTimeStart(), ev.getTimeEnd()));
+                    }
+                    for(Event ev : userInformationLoader.loadCreatedEvents()) {
+                        loggedUserEvents.addEvent(new DefaultScheduleEvent(ev.getName(), ev.getTimeStart(), ev.getTimeEnd()));
+                    }
+                    
+                }
+            };
+        } else {
+           user= srcManager.findUser(email);
+           loggedUserEvents = new LazyScheduleModel(){
+                @Override
+                public void loadEvents(Date start, Date end) {
+                    for(Event ev : eventManager.loadEvent(user)) {
+                        loggedUserEvents.addEvent(new DefaultScheduleEvent(ev.getName(), ev.getTimeStart(), ev.getTimeEnd())); 
+                    }
+                }
+            };
+            
+        }
+        
+    }
+    
     
 
      
@@ -79,17 +98,12 @@ public class ScheduleView implements Serializable {
     public ScheduleModel getLoggedUserEvents() {
         return loggedUserEvents;
     }
-    
-    public ScheduleModel getSearchedUserEvents(User user) {
-            searchedUserEvents = new LazyScheduleModel(){
-                @Override
-                public void loadEvents(Date start, Date end) {
-                    for(Event event : eventManager.loadEvent(user)) {
-                        searchedUserEvents.addEvent(new DefaultScheduleEvent(event.getName(), event.getTimeStart(), event.getTimeEnd())); 
-                    }
-                }
-            };
-        return searchedUserEvents; 
+
+    /**
+     * @return the user
+     */
+    public User getUser() {
+        return user;
     }
    
 }

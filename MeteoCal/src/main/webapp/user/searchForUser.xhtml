@@ -86,12 +86,13 @@
                                 </p:panelGrid>
                                 <p:commandButton id="add" action="#{searchResultsBean.showUserProfile()}" value="Search" />
                             </h:form>
+                            
                             <h:form>
                                 <h3>Insert name and email of the user you want to search</h3>
                                 <p:panelGrid columns="7">
                                     <p:outputLabel for="name" value="Name"/>
                                     <p:inputText id="name" value="#{searchResultsBean.name}">
-                                         <p:ajax update="namemsg"/>
+                                        <p:ajax update="namemsg"/>
                                     </p:inputText>
                                     <p:message id="namemsg" for="name" />
                                     <p:outputLabel for="surname" value="Surname"/>
@@ -100,21 +101,18 @@
                                     </p:inputText>
                                     <p:message id="surnamemsg" for="surname" />
                                 </p:panelGrid>
-                                <p:commandButton id="add" action="#{searchResultsBean.showSearchResults()}" value="Search"/>
-                            </h:form>
-                            <h:form>
-                                <p:dataTable value="#{searchResultsBean.partialResults}" var="o"
-                                            styleClass="order-table"
-                                            rendered="#{(searchResultsBean.partialResults.size() > 0)==true}"
-                                    >
+                                <p:commandButton id="add" actionListener="#{searchResultsBean.showPartialResults}" action="#{searchResultsBean.showUserProfileResult}" update="result" value="Search"/>
+                                <p:dataTable id="result" value="#{searchResultsBean.partialResults}" var="o"
+                                             styleClass="order-table"
+                                             >
                                     <p:column headerText="Name">
                                         #{o.name}
                                     </p:column>
-
+                                        
                                     <p:column headerText="Surname">
                                         #{o.surname}
                                     </p:column>
-
+                                        
                                     <p:column headerText="Email">
                                         #{o.email}
                                     </p:column>
@@ -123,8 +121,12 @@
                                     </p:column>
                                 </p:dataTable>
                             </h:form>
-			</div>
-		</div>
+                            <h:form id="res">
+                                
+                                
+                            </h:form>
+                        </div>
+                </div>
         </div>
         <hr/>
         <footer>

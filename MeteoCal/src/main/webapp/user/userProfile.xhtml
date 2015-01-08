@@ -40,81 +40,81 @@
             </div>
         </nav>
         <div class="container">
-    
-		<div class="row">
-		
-			<div class="col-md-12">
-			
-					
-                                        <hr/>
-					
-			</div>
-		
-		</div>
-		
-		
-		<div class="row">
-		
-			<!-- sidebar -->
-			<div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
-			    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
-                                <li><p:link outcome="profile" value="Profile"/></li>
-			      <li><p:link outcome="createEvent" value="Create Event"/></li>
-			      <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
-			      <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
-			      <li><p:link outcome="createdEvent" value="Created Event"/></li> 
-                              <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
-                              <li><p:link outcome="searchForUser" value="Search For A User"/></li>
-                              <li><p:link outcome="#{notificationBean.showNotifications()}" value="My Notifications"/></li>
-			      <li><h:form>
-                                    <p:commandLink action="#{loginBean.logout()}" value="logout"/>
-                                  </h:form>
-                              </li>
-			    </ul>
-			</div>
-			
-			<!-- content -->
-			<div class="main">
-			<h:form>
-                            <h:panelGrid columns="1">
-                                <h:outputLabel for="name" value = "Name: #{searchResultsBean.user.name}"/>
-
-                                <h:outputLabel for="surname" value = "Surname: #{searchResultsBean.user.surname}"/>
-
-                                <h:outputLabel for="birthday" value = "Birthday: #{searchResultsBean.user.birthday}"/>
-
-                                <h:outputLabel for="phoneNumber" value = "Phone Number: #{searchResultsBean.user.phoneNumber}"/>
-
-                                <h:outputLabel for="residenceTown" value = "Residence Town: #{searchResultsBean.user.residenceTown}"/>
-
-                                <h:outputLabel for="email" value = "Email: #{searchResultsBean.user.email}"/>
-
+            
+            <div class="row">
+                
+                <div class="col-md-12">
+                    
+                    
+                    <hr/>
+                    
+                </div>
+                
+            </div>
+            
+            
+            <div class="row">
+                
+                <!-- sidebar -->
+                <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+                    <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
+                        <li><p:link outcome="profile" value="Profile"/></li>
+                        <li><p:link outcome="createEvent" value="Create Event"/></li>
+                        <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
+                        <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
+                        <li><p:link outcome="createdEvent" value="Created Event"/></li> 
+                        <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
+                        <li><p:link outcome="searchForUser" value="Search For A User"/></li>
+                        <li><p:link outcome="#{notificationBean.showNotifications()}" value="My Notifications"/></li>
+                        <li><h:form>
+                                <p:commandLink action="#{loginBean.logout()}" value="logout"/>
+                            </h:form>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- content -->
+                <div class="main">
+                    <h:form>
+                        <h:panelGrid columns="1">
+                            <h:outputLabel for="name" value = "Name: #{scheduleView.user.name}"/>
+                            
+                            <h:outputLabel for="surname" value = "Surname: #{scheduleView.user.surname}"/>
+                            
+                            <h:outputLabel for="birthday" value = "Birthday: #{scheduleView.user.birthday}"/>
+                            
+                            <h:outputLabel for="phoneNumber" value = "Phone Number: #{scheduleView.user.phoneNumber}"/>
+                            
+                            <h:outputLabel for="residenceTown" value = "Residence Town: #{scheduleView.user.residenceTown}"/>
+                            
+                            <h:outputLabel for="email" value = "Email: #{scheduleView.user.email}"/>
+                            
+                        </h:panelGrid>
+                    </h:form>
+                    <h:form>
+                        <h3>Calendar</h3>
+                        <p:schedule value="#{scheduleView.loggedUserEvents}" draggable="false" ignoreTimezone="false" >
+                            <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                        </p:schedule>
+                        <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                            <h:panelGrid id="eventDetails" columns="2">
+                                <h:outputLabel for="title" value="Title:" />
+                                <h:outputText id="title" value="#{scheduleView.event.title}" />
+                                
+                                <h:outputLabel for="from" value="From:" />
+                                <h:outputText id="from" value="#{scheduleView.event.startDate}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
+                                </h:outputText>
+                                
+                                <h:outputLabel for="to" value="To:" />
+                                <h:outputText id="to" value="#{scheduleView.event.endDate}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
+                                </h:outputText>
                             </h:panelGrid>
-                        </h:form>
-                        <h:form>
-                                <h3>Calendar</h3>
-                                <p:schedule value="#{scheduleView.getSearchedUserEvents(searchResultsBean.user)}" draggable="false" ignoreTimezone="false" >
-                                    <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
-                                </p:schedule>
-                                <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-                                    <h:panelGrid id="eventDetails" columns="2">
-                                        <h:outputLabel for="title" value="Title:" />
-                                        <p:inputText id="title" value="#{scheduleView.event.title}" required="true" />
-
-                                        <h:outputLabel for="from" value="From:" />
-                                        <p:inputMask id="from" value="#{scheduleView.event.startDate}" mask="99/99/9999  99:99:99">
-                                            <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
-                                        </p:inputMask>
-
-                                        <h:outputLabel for="to" value="To:" />
-                                        <p:inputMask id="to" value="#{scheduleView.event.endDate}" mask="99/99/9999  99:99:99">
-                                            <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
-                                        </p:inputMask>
-                                    </h:panelGrid>
-                                </p:dialog>    
-                        </h:form>
-			</div>
-		</div>
+                        </p:dialog>    
+                    </h:form>
+                </div>
+            </div>
         </div>
         <hr/>
         <footer>
