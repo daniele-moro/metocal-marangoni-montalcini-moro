@@ -8,27 +8,26 @@ package gui.security;
 import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
+import business.security.entity.Event;
 import business.security.entity.User;
-import business.security.object.NameSurnameEmail;
 import java.io.Serializable;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.ConversationScoped;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.bean.ManagedProperty;
+import javax.faces.application.FacesMessage;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class AddInvitationBean implements Serializable{
     
     private static final long serialVersionUID = 1L;
     
-    @ManagedProperty(value = "#{param.eventID}")
-    private String eventID;
+    private long idEvent;
     
     @EJB
     private NotificationManager notificationManager;
@@ -51,9 +50,27 @@ public class AddInvitationBean implements Serializable{
     
     //Lista degli invitati
     List<User> invitedPeople;
+    
+    //lista dei risultati parziali
     List<User> partialResult;
     
-    public AddInvitationBean() {
+    private Event event;
+    
+    /**
+     * Metodo che precarica gli utenti invitati all'evento
+     */
+    @PostConstruct
+    public void init(){
+        temp();
+    }
+    
+    private void temp(){
+        //Prelevo l'id passato in GET
+        idEvent = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+        System.out.println("ID EVENTO "+this.idEvent);
+        //Aggiorno la lista degli eventi
+        invitedPeople=eventManager.getInvitedPeople(idEvent);
+        event=eventManager.getEventById(idEvent);
     }
     
     public String getName() {
@@ -82,62 +99,42 @@ public class AddInvitationBean implements Serializable{
     
     public List<User> getInvitedPeople() {
         return this.invitedPeople;
-        
     }
     
     public List<User> getPartialResults() {
-        //return eventManager.getPartialResults();
         return this.partialResult;
     }
     
     
     
-    public String addUserThroughEmail() {
-        String idEvent = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("idEvent");
-        eventManager.addInvitation(email, Integer.parseInt(idEvent));
-        
+    public void addUserThroughEmail() {
+        eventManager.addInvitation(email,idEvent);
+        /*
+        manca da controllare se l'invito è mandabile, e in caso di problemi visualizzare un messaggio
+        FacesMessage message;
+        message = new FacesMessage("No results","");
+        FacesContext.getCurrentInstance().addMessage(null, message);*/
         //Prelevo dal db la lista degli invitati
-        invitedPeople = eventManager.getInvitedPeople(Integer.parseInt(idEvent));
-        return "addInvitation?faces-redirect=true&amp;id="+idEvent;
-    }
-   
-    public String addUser(User u){
-        String idEvent = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("idEvent");
-        eventManager.addInvitation(u, Integer.parseInt(idEvent));
-        //Prelevo dal db la lista degli invitati
-        invitedPeople = eventManager.getInvitedPeople(Integer.parseInt(idEvent));
-        return "addInvitation?faces-redirect=true&amp;id="+idEvent;
+        invitedPeople = eventManager.getInvitedPeople(idEvent);
     }
     
-    public String addUserThroughNameSurname() {
+    public String addUser(User u){
+        eventManager.addInvitation(u, idEvent);
         
-        String idEvent = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("idEvent");
-        
+        //Prelevo dal db la lista degli invitati
+        invitedPeople = eventManager.getInvitedPeople(idEvent);
+        partialResult= null;
+        return"";
+    }
+    
+    public void addUserThroughNameSurname() {
+        //Cerco gli utenti per nome e cognome
         System.out.println("appena dentro add User");
         partialResult = searchManager.findUsersFromNameSurname(name, surname);
-        if(partialResult.size() == 1) {
-            eventManager.addInvitation(partialResult.get(0), Integer.parseInt(idEvent));
-            partialResult.remove(0);
-            //Prelevo dal db la lista degli invitati
-            invitedPeople= eventManager.getInvitedPeople(Integer.parseInt(idEvent));
+        if(partialResult == null || partialResult.isEmpty()){
+            FacesMessage message;
+            message = new FacesMessage("No results","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
-        return "addInvitation?faces-redirect=true&amp;id="+idEvent;
-        
-        //TODO: azzerare le stringhe name e surname
-        
     }
-    
-    public String navigateTo() {
-        invitedPeople=null;
-        name=null;
-        surname=null;
-        email=null;
-        return "home?faces-redirect=true";
-    }
-    
-    
-    
 }
