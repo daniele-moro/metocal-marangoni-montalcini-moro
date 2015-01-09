@@ -6,7 +6,7 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
-import business.security.boundary.Location;
+import business.security.object.Location;
 import business.security.boundary.JsonPars;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
@@ -34,6 +34,7 @@ public class EventBean {
     
     private WeatherCondition acceptedWeatherCondition;
     
+    private WeatherCondition weatherForecast; 
 
     public EventBean() {
     }
@@ -59,11 +60,12 @@ public class EventBean {
     public String createEvent() throws JSONException {
         String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
         event.setLocation(location);
-        //change backspace with %20 for the request
-        String replace = event.getLocation().replace(" ", "%20");
-        Location loc = p.parsingLatitudeLongitude(replace);
+        Location loc = p.parsingLatitudeLongitude(event.getLocation());
         event.setLatitude(loc.getLatitude());
         event.setLongitude(loc.getLongitude());
+        System.out.println("" + event.getLongitude() + "    " + loc.getLongitude());
+        weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude());
+        event.setWeatherForecast(weatherForecast);
         eventManager.createEvent(event, acceptedWeatherCondition);
         return "addInvitation?faces-redirect=true&amp;includeViewParams=true&amp;id="+event.getId();
     }
@@ -88,6 +90,20 @@ public class EventBean {
     
     public boolean getEventDeleted() {
         return eventManager.isDeletedEvent();
+    }
+
+    /**
+     * @return the weatherForecast
+     */
+    public WeatherCondition getWeatherForecast() {
+        return weatherForecast;
+    }
+
+    /**
+     * @param weatherForecast the weatherForecast to set
+     */
+    public void setWeatherForecast(WeatherCondition weatherForecast) {
+        this.weatherForecast = weatherForecast;
     }
     
     

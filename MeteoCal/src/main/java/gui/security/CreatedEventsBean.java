@@ -7,7 +7,7 @@ package gui.security;
 
 import business.security.boundary.EventManager;
 import business.security.boundary.JsonPars;
-import business.security.boundary.Location;
+import business.security.object.Location;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;

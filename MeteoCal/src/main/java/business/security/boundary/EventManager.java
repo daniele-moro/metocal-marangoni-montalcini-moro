@@ -50,10 +50,13 @@ public class EventManager {
      * Creation of a new Event
      * @param event Event to add
      * @param awc 
+     * @param wf 
      */
     public void createEvent(Event event, WeatherCondition awc) {
         event.setOrganizer(getLoggedUser());
+        System.out.println("" + awc.getPrecipitation() + " " + awc.getTemperature() + " " + awc.getWind() );
         save(awc);
+        save(event.getWeatherForecast());
         event.setAcceptedWeatherConditions(awc);
         em.persist(event);
        // notificationManager.setEvent(event);
@@ -297,6 +300,10 @@ public class EventManager {
        }
       //TODO: va aggiunto un ordinamento qui
        return userEvents;
+   }
+   
+   public List<Event> getAllEvents() {
+       return searchManager.findAllEvents();
    }
 
 }

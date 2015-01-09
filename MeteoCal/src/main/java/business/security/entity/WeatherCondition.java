@@ -23,13 +23,15 @@ public class WeatherCondition implements Serializable {
     private Long id;
     
     @NotNull(message = "May not be empty")
-    private float precipitation; 
+    private boolean precipitation;
     
     @NotNull(message = "May not be empty")
     private float wind; 
     
     @NotNull(message = "May not be empty")
     private float temperature;
+    
+    private String icon;
     
     @XmlTransient
     public Long getId() {
@@ -40,11 +42,11 @@ public class WeatherCondition implements Serializable {
         this.id = id;
     }
 
-    public float getPrecipitation() {
+    public boolean getPrecipitation() {
         return precipitation;
     }
 
-    public void setPrecipitation(float precipitation) {
+    public void setPrecipitation(boolean precipitation) {
         this.precipitation = precipitation;
     }
 
@@ -63,5 +65,17 @@ public class WeatherCondition implements Serializable {
     public void setTemperature(float temperature) {
         this.temperature = temperature;
     }
+
+    public String getIcon() {
+        return icon;
+    }
     
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    
+    @Override
+    public String toString(){
+        return "precipitation: " + precipitation + "wind: " + wind + "temperature: " + temperature + "icon" + icon;
+    }
 }

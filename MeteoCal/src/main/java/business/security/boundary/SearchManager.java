@@ -70,4 +70,9 @@ public class SearchManager {
         return findUserEvent.getResultList();
     }
     
+    public List<Event> findAllEvents () {
+        Query findAllEvents = em.createQuery("SELECT e FROM EVENT"); 
+        return findAllEvents.getResultList();
+    }
+    
 }

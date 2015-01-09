@@ -72,12 +72,8 @@
                             <f:selectItem itemLabel="Strong" itemValue="2" />
                         </p:selectOneRadio>
                                     
-                        <p:outputLabel for="precipitation" value="Precipitation:" />
-                        <p:selectOneRadio id="precipitation" value="#{createdEventsBean.acceptedWeatherConditionToModify.precipitation}">
-                            <f:selectItem itemLabel="Absent" itemValue="0" />
-                            <f:selectItem itemLabel="Medium" itemValue="1" />
-                            <f:selectItem itemLabel="Strong" itemValue="2" />
-                        </p:selectOneRadio>
+                        <p:outputLabel for="precipitation" value="Accepted Precipitation:" />
+                        <p:selectBooleanCheckbox id="precipitation" value="#{eventBean.acceptedWeatherCondition.precipitation}" />
                                     
                         <p:outputLabel for="temperature" value="Temperature:" />
                         <p:selectOneRadio id="temperature" value="#{createdEventsBean.acceptedWeatherConditionToModify.temperature}">
