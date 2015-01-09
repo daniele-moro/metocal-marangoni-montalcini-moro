@@ -12,39 +12,42 @@
             <ui:define name="title">
                 Created Events
             </ui:define>
-            
+                
             <ui:define name="content">
                 <!--______________ MAIN CONTENT ______________-->
-                <h:form>
+                <h:form id="formm">
                     <p:dataTable value="#{createdEventsBean.createdEvents}" var="o"
                                  styleClass="order-table">
                         <f:facet name="header">
                             Created Event
                         </f:facet>
                         <p:column headerText="Name">
-                                        #{o.name}
+                            #{o.name}
                         </p:column>
-                                        
+                            
                         <p:column headerText="Time Start">
-                                        #{o.timeStart}
+                            #{o.timeStart}
                         </p:column>
-                                        
+                            
                         <p:column headerText="Time End">
-                                        #{o.timeEnd}
+                            #{o.timeEnd}
                         </p:column>
-                                        
+                            
                         <p:column headerText="Town">
-                                        #{o.location}
+                            #{o.location}
                         </p:column>
-                                        
+                            
                         <p:column headerText="Modify">
                             <h:commandLink value="Modify Event" action="#{createdEventsBean.showModifyEvent(o, o.acceptedWeatherConditions)}" rendered="#{o.deleted==false}" />
                             <h:outputLabel value="DELETED EVENT" rendered="#{o.deleted == true}"/>
                         </p:column>
+                        
                     </p:dataTable>
+                    
+                    
                 </h:form>
             </ui:define>
-            
+                
         </ui:composition>
     </h:body>
 </html>

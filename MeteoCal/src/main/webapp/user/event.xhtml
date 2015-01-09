@@ -17,41 +17,41 @@
                 <h:form id="registrationform">
                     <h:panelGrid columns="2" id="regGrid">
                         <h:outputLabel for="name">Name:</h:outputLabel>
-                        <p:outputLabel id="name" value="#{notificationBean.event.name}"/>
-                                        
+                        <p:outputLabel id="name" value="#{viewEventBean.event.name}"/>
+                            
                         <h:outputLabel for="organizerName">Organizer Name:</h:outputLabel>
-                        <p:outputLabel id="organizerName" value="#{notificationBean.event.organizer.name}"/>
-                                        
+                        <p:outputLabel id="organizerName" value="#{viewEventBean.event.organizer.name}"/>
+                            
                         <h:outputLabel for="organizerSurname">Organizer Surname:</h:outputLabel>
-                        <p:outputLabel id="organizerSurname" value="#{notificationBean.event.organizer.surname}"/>
-                                        
+                        <p:outputLabel id="organizerSurname" value="#{viewEventBean.event.organizer.surname}"/>
+                            
                         <h:outputLabel for="organizerEmail">Organizer Email:</h:outputLabel>
-                        <p:outputLabel id="organizerEmail" value="#{notificationBean.event.organizer.email}"/>
-                                        
+                        <p:outputLabel id="organizerEmail" value="#{viewEventBean.event.organizer.email}"/>
+                            
                         <h:outputLabel for="dateStart" value="Date Start:" />
-                        <p:outputLabel id="dateStart" value="#{notificationBean.event.timeStart}"/>
-                                        
+                        <p:outputLabel id="dateStart" value="#{viewEventBean.event.timeStart}"/>
+                            
                         <h:outputLabel for="dateEnd" value="Date End:" />
-                        <p:outputLabel id="dateEnd" value="#{notificationBean.event.timeEnd}"/>
-                                        
-                                        
+                        <p:outputLabel id="dateEnd" value="#{viewEventBean.event.timeEnd}"/>
+                            
+                            
                         <h:outputLabel for="predefinedTypology" value="Predefined Typology: " />
-                        <p:outputLabel id="predefinedTypology" value="#{notificationBean.event.predefinedTypology}"/> 
-                                        
+                        <p:outputLabel id="predefinedTypology" value="#{viewEventBean.event.predefinedTypology}"/> 
+                            
                         <h:outputLabel for="description" value="Description:" />
-                        <p:outputLabel id="description" value="#{notificationBean.event.description}"/> 
-                                        
+                        <p:outputLabel id="description" value="#{viewEventBean.event.description}"/> 
+                            
                         <h:outputLabel for="town" value ="Place:" />
-                        <p:outputLabel id="town" value="#{notificationBean.event.location}"/>
-                                        
+                        <p:outputLabel id="town" value="#{viewEventBean.event.location}"/>
+                            
                         <h:outputLabel for="wind" value="Wind:" />
-                        <p:outputLabel id="wind" value="#{notificationBean.event.acceptedWeatherConditions.wind}"/>
-                                        
+                        <p:outputLabel id="wind" value="#{viewEventBean.event.acceptedWeatherConditions.wind}"/>
+                            
                         <h:outputLabel for="precipitation" value="Accepted Precipitation:" />
-                        <p:outputLabel id="precipitation" value="#{notificationBean.event.acceptedWeatherConditions.precipitation}"/>
-                                        
+                        <p:outputLabel id="precipitation" value="#{viewEventBean.event.acceptedWeatherConditions.precipitation}"/>
+                            
                         <h:outputLabel for="temperature" value="Temperature:" />
-                        <p:outputLabel id="temperature" value="#{notificationBean.event.acceptedWeatherConditions.temperature}"/>
+                        <p:outputLabel id="temperature" value="#{viewEventBean.event.acceptedWeatherConditions.temperature}"/>
                     </h:panelGrid>
                 </h:form>
                 <br>
@@ -61,30 +61,56 @@
                     
                     
                 </br>
-                <h:form rendered="#{notificationBean.event.deleted==false}">
-                    <h:commandButton id="acceptInvitation" 
+                <h:form id="formButton" rendered="#{viewEventBean.event.deleted==false}">
+                    <p:commandButton id="acceptInvitation" 
                                      value="Accept Invitation" 
-                                     action="#{notificationBean.acceptInvitation()}"
-                                     rendered="#{notificationBean.findInviteStatusInvited==true}"/>
-                    <h:commandButton id="refuseInvitation" 
+                                     actionListener="#{viewEventBean.acceptInvitation()}"
+                                     rendered="#{viewEventBean.findInviteStatusInvited==true}"
+                                     update="formButton"/>
+                    <p:commandButton id="refuseInvitation" 
                                      value="Refuse Invitation" 
-                                     action="#{notificationBean.refuseInvitation()}" 
-                                     rendered="#{notificationBean.findInviteStatusInvited==true}"/>
-                    <h:commandButton id="reAcceptInvitation" 
+                                     actionListener="#{viewEventBean.refuseInvitation()}" 
+                                     rendered="#{viewEventBean.findInviteStatusInvited==true}"
+                                     update="formButton"/>
+                    <p:commandButton id="reAcceptInvitation" 
                                      value="Re-accept Invitation" 
-                                     action="#{notificationBean.reAcceptInvitation()}"
-                                     rendered="#{notificationBean.findInviteStatusDelayed==true}" />
-                    <h:commandButton id="deleteParticipation" 
+                                     actionListener="#{viewEventBean.reAcceptInvitation()}"
+                                     rendered="#{viewEventBean.findInviteStatusDelayed==true}" 
+                                     update="formButton"/>
+                    <p:commandButton id="deleteParticipation" 
                                      value="Delete Participation" 
-                                     action="#{notificationBean.deleteParticipation()}"
-                                     rendered="#{notificationBean.findInviteStatusAccepted==true}" />
-                    <h:outputLabel value="You have refused to participate to this event" rendered="#{notificationBean.findInviteStatusNotAccepted==true}" />
+                                     actionListener="#{viewEventBean.deleteParticipation()}"
+                                     rendered="#{viewEventBean.findInviteStatusAccepted==true}" 
+                                     update="formButton"/>
+                    <h:outputLabel value="You have refused to participate to this event" rendered="#{viewEventBean.findInviteStatusNotAccepted==true}" />
                 </h:form>
-                <h:form rendered="#{notificationBean.event.deleted==true}">
+                <h:form rendered="#{viewEventBean.event.deleted==true}">
                     <h:outputText value="This event has been deleted by its organizer"/>
                 </h:form>
+                    
+                <h:panelGrid id="pnlInvitations">
+                    <p:dataTable rendered="#{viewEventBean.accepted != null}"
+                                 value="#{viewEventBean.accepted}"
+                                 styleClass="order-table"
+                                 var="acc">
+                        <p:column headerText="Name">
+                            #{acc.name}
+                        </p:column>
+                        <p:column headerText="Surname">
+                            #{acc.name}
+                        </p:column>
+                        <p:column headerText="Email">
+                            #{acc.name}
+                        </p:column>
+                        <p:column>
+                            <h:form>
+                                <p:commandButton value="View Profile" action="#{viewEventBean.viewProfile(acc)}"/>
+                            </h:form>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGrid>
             </ui:define>
-            
+                
         </ui:composition>
     </h:body>
 </html>

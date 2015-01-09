@@ -8,7 +8,6 @@ package gui.security;
 import business.security.boundary.EventManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
-import business.security.entity.Invite;
 import business.security.entity.Notification;
 import java.io.Serializable;
 import java.util.List;
@@ -30,14 +29,6 @@ public class NotificationBean implements Serializable{
 
     public NotificationBean() {
     }
-
-    public UserInformationLoader getUserInformationLoader() {
-        return userInformationLoader;
-    }
-    
-    public void setUserInformationLoader(UserInformationLoader userInformationLoader) {
-        this.userInformationLoader = userInformationLoader;
-    }
     
     public List<Notification> getNotification() {
         return userInformationLoader.loadNotifications(); 
@@ -56,22 +47,9 @@ public class NotificationBean implements Serializable{
         //eventManager.setEvent(notification.getRelatedEvent());
         //eventManager.setDeletedEvent(notification.getRelatedEvent().isDeleted());
         this.setEvent(notification.getRelatedEvent());
-        return "event?faces-redirect=true";
+        return "event?faces-redirect=true&amp;id="+event.getId();
     }
-    
-    public boolean getFindInviteStatusInvited() {
-        return userInformationLoader.findInviteStatus(event).getStatus()== Invite.InviteStatus.invited;
-    }
-    
-     public boolean getFindInviteStatusAccepted() {
-        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.accepted;
-    }
-      public boolean getFindInviteStatusNotAccepted() {
-        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.notAccepted;
-    }
-       public boolean getFindInviteStatusDelayed() {
-        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.delayedEvent;
-    }
+   
     public String showNotifications() {
         return "notifications?faces-redirect=true";
     }
@@ -93,27 +71,4 @@ public class NotificationBean implements Serializable{
         this.event = event;
     }
 
-     
-    public String acceptInvitation() {
-        eventManager.addParticipantToEvent(event);
-        return "event?faces-redirect=true";
-    }
-    
-    public String refuseInvitation() {
-        eventManager.removeParticipantFromEvent(event);
-        return "event?faces-redirect=true";
-    }
-    
-    public String reAcceptInvitation() {
-        eventManager.addParticipantToEvent(event);
-        return "event?faces-redirect=true";
-    }
-    
-    public String deleteParticipation() {
-        eventManager.removeParticipantFromEvent(event); 
-        return "event?faces-redirect=true";
-    }
-    
-    
-    
 }

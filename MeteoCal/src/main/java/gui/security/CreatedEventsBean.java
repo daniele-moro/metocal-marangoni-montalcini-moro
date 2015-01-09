@@ -124,7 +124,7 @@ public class CreatedEventsBean implements Serializable {
     public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
-    
+
     
     
     

@@ -23,7 +23,7 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 public class ScheduleView implements Serializable {
  
-     
+    
     private ScheduleModel loggedUserEvents;
     
     private User user;
@@ -127,5 +127,5 @@ public class ScheduleView implements Serializable {
     }
         return "";
     }
-   
+
 }

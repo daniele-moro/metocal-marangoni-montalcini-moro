@@ -29,16 +29,16 @@
                 <h:form id="registrationform">
                     <h:panelGrid columns="2" id="regGrid">
                         <h:outputLabel for="name">Name:</h:outputLabel>
-                        <p:inputText id="name" value="#{eventBean.event.name}"/>
+                        <p:inputText id="name" value="#{eventOperationBean.event.name}"/>
                                         
                         <p:outputLabel for="timeStart" value="Time Start:" />
-                        <p:calendar id="timeStart" value="#{eventBean.event.timeStart}" pattern="dd/MM/yyyy HH:mm" />
+                        <p:calendar id="timeStart" value="#{eventOperationBean.event.timeStart}" pattern="dd/MM/yyyy HH:mm" />
                                         
                         <p:outputLabel for="timeEnd" value="Time End:" />
-                        <p:calendar id="timeEnd" value="#{eventBean.event.timeEnd}" pattern="dd/MM/yyyy HH:mm" />
+                        <p:calendar id="timeEnd" value="#{eventOperationBean.event.timeEnd}" pattern="dd/MM/yyyy HH:mm" />
                                         
                         <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
-                        <p:selectOneMenu id="predefinedTypology" value="#{eventBean.event.predefinedTypology}" style="width:125px">
+                        <p:selectOneMenu id="predefinedTypology" value="#{eventOperationBean.event.predefinedTypology}" style="width:125px">
                             <f:selectItem itemLabel="Aperitif" itemValue="aperitif" />
                             <f:selectItem itemLabel="Dinner" itemValue="dinner" />
                             <f:selectItem itemLabel="Lunch" itemValue="lunch" />
@@ -54,29 +54,29 @@
                         </p:selectOneMenu>
                                         
                         <p:outputLabel for="description" value="Description:" />
-                        <p:inputTextarea rows="6" cols="33" id="description" value="#{eventBean.event.description}" />
+                        <p:inputTextarea rows="6" cols="33" id="description" value="#{eventOperationBean.event.description}" />
                                         
                         <p:outputLabel value ="Place:" />
                         <input id="geocomplete" name="geocomplete" class="controls" type="text" onfocus="showSuggestions()" />
                                         
                         <p:outputLabel for="privacy" value="Privacy:" />
-                        <p:selectOneRadio id="privacy" value="#{eventBean.event.publicEvent}">
+                        <p:selectOneRadio id="privacy" value="#{eventOperationBean.event.publicEvent}">
                             <f:selectItem itemLabel="Public" itemValue="true" />
                             <f:selectItem itemLabel="Private" itemValue="false" />
                         </p:selectOneRadio>
                                         
                         <p:outputLabel for="wind" value="Wind:" />
-                        <p:selectOneRadio id="wind" value="#{eventBean.acceptedWeatherCondition.wind}" >
+                        <p:selectOneRadio id="wind" value="#{eventOperationBean.acceptedWeatherCondition.wind}" >
                             <f:selectItem itemLabel="Absent" itemValue="0" />
                             <f:selectItem itemLabel="Medium" itemValue="1" />
                             <f:selectItem itemLabel="Strong" itemValue="2" />
                         </p:selectOneRadio>
                                         
                         <p:outputLabel for="precipitation" value="Accepted Precipitation:" />
-                        <p:selectBooleanCheckbox id="precipitation" value="#{eventBean.acceptedWeatherCondition.precipitation}" />
+                        <p:selectBooleanCheckbox id="precipitation" value="#{eventOperationBean.acceptedWeatherCondition.precipitation}" />
                                                                 
                         <p:outputLabel for="temperature" value="Temperature:" />
-                        <p:selectOneRadio id="temperature" value="#{eventBean.acceptedWeatherCondition.temperature}">
+                        <p:selectOneRadio id="temperature" value="#{eventOperationBean.acceptedWeatherCondition.temperature}">
                             <f:selectItem itemLabel= "less 0" itemValue="0" />
                             <f:selectItem itemLabel="0-10" itemValue="1" />
                             <f:selectItem itemLabel="10-20" itemValue="2" />
@@ -84,7 +84,7 @@
                         </p:selectOneRadio>
                     </h:panelGrid>
                     <p:commandButton id="createEvent" value="CreateEvent" update="regGrid"
-                                     action="#{eventBean.createEvent()}" />
+                                     action="#{eventOperationBean.createEvent()}" />
                 </h:form>           
             </ui:define>
             
