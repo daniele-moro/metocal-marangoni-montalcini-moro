@@ -305,5 +305,18 @@ public class EventManager {
    public List<Event> getAllEvents() {
        return searchManager.findAllEvents();
    }
+   
+      
+   /**
+    * Metodo che torna la lista degli utenti che hanno accettato l'invito ad un evento
+    * @param e
+    * @return 
+    */
+   public List<User> getAcceptedPeople(Event e){
+       Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event = ?1 AND i.user.email = u.email AND i.status = ?2");
+        findAcceptedPeople.setParameter(1, e);
+        findAcceptedPeople.setParameter(2, Invite.InviteStatus.accepted);
+        return ((List<User>) findAcceptedPeople.getResultList());
+   }
 
 }
