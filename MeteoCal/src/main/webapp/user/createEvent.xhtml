@@ -32,10 +32,10 @@
                         <p:inputText id="name" value="#{eventOperationBean.event.name}"/>
                                         
                         <p:outputLabel for="timeStart" value="Time Start:" />
-                        <p:calendar id="timeStart" value="#{eventOperationBean.event.timeStart}" pattern="dd/MM/yyyy HH:mm" />
+                        <p:calendar id="timeStart" value="#{eventOperationBean.event.timeStart}" pattern="dd/MM/yyyy HH:mm" mindate="#{eventOperationBean.currentDate}"/>
                                         
                         <p:outputLabel for="timeEnd" value="Time End:" />
-                        <p:calendar id="timeEnd" value="#{eventOperationBean.event.timeEnd}" pattern="dd/MM/yyyy HH:mm" />
+                        <p:calendar id="timeEnd" value="#{eventOperationBean.event.timeEnd}" pattern="dd/MM/yyyy HH:mm" mindate="#{eventOperationBean.currentDate}" />
                                         
                         <p:outputLabel for="predefinedTypology" value="Predefined Typology:" />
                         <p:selectOneMenu id="predefinedTypology" value="#{eventOperationBean.event.predefinedTypology}" style="width:125px">

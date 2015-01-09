@@ -11,6 +11,7 @@ import business.security.boundary.JsonPars;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -35,6 +36,9 @@ public class EventOperationBean {
     private WeatherCondition acceptedWeatherCondition;
     
     private WeatherCondition weatherForecast; 
+    
+    private Date currentDate = new Date();
+
 
     public EventOperationBean() {
     }
@@ -106,6 +110,11 @@ public class EventOperationBean {
         this.weatherForecast = weatherForecast;
     }
     
+    
+    public Date getCurrentDate() {
+        return currentDate;
+    }
+
     
 
     

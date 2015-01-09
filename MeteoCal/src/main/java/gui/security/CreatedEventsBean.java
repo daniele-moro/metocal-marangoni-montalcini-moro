@@ -12,6 +12,7 @@ import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -35,7 +36,9 @@ public class CreatedEventsBean implements Serializable {
     private Event event;
     
     private WeatherCondition acceptedWeatherCondition;
-        
+    
+    private Date currentDate = new Date();
+    
     
     public CreatedEventsBean() {
     }
@@ -124,9 +127,10 @@ public class CreatedEventsBean implements Serializable {
     public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
-
     
-    
+    public Date getCurrentDate() {
+        return currentDate;
+    }
     
     
     
