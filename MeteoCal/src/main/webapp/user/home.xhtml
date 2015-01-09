@@ -34,6 +34,18 @@
                             <h:outputText id="to" value="#{scheduleView.event.endDate}">
                                 <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
                             </h:outputText>
+                            
+                            <h:outputLabel for="description" value="Description:"/> 
+                            <h:outputText id="description" value="#{scheduleView.event.data.description}"/>
+                            
+                            <h:outputLabel for="location" value="Location:"/> 
+                            <h:outputLabel id="location" value="#{scheduleView.event.data.location}"/>
+                            
+                            <h:outputLabel for="notPredefinedTypology" value="Typology2:"/> 
+                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"/>
+
+                            <h:outputLabel for="predefinedTypology" value="Typology: "/> 
+                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"/>
                         </h:panelGrid>
                     </p:dialog>    
                 </h:form>

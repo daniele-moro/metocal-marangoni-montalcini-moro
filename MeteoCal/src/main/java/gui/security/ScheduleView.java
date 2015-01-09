@@ -55,10 +55,22 @@ public class ScheduleView implements Serializable {
                 @Override
                 public void loadEvents(Date start, Date end) {
                     for(Event ev : userInformationLoader.loadAcceptedEvents()) {
-                        loggedUserEvents.addEvent(new DefaultScheduleEvent(ev.getName(), ev.getTimeStart(), ev.getTimeEnd()));
+                        loggedUserEvents.addEvent(
+                                new  DefaultScheduleEvent(
+                                        ev.getName(),
+                                        ev.getTimeStart(),
+                                        ev.getTimeEnd(),
+                                        ev)
+                        );
                     }
                     for(Event ev : userInformationLoader.loadCreatedEvents()) {
-                        loggedUserEvents.addEvent(new DefaultScheduleEvent(ev.getName(), ev.getTimeStart(), ev.getTimeEnd()));
+                        loggedUserEvents.addEvent(
+                                new DefaultScheduleEvent(
+                                        ev.getName(),
+                                        ev.getTimeStart(),
+                                        ev.getTimeEnd(),
+                                        ev)
+                        );
                     }
                     
                 }
@@ -69,22 +81,24 @@ public class ScheduleView implements Serializable {
                 @Override
                 public void loadEvents(Date start, Date end) {
                     for(Event ev : eventManager.loadEvent(user)) {
-                        loggedUserEvents.addEvent(new DefaultScheduleEvent(ev.getName(), ev.getTimeStart(), ev.getTimeEnd())); 
+                        loggedUserEvents.addEvent(
+                                new DefaultScheduleEvent(
+                                        ev.getName(),
+                                        ev.getTimeStart(), 
+                                        ev.getTimeEnd(),
+                                        ev)
+                        );
                     }
                 }
             };
-            
         }
         
     }
-    
-    
 
-     
     public ScheduleEvent getEvent() {
         return event;
     }
- 
+    
     public void setEvent(ScheduleEvent event) {
         this.event = event;
     }
@@ -104,6 +118,14 @@ public class ScheduleView implements Serializable {
      */
     public User getUser() {
         return user;
+    }
+    
+    public String getPredefined(){
+        if(event.getData()!=null){
+        System.out.println("PREDEFINED TYPO: "+((Event) event.getData()).getPredefinedTypology());
+        return ((Event) event.getData()).getPredefinedTypology().toString();
+    }
+        return "";
     }
    
 }

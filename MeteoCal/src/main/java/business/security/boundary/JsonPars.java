@@ -2,19 +2,18 @@ package business.security.boundary;
 
 import business.security.entity.WeatherCondition;
 import business.security.object.Location;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
-@Stateless
+@Singleton
 public class JsonPars {
     
     JSONObject jObj;
 
     public WeatherCondition parsingWeather(String lat, String lng) throws JSONException {
-        //Dovremo usare poi lat e lng al posto dei numeri per inizializzare l'URL
-        RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/weather?lat=", "45.44692999999999", "8.622161199999999");
+        RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/weather?lat=", lat, lng);
         WeatherCondition wc = new WeatherCondition();
         String mainResult;
         
