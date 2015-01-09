@@ -124,7 +124,7 @@ public class EventManager {
         this.partialResults = partialResults;
     }
     
-    public List<User> getInvitedPeople(int idEvent) {
+    public List<User> getInvitedPeople(long idEvent) {
         Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event.id = ?1 AND i.user.email = u.email");
         findInvitedPeopleThroughIDev.setParameter(1, idEvent);
         return ((List<User>) findInvitedPeopleThroughIDev.getResultList());
@@ -147,13 +147,13 @@ public class EventManager {
         this.deletedEvent = deletedEvent;
     }
     
-    public void addInvitation(String email, int idEvent) {
+    public void addInvitation(String email, long idEvent) {
         User u = searchManager.findUser(email);
         Event event = getEventById(idEvent);
         notificationManager.createInviteNotification(event, u);
     }
     
-    public void addInvitation(User u, int idEvent) {
+    public void addInvitation(User u, long idEvent) {
         Event event = getEventById(idEvent);
         notificationManager.createInviteNotification(event, u);
     }
@@ -172,7 +172,7 @@ public class EventManager {
         }
     }
     
-    public Event getEventById(int idEvent){
+    public Event getEventById(long idEvent){
         Query findEventThroughId = em.createQuery("SELECT event from EVENT event WHERE event.id =?1 ");
         findEventThroughId.setParameter(1, idEvent);
         return ((List<Event>) findEventThroughId.getResultList()).get(0);
@@ -298,8 +298,5 @@ public class EventManager {
       //TODO: va aggiunto un ordinamento qui
        return userEvents;
    }
-   
 
-    
-    
 }
