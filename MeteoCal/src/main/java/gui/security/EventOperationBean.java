@@ -19,7 +19,7 @@ import org.codehaus.jettison.json.JSONException;
 
 @Named
 @RequestScoped
-public class EventBean {
+public class EventOperationBean {
 
     @EJB
     private EventManager eventManager;
@@ -36,7 +36,7 @@ public class EventBean {
     
     private WeatherCondition weatherForecast; 
 
-    public EventBean() {
+    public EventOperationBean() {
     }
 
     public Event getEvent() {
