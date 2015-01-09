@@ -1,5 +1,6 @@
 package business.security.boundary;
 
+import business.security.control.MailManager;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.User;
@@ -33,6 +34,9 @@ public class EventManager {
     
     @EJB
     private SearchManager searchManager;
+    
+    @EJB
+    private MailManager mailManager; 
     
     private boolean deletedEvent = false;
     
@@ -199,21 +203,15 @@ public class EventManager {
         
         
         //if the date is changed
-        //si puo usare il metodo getEvetnById
-        Query findEventThroughId = em.createQuery("SELECT event from EVENT event WHERE event.id =?1 ");
-        findEventThroughId.setParameter(1, event.getId());
-        Event ev = ((List<Event>) findEventThroughId.getResultList()).get(0);
+        Event ev = getEventById(event.getId());
         if (!ev.getTimeStart().equals(event.getTimeStart()) || !ev.getTimeEnd().equals(event.getTimeEnd())) {
-            //notificationManager.setEvent(e);
-            //notificationManager.sendNotifications(NotificationType.delayedEvent);
-            
-            
+            boolean mailSent = false; 
             for(Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
-                if(inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited) {
-                    //Invio della notifica di DELAY
+                if(inv.getStatus().equals(Invite.InviteStatus.accepted) || inv.getStatus().equals(Invite.InviteStatus.invited) || inv.getStatus().equals(Invite.InviteStatus.delayedEvent)) {
+                    mailSent = false; 
+                    //Sending delay notification 
                     notificationManager.createDelayNotification(inv);
-                    
-                    //Controllo se ci sono sovrapposizioni
+                    //Overlaps checking
                     for(Event evv : searchManager.findUserEvent(inv.getUser())) {
                         if((event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
                                 || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
@@ -223,20 +221,24 @@ public class EventManager {
                             updateInvitationStatus.setParameter(2, event);
                             updateInvitationStatus.setParameter(3, inv.getUser());
                             updateInvitationStatus.executeUpdate();
-                            /** @TODO: Manca da mandare la mail di notifica**/
-                            
-                            /*MailManager mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. According to the new date, "
-                            + "the event is overlapping respect to an event to which you are going to participate. So, now you are not considered among the participants of the event of which the date has been modified. "
-                            + "If you want to participate to this event, you have to delete your participation to the other event and accept another time the invitation to this one.");
-                            */
-                            break;
+                            if (!mailSent) {
+                                mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. According to the new date, "
+                                + "the event is overlapping respect to an event to which you are going to participate. So, now you are not considered among the participants of the event of which the date has been modified. "
+                                + "If you want to participate to this event, you have to delete your participation to the other event and accept another time the invitation to this one.");
+                                mailSent = true; 
+                            }
                         }
+                    }
+                    if(!mailSent) {
+                        mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. You have no overlaps"
+                                + "with the other events you are going to participate to so you are between the participants, but we suggest you to check your notifications and discover the new date. If you "
+                                + "can't participate because of the new date, you can remove your participation to the event");
                     }
                 }
             }
         }
         
-        //@TODO: Manca da mandare le notifiche per il delayed event
+       
         Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
         updateDateOfEvent.setParameter(1, event.getTimeStart());
         updateDateOfEvent.setParameter(2, event.getTimeEnd());
@@ -341,5 +343,88 @@ public class EventManager {
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.invited);
         return ((List<User>) findAcceptedPeople.getResultList());
     }
+    
+    public void checkWeatherForecast(Event event) {
+        boolean notDesiredTemperature = false; 
+        boolean notDesiredPrecipitation = false; 
+        boolean notDesiredWind = false; 
+        switch ((int)event.getAcceptedWeatherConditions().getTemperature()) {
+            case (0): 
+                if(event.getWeatherForecast().getTemperature() > 0) {
+                    notDesiredTemperature = true; 
+                }
+                break; 
+            case (1): 
+                if(event.getWeatherForecast().getTemperature() < 0 || event.getWeatherForecast().getTemperature() > 10) {
+                    notDesiredTemperature = true; 
+                }
+                break; 
+            case (2): 
+                if(event.getWeatherForecast().getTemperature() < 10 || event.getWeatherForecast().getTemperature() > 20) {
+                    notDesiredTemperature = true; 
+                }
+               break; 
+            case (3):
+                if(event.getWeatherForecast().getTemperature() < 20) {
+                    notDesiredTemperature = true; 
+                }
+                break; 
+            default: 
+                break; 
+        }
+        switch ((int)event.getAcceptedWeatherConditions().getWind()) {
+            case (0): 
+                if(event.getWeatherForecast().getWind() > 0) {
+                    notDesiredWind = true; 
+                }
+                break; 
+            case (1): 
+                if(event.getWeatherForecast().getWind() > 8) {
+                    notDesiredWind = true; 
+                }
+                break; 
+            default: 
+                break; 
+        }
+        if(event.getAcceptedWeatherConditions().getPrecipitation() == false && event.getWeatherForecast().getPrecipitation() == true) {
+            notDesiredPrecipitation = true; 
+        }
+        
+        if(notDesiredTemperature || notDesiredPrecipitation || notDesiredWind) {
+            String temperature = ""; 
+            String wind = ""; 
+            String precipitation = ""; 
+            if(notDesiredTemperature) {
+                temperature = "The temperature for your event is different from which you have indicated as desired"; 
+            }
+            if(notDesiredPrecipitation) {
+                precipitation = "The precipitation for your event is different from which you have indicated as desired";
+            }
+            if(notDesiredWind) {
+                wind = "The wind for your event is different from which you have indicated as desired"; 
+            }
+            mailManager.sendMail(event.getOrganizer().getEmail(), "Not optimal weather forecasts", "Hi! We suggest you to check the weather forecast for your event, since we have discover some problems: " + precipitation + " " + wind + " " + temperature);
+            }
+        }
+    
+    /**
+     * This method checks if an invitation has already been sent to the user with the inserted email.
+     * If an invitation already exists, it will return a false value, indicating that it is not possible
+     * to send another invitation to that user. 
+     * @param email: email of the user that the organizer wants to invite to his event
+     * @param event: the event for which the organizer wants to send an invitation
+     * @return : the boolean value, which highlights if it is possible to send an invitation to the specified user
+     */
+        public boolean checkEmailForInvitation(String email, Event event) {
+        for(Invite invite: searchManager.findInviteRelatedToAnEvent(event)) {
+            if(invite.getUser().getEmail().equals(email)) {
+                return false; 
+            }
+        }
+        return true;  
+    }
+        
+    
+        
     
 }

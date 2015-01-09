@@ -22,9 +22,6 @@ public class UserManager {
     
     @Inject
     Principal principal;
-     
-    
-    private String oldEmail; 
 
     public void save(User user) {
         user.setGroupName(Group.USER);
@@ -53,20 +50,9 @@ public class UserManager {
         q.setParameter(7, usr.getEmail()); 
         q.executeUpdate();
     }
-
-    /**
-     * @return the oldEmail
-     */
-    public String getOldEmail() {
-        return oldEmail;
-    }
-
-    /**
-     * @param oldEmail the oldEmail to set
-     */
-    public void setOldEmail(String oldEmail) {
-        this.oldEmail = oldEmail;
-    }
     
+    public void checkFields() {
+        
+    }
     
 }

@@ -81,7 +81,7 @@
                                     <p:message id="surnamemsg" for="surname" />
 
                                     <h:outputLabel for="birthday" value="Birthday:" />
-                                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" locale="de" navigator="true" pattern="yyyy-MMM-dd" placeholder="yyyy-MMM-dd"/>
+                                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" locale="de" navigator="true" pattern="yyyy-MMM-dd" placeholder="yyyy-MMM-dd" yearRange="1900:2000" showOn=""/>
                                     <p:message id="birthdaymsg" for="birthday" />
 
                                     <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
