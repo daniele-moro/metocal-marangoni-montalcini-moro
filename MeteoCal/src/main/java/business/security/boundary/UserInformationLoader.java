@@ -77,7 +77,10 @@ public class UserInformationLoader {
         Query findInvite = em.createQuery("SELECT i FROM INVITE i WHERE i.event =?1 AND i.user =?2");
         findInvite.setParameter(1, event);
         findInvite.setParameter(2, getLoggedUser());
-        return (Invite)findInvite.getResultList().get(0);
+        if(!findInvite.getResultList().isEmpty())
+            return (Invite)findInvite.getResultList().get(0);
+        else
+            return null;
     }
     
     public void setNotificationSeen(Notification notification) {
