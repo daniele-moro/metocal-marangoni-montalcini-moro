@@ -50,6 +50,13 @@
                             <h:outputText id="to" value="#{scheduleView.event.endDate}">
                                 <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
                             </h:outputText>
+                            
+                            <h:outputLabel for="notPredefinedTypology" value="Typology2:"/> 
+                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"/>
+
+                            <h:outputLabel for="predefinedTypology" value="Typology: "/> 
+                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"/>
+                            <h:commandButton value="View Event" action="#{scheduleView.goToEvent(scheduleView.event.data)}"/>
                         </h:panelGrid>
                     </p:dialog>    
                 </h:form>
