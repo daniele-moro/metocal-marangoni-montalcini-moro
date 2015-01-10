@@ -27,6 +27,10 @@ public class UserInformationLoader {
         return em.find(User.class, principal.getName());
     }
     
+    /**
+     * This method searches in the database for the events created by the logged user
+     * @return list of the events created by the logged user
+     */
     public List<Event> loadCreatedEvents() {
         Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1");
         qCreatedEvents.setParameter(1, getLoggedUser().getEmail());
@@ -34,6 +38,10 @@ public class UserInformationLoader {
         return createdEvents;
     }
     
+    /**
+     * This method searches in the database for the events accepted by the logged user
+     * @return list of the events accepted by the logged user
+     */
     public List<Event> loadAcceptedEvents() {
         Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
         qAcceptedEvents.setParameter(1, getLoggedUser().getEmail());
@@ -43,6 +51,11 @@ public class UserInformationLoader {
         return acceptedEvents;
     }
     
+    /**
+     * This method searches in the database for the events to which the logged user has not already 
+     * confirmed his participation 
+     * @return list of the events to which the logged user has not already confirmed his participation 
+     */
     public List<Event> loadEventsWithNoAnswer() {
         Query qNoAnswerEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
         qNoAnswerEvents.setParameter(1, getLoggedUser().getEmail());
@@ -51,6 +64,10 @@ public class UserInformationLoader {
         return noAnswerEvents;
     }
     
+    /**
+     * This method calls three other methods which find the events of the user
+     * @return The events of the users
+     */
     public List<Event> loadEvent() {
         List<Event> userEvents = new ArrayList<>();
         for(Event e : loadCreatedEvents()) {
@@ -66,6 +83,10 @@ public class UserInformationLoader {
         return userEvents;
     }
     
+    /**
+     * This method search in the database for the notifications sent to the logged user
+     * @return list of the notifications sent to the logged user
+     */
     public List<Notification> loadNotifications() {
         Query findUserNotifications = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.notificatedUser = ?1 ORDER BY n.generationDate DESC");
         findUserNotifications.setParameter(1, getLoggedUser());
@@ -73,6 +94,12 @@ public class UserInformationLoader {
         return notifications;
     }
     
+    /**
+     * This method searches in the database for the invite sent to the logged user related to an event 
+     * and return it
+     * @param event
+     * @return 
+     */
     public Invite findInviteStatus(Event event) {
         Query findInvite = em.createQuery("SELECT i FROM INVITE i WHERE i.event =?1 AND i.user =?2");
         findInvite.setParameter(1, event);
@@ -83,11 +110,20 @@ public class UserInformationLoader {
             return null;
     }
     
+    /**
+     * This method is called when a notification is seen: it set the field "seen" as true
+     * @param notification 
+     */
     public void setNotificationSeen(Notification notification) {
         notification.setSeen(true);
         em.merge(notification);
     }
     
+    /**
+     * This method is called when a user decides to delete a notification: the notification
+     * is deleted from the database. 
+     * @param notification 
+     */
     public void removeNotification(Notification notification) {
         Query findNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.id =?1");
         findNotification.setParameter(1, notification.getId());

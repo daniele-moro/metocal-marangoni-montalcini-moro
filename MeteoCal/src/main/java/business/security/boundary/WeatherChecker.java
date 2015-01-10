@@ -32,7 +32,7 @@ public class WeatherChecker {
     @EJB
     JsonPars jsonPars;
 
-    @Schedule(month = "*", hour = "*/1", dayOfMonth = "*", year = "*", minute = "0", second = "0", persistent = false)
+    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*", second = "*/5", persistent = false)
     
     public void myTimer() {
        // System.out.println("Timer event: " + new Date());

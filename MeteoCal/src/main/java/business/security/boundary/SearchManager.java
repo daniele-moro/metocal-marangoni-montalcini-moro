@@ -64,10 +64,19 @@ public class SearchManager {
     }
     
     public List<Event> findUserEvent(User user) {
-        Query findUserEvent = em.createQuery("SELECT invite.event FROM INVITE invite WHERE invite.user = ?1 AND invite.status =?2");
-        findUserEvent.setParameter(1, user); 
-        findUserEvent.setParameter(2, Invite.InviteStatus.accepted);
-        return findUserEvent.getResultList();
+        List<Event> userEvents = new ArrayList<>(); 
+        Query findUserAcceptedEvents = em.createQuery("SELECT invite.event FROM INVITE invite WHERE invite.user = ?1 AND invite.status =?2");
+        findUserAcceptedEvents.setParameter(1, user); 
+        findUserAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
+        for(Event event : (List<Event>) findUserAcceptedEvents.getResultList()) {
+            userEvents.add(event);
+        }
+        Query findUserCreatedEvents = em.createQuery("SELECT event FROM EVENT event WHERE event.organizer =?1");
+        findUserCreatedEvents.setParameter(1,user); 
+        for(Event event : (List<Event>) findUserCreatedEvents.getResultList()) {
+            userEvents.add(event);
+        }
+        return userEvents;
     }
     
     public List<Event> findAllEvents () {
