@@ -17,7 +17,7 @@
                 <!--______________ MAIN CONTENT ______________-->
                 <h:form>
                     <h3>Calendar</h3>
-                    <p:schedule value="#{scheduleView.loggedUserEvents}" draggable="false" ignoreTimezone="false">
+                    <p:schedule value="#{scheduleView.loggedUserEvents}" draggable="false" ignoreTimezone="false" resizable="false" >
                         <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                     </p:schedule>
                     <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
