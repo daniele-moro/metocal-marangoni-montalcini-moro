@@ -127,5 +127,9 @@ public class ScheduleView implements Serializable {
     }
         return "";
     }
+    
+    public String goToEvent(Event e){
+        return "event.xhtml?faces-redirect=true&amp;id="+e.getId();
+    }
 
 }

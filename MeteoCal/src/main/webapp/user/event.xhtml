@@ -61,7 +61,7 @@
                     
                     
                 </br>
-                <h:form id="formButton" rendered="#{viewEventBean.event.deleted==false}">
+                <h:form id="formButton" rendered="#{viewEventBean.event.deleted==false and !viewEventBean.creator}">
                     <p:commandButton id="acceptInvitation" 
                                      value="Accept Invitation" 
                                      actionListener="#{viewEventBean.acceptInvitation()}"
@@ -88,11 +88,61 @@
                     <h:outputText value="This event has been deleted by its organizer"/>
                 </h:form>
                     
-                <h:panelGrid id="pnlInvitations">
-                    <p:dataTable rendered="#{viewEventBean.accepted != null}"
+                <h:panelGrid id="pnlInvitations" rendered="#{viewEventBean.creator}">
+                    <p:dataTable rendered="#{viewEventBean.accepted != null and viewEventBean.accepted.size()!=0}"
                                  value="#{viewEventBean.accepted}"
                                  styleClass="order-table"
+                                 var="acc"
+                                 >
+                        <f:facet name="header">
+                            Accepted Participation People
+                        </f:facet>
+                        <p:column headerText="Name">
+                            #{acc.name}
+                        </p:column>
+                        <p:column headerText="Surname">
+                            #{acc.name}
+                        </p:column>
+                        <p:column headerText="Email">
+                            #{acc.name}
+                        </p:column>
+                        <p:column>
+                            <h:form>
+                                <p:commandButton value="View Profile" action="#{viewEventBean.viewProfile(acc)}"/>
+                            </h:form>
+                        </p:column>
+                    </p:dataTable>
+                    
+                    <p:dataTable rendered="#{viewEventBean.refused != null and viewEventBean.refused.size()!=0 }"
+                                 value="#{viewEventBean.refused}"
+                                 styleClass="order-table"
                                  var="acc">
+                        <f:facet name="header">
+                            Refused Participation People
+                        </f:facet>
+                        <p:column headerText="Name">
+                            #{acc.name}
+                        </p:column>
+                        <p:column headerText="Surname">
+                            #{acc.name}
+                        </p:column>
+                        <p:column headerText="Email">
+                            #{acc.name}
+                        </p:column>
+                        <p:column>
+                            <h:form>
+                                <p:commandButton value="View Profile" action="#{viewEventBean.viewProfile(acc)}"/>
+                            </h:form>
+                        </p:column>
+                    </p:dataTable>
+                    
+                    <p:dataTable rendered="#{viewEventBean.pendent != null and viewEventBean.pendent.size()!=0}"
+                                 value="#{viewEventBean.pendent}"
+                                 styleClass="order-table"
+                                 var="acc">
+                        <f:facet name="header">
+                            Pendent Participation People
+                        </f:facet>
                         <p:column headerText="Name">
                             #{acc.name}
                         </p:column>

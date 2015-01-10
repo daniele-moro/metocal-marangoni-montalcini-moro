@@ -27,6 +27,7 @@ import javax.faces.view.ViewScoped;
 public class ViewEventBean implements Serializable{
     
     private Event event;
+    private boolean creator;
     
     @EJB
     private EventManager eventManager;
@@ -55,12 +56,14 @@ public class ViewEventBean implements Serializable{
          * - utenti che hanno rifiutato la partecipazione
          * - utenti che devono ancora rispondere
          */
-        if(event.getOrganizer().getEmail()==eventManager.getLoggedUser().getEmail()){
+        if(event.getOrganizer().getEmail().equals(eventManager.getLoggedUser().getEmail())){
+            creator=true;
             accepted = eventManager.getAcceptedPeople(event);
             refused = eventManager.getRefusedPeople(event);
             pendent = eventManager.getPendentPeople(event);
         } else{
-            accepted =refused = pendent = null;
+            creator=false;
+            accepted = refused = pendent = null;
         }
     }
     
@@ -137,6 +140,13 @@ public class ViewEventBean implements Serializable{
      */
     public List<User> getPendent() {
         return pendent;
+    }
+
+    /**
+     * @return the creator
+     */
+    public boolean isCreator() {
+        return creator;
     }
     
 }

@@ -125,11 +125,8 @@ public class CreatedEventsBean implements Serializable {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
 
-    
-    
-    
-    
-    
-    
-    
+    public String showEvent(Event e){
+        return "event.xhtml?faces-redirect=true&amp;id="+e.getId();
+    }
+
 }
