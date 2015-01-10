@@ -332,13 +332,15 @@ public class EventManager {
     
     /**
      * Metodo che torna la lista degli utenti che non hanno ancora accettato o rifiutato l'evento
+     * o chi ha l'evento come spostato (causa sovrapposizioni)
      * @param e
      * @return 
      */
     public List<User>getPendentPeople(Event e){
-        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event = ?1 AND i.user.email = u.email AND i.status = ?2");
+        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event = ?1 AND i.user.email = u.email AND (i.status = ?2 OR i.status = ?3)");
         findAcceptedPeople.setParameter(1, e);
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.invited);
+        findAcceptedPeople.setParameter(3, Invite.InviteStatus.delayedEvent);
         return ((List<User>) findAcceptedPeople.getResultList());
     }
     
