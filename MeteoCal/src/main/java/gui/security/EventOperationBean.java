@@ -68,7 +68,7 @@ public class EventOperationBean {
         event.setLatitude(loc.getLatitude());
         event.setLongitude(loc.getLongitude());
         System.out.println("" + event.getLongitude() + "    " + loc.getLongitude());
-        weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude());
+        weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
         event.setWeatherForecast(weatherForecast);
         eventManager.createEvent(event, acceptedWeatherCondition);
         return "addInvitation?faces-redirect=true&amp;includeViewParams=true&amp;id="+event.getId();

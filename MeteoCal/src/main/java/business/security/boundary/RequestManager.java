@@ -15,7 +15,7 @@ public class RequestManager {
     }
     
     public RequestManager(String url, String lat, String lng) {
-        BASE_URL = url + lat + "&lon=" + lng;
+        BASE_URL = url + lat + "&lon=" + lng + "&cnt=16&APPID=543122f4518679639a607123e79c14ad";
     }
 
     public String getData() {

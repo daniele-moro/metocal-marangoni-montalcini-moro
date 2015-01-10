@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
@@ -22,13 +21,10 @@ public class WeatherCondition implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @NotNull(message = "May not be empty")
     private boolean precipitation;
     
-    @NotNull(message = "May not be empty")
     private float wind; 
     
-    @NotNull(message = "May not be empty")
     private float temperature;
     
     private String icon;

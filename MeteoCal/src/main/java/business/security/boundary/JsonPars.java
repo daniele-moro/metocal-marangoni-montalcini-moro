@@ -2,6 +2,7 @@ package business.security.boundary;
 
 import business.security.entity.WeatherCondition;
 import business.security.object.Location;
+import java.util.Date;
 import javax.ejb.Singleton;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
@@ -12,55 +13,77 @@ public class JsonPars {
     
     JSONObject jObj;
 
-    public WeatherCondition parsingWeather(String lat, String lng) throws JSONException {
-        RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/weather?lat=", lat, lng);
+    public WeatherCondition parsingWeather(String lat, String lng, Date eventStart) throws JSONException {
+        RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/forecast/daily?lat=", lat, lng);
         WeatherCondition wc = new WeatherCondition();
         String mainResult;
+        long forecastDateUnix;
+        boolean setted = false;
+        Date dataEstratta = new Date();
         
         jObj = new JSONObject(wm.getData());
-        JSONArray jArr = jObj.getJSONArray("weather");
-        JSONObject JSONWeather = jArr.getJSONObject(0);
-        mainResult = getString("main", JSONWeather);
-        switch(mainResult) {
-            case "Thunderstorm" : 
-                wc.setPrecipitation(true);
-                break; 
-            case "Drizzle" : 
-                wc.setPrecipitation(true);
-                break; 
-            case "Rain" :
-                wc.setPrecipitation(true);
-                break; 
-            case "Snow" : 
-                wc.setPrecipitation(true);
-                break; 
-            case "Atmpsphere" : 
-                wc.setPrecipitation(false);
-                break; 
-            case "Clouds" : 
-                wc.setPrecipitation(false);
-                break; 
-            case "Extreme" : 
-                wc.setPrecipitation(false);
-                break; 
-            default : 
-                wc.setPrecipitation(false);
-                break; 
+        JSONArray jArr = jObj.getJSONArray("list");
+        
+        for(int i=0; i<jArr.length(); i++) {
+            JSONObject JSONWeather = jArr.getJSONObject(i);
+
+            //Forecast Date
+            forecastDateUnix = getLong("dt", JSONWeather);
+            Date forecastDate = new Date((long)forecastDateUnix*1000);
+
+            if(     forecastDate.getDate()== eventStart.getDate() &&
+                    forecastDate.getYear() == eventStart.getYear() && 
+                    forecastDate.getMonth() == eventStart.getMonth() ){
+                
+                setted = true;
+                dataEstratta = forecastDate;
+                    
+                //Wind Speed
+                wc.setWind(getFloat("speed", JSONWeather));
+
+                //Temperature
+                JSONObject tempObj = getObject("temp", JSONWeather);
+                wc.setTemperature(getFloat("day", tempObj));
+
+                //Main
+                JSONArray weatherArr = JSONWeather.getJSONArray("weather");
+                JSONObject weatherObj = weatherArr.getJSONObject(0);
+                mainResult = getString("main", weatherObj);
+                switch(mainResult) {
+                    case "Thunderstorm" : 
+                        wc.setPrecipitation(true);
+                        break; 
+                    case "Drizzle" : 
+                        wc.setPrecipitation(true);
+                        break; 
+                    case "Rain" :
+                        wc.setPrecipitation(true);
+                        break; 
+                    case "Snow" : 
+                        wc.setPrecipitation(true);
+                        break; 
+                    case "Atmpsphere" : 
+                        wc.setPrecipitation(false);
+                        break; 
+                    case "Clouds" : 
+                        wc.setPrecipitation(false);
+                        break; 
+                    case "Extreme" : 
+                        wc.setPrecipitation(false);
+                        break; 
+                    default : 
+                        wc.setPrecipitation(false);
+                        break; 
+                }
+
+                //Icon
+                wc.setIcon(getString("icon", weatherObj));
+                System.out.println("Data estratta: " + dataEstratta);
+                System.out.println("Data richiesta: " + eventStart);
+                return wc;
+            }
         }
-        
-        //Icon
-        wc.setIcon(getString("icon", JSONWeather));
-
-        JSONObject mainObj = getObject("main", jObj);
-        
-        //Temperature
-        wc.setTemperature(getFloat("temp", mainObj));
-
-        // Wind
-        JSONObject wObj = getObject("wind", jObj);
-        wc.setWind(getFloat("speed", wObj));
-        
-        return wc;
+        return null;
     }
     
     public Location parsingLatitudeLongitude(String city) throws JSONException {
@@ -98,6 +121,10 @@ public class JsonPars {
 
     private static int  getInt(String tagName, JSONObject jObj) throws JSONException {
         return jObj.getInt(tagName);
+    }
+    
+    private static long  getLong(String tagName, JSONObject jObj) throws JSONException {
+        return jObj.getLong(tagName);
     }
     
 }

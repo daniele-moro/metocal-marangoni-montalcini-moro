@@ -40,7 +40,7 @@ public class WeatherChecker {
             WeatherCondition temp;
             
             try {
-                temp=jsonPars.parsingWeather(event.getLatitude(), event.getLongitude());
+                temp = jsonPars.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
                 Query findCondition = em.createQuery("SELECT w FROM WeatherCondition w WHERE w.id = ?1"); 
                 findCondition.setParameter(1, event.getWeatherForecast().getId());
                 WeatherCondition w = (WeatherCondition) findCondition.getResultList().get(0);
