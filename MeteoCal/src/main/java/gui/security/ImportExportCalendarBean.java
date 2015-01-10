@@ -5,11 +5,14 @@ import exception.DateConsistencyException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.inject.Named;
 import javax.faces.context.FacesContext;
 import javax.xml.bind.JAXBException;
+import org.codehaus.jettison.json.JSONException;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -34,6 +37,8 @@ public class ImportExportCalendarBean {
                 impExp.importUserCalendar(file.getInputstream());
                 message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
             } catch (IOException | DateConsistencyException ex) {
+                message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error", file.getFileName() + " isn't uploaded. \n"+ex.getMessage());
+            } catch (JSONException ex) {
                 message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error", file.getFileName() + " isn't uploaded. \n"+ex.getMessage());
             }
         }else{

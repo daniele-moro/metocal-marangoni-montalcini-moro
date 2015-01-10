@@ -12,95 +12,100 @@
             <ui:define name="title">
                 Add Invitation to an Event
             </ui:define>
-            
-            <ui:define name="content">
-                <!--______________ MAIN CONTENT ______________-->
-                <h:form id="addInvitation">
-                    <h3>Insert the email of the user you want to invite:</h3>
-                    <p:panelGrid columns="4">
-                        <p:outputLabel for="email" value="Email"/>
-                        <p:inputText id="email" value="#{addInvitationBean.email}">
-                            <p:ajax update="emailmsg"/>
-                        </p:inputText>
-                        <p:message id="emailmsg" for="email" />
-                        <input type="hidden" name="idEvent" value="#{param['id']}" />
-                    </p:panelGrid>
-                    <p:commandButton id="add" actionListener="#{addInvitationBean.addUserThroughEmail()}"
-                                     value="Add" update=":listInvited" />
-                </h:form>
                 
-                <h:form>
-                    <h3>Insert name and email of the user you want to invite</h3>
-                    <p:panelGrid columns="7">
-                        <p:outputLabel for="name" value="Name"/>
-                        <p:inputText id="name" value="#{addInvitationBean.name}">
-                            <p:ajax update="namemsg"/>
-                        </p:inputText>
-                        <p:message id="namemsg" for="name" />
-                        <p:outputLabel for="surname" value="Surname"/>
-                        <p:inputText id="surname" value="#{addInvitationBean.surname}">
-                            <p:ajax update="surnamemsg"/>
-                        </p:inputText>
-                        <p:message id="surnamemsg" for="surname" />
-                        <input type="hidden" name="idEvent" value="#{param['id']}" />
-                    </p:panelGrid>
-                    <p:commandButton id="Search" actionListener="#{addInvitationBean.addUserThroughNameSurname()}" value="Search" update=":listResult, :listInvited"/>
-                    <p:messages id="messageSearch" globalOnly="true" showDetail="true" autoUpdate="true" closable="true" />
-                    
-                </h:form>
-                <h:panelGrid id="listResult">
+            <ui:define name="content" rendered="#{addInvitationBean.construct}">
+                <p:messages id="messageError" showDetail="true" autoUpdate="true" closable="true"
+                            rendered="#{!addInvitationBean.construct}"/>
                 
-                    <p:dataTable value="#{addInvitationBean.partialResults}" var="o"
-                                 styleClass="order-table"
-                                 rendered="#{addInvitationBean.partialResults.size()>0}"
-                                 >
-                        <!--headerClass="order-table-header"
-                        rowClasses="order-table-odd-row,order-table-even-row"-->
-                                
-                        <p:column headerText="Name">
-                            #{o.name}
-                        </p:column>
-                                
-                        <p:column headerText="Surname">
-                            #{o.surname}
-                        </p:column>
-                                
-                        <p:column headerText="Email">
-                            #{o.email}
-                        </p:column>
-                        <p:column>
-                            <h:form>
+                <h:panelGrid rendered="#{addInvitationBean.construct}">
+                    <!--______________ MAIN CONTENT ______________-->
+                    <h:form id="addInvitation">
+                        <h3>Insert the email of the user you want to invite:</h3>
+                        <p:panelGrid columns="4">
+                            <p:outputLabel for="email" value="Email"/>
+                            <p:inputText id="email" value="#{addInvitationBean.email}">
+                                <p:ajax update="emailmsg"/>
+                            </p:inputText>
+                            <p:message id="emailmsg" for="email" />
                             <input type="hidden" name="idEvent" value="#{param['id']}" />
-                            <p:commandButton value="Add" action="#{addInvitationBean.addUser(o)}" update=":listInvited, :listResult">
-                            </p:commandButton>
-                            </h:form>
+                        </p:panelGrid>
+                        <p:commandButton id="add" actionListener="#{addInvitationBean.addUserThroughEmail()}"
+                                         value="Add" update=":listInvited" />
+                    </h:form>
+                    
+                    <h:form>
+                        <h3>Insert name and email of the user you want to invite</h3>
+                        <p:panelGrid columns="7">
+                            <p:outputLabel for="name" value="Name"/>
+                            <p:inputText id="name" value="#{addInvitationBean.name}">
+                                <p:ajax update="namemsg"/>
+                            </p:inputText>
+                            <p:message id="namemsg" for="name" />
+                            <p:outputLabel for="surname" value="Surname"/>
+                            <p:inputText id="surname" value="#{addInvitationBean.surname}">
+                                <p:ajax update="surnamemsg"/>
+                            </p:inputText>
+                            <p:message id="surnamemsg" for="surname" />
+                            <input type="hidden" name="idEvent" value="#{param['id']}" />
+                        </p:panelGrid>
+                        <p:commandButton id="Search" actionListener="#{addInvitationBean.addUserThroughNameSurname()}" value="Search" update=":listResult, :listInvited"/>
+                        <p:messages id="messageSearch" globalOnly="true" showDetail="true" autoUpdate="true" closable="true" />
+                    </h:form>
+                    
+                    <h:panelGrid id="listResult">
+                        <p:dataTable value="#{addInvitationBean.partialResults}" var="o"
+                                     styleClass="order-table"
+                                     rendered="#{addInvitationBean.partialResults.size()>0}"
+                                     >
+                            <!--headerClass="order-table-header"
+                            rowClasses="order-table-odd-row,order-table-even-row"-->
                             
-                        </p:column>
-                    </p:dataTable>
-                </h:panelGrid>
-                        
-                <h:form>
-                    <p:commandButton value="Finish" action="home.xhtml?faces-redirect=true" />     
-                </h:form>
-                
-                <h3>Invited Users:</h3>
-                <h:panelGrid id="listInvited" >
-                    <p:dataTable value="#{addInvitationBean.invitedPeople}" var="o"
-                                 styleClass="order-table"
-                                 rendered="#{addInvitationBean.invitedPeople.size()>0}">           
-                        <p:column headerText="Name">
-                            #{o.name}
-                        </p:column>    
-                        <p:column headerText="Surname">
-                            #{o.surname}
-                        </p:column>    
-                        <p:column headerText="Email">
-                            #{o.email}
-                        </p:column>
-                    </p:dataTable>
+                            <p:column headerText="Name">
+                                #{o.name}
+                            </p:column>
+                            
+                            <p:column headerText="Surname">
+                                #{o.surname}
+                            </p:column>
+                            
+                            <p:column headerText="Email">
+                                #{o.email}
+                            </p:column>
+                            <p:column>
+                                <h:form>
+                                    <input type="hidden" name="idEvent" value="#{param['id']}" />
+                                    <p:commandButton value="Add" action="#{addInvitationBean.addSelectedUser(o)}" update=":listInvited, :listResult">
+                                    </p:commandButton>
+                                </h:form>
+                                
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                    
+                    <h:form>
+                        <p:commandButton value="Finish" action="home.xhtml?faces-redirect=true" />     
+                    </h:form>
+                    
+                    <h3>Invited Users:</h3>
+                        <h:panelGrid id="listInvited">
+                    
+                        <p:dataTable value="#{addInvitationBean.invitedPeople}" var="o"
+                                     styleClass="order-table"
+                                     rendered="#{addInvitationBean.invitedPeople.size()>0}">           
+                            <p:column headerText="Name">
+                                #{o.name}
+                            </p:column>    
+                            <p:column headerText="Surname">
+                                #{o.surname}
+                            </p:column>    
+                            <p:column headerText="Email">
+                                #{o.email}
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
                 </h:panelGrid>
             </ui:define>
-            
+                
         </ui:composition>
     </h:body>
 </html>

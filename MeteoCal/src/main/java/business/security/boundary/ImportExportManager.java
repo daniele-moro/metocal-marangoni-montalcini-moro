@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jettison.json.JSONException;
 
 /**
  *
@@ -28,7 +29,7 @@ public class ImportExportManager {
     @EJB
     UserInformationLoader uil;
     
-    public void importUserCalendar(InputStream inStr) throws JAXBException, DateConsistencyException {
+    public void importUserCalendar(InputStream inStr) throws JAXBException, DateConsistencyException, JSONException {
         JAXBContext context = JAXBContext.newInstance(EventsList.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         
@@ -45,7 +46,7 @@ public class ImportExportManager {
         }
         //Aggiungo tutti gli eventi al Database
         for(Event e : events.getEvents()){
-            eventMgr.createEvent(e, e.getAcceptedWeatherConditions());
+            eventMgr.createEvent(e);
         }
     }
     

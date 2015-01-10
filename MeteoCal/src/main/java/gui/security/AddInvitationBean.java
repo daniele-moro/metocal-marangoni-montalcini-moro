@@ -10,8 +10,11 @@ import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
 import business.security.entity.Event;
 import business.security.entity.User;
+import exception.InviteException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -30,9 +33,6 @@ public class AddInvitationBean implements Serializable{
     private long idEvent;
     
     @EJB
-    private NotificationManager notificationManager;
-    
-    @EJB
     private SearchManager searchManager;
     
     @EJB
@@ -49,12 +49,15 @@ public class AddInvitationBean implements Serializable{
     private String email;
     
     //Lista degli invitati
-    List<User> invitedPeople;
+    private List<User> invitedPeople;
     
     //lista dei risultati parziali
-    List<User> partialResult;
+    private List<User> partialResult;
+    
+    private boolean construct;
     
     private Event event;
+    
     
     /**
      * Metodo che precarica gli utenti invitati all'evento
@@ -65,12 +68,40 @@ public class AddInvitationBean implements Serializable{
     }
     
     private void temp(){
+        construct=true;
+        FacesMessage errMessage;
         //Prelevo l'id passato in GET
-        idEvent = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+        String param=FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+        
+        //Controllo se viene passato l'id dell'evento alla pagina
+        if(param==null){
+            errMessage=new FacesMessage(FacesMessage.SEVERITY_ERROR, "No event selected", "");
+            FacesContext.getCurrentInstance().addMessage(null, errMessage);
+            construct=false;
+            return;
+        }
+        idEvent = Long.parseLong(param);
         System.out.println("ID EVENTO "+this.idEvent);
+        //Carico l'evento solo per verificare che l'evento esista
+        event = eventManager.getEventById(idEvent);
+        
+        //controllo se l'evento esiste
+        if(event==null ){
+            errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Event Error", "");
+            construct=false;
+            FacesContext.getCurrentInstance().addMessage(null, errMessage);
+            return;
+        }
+        
+        //Controllo se l'organizzatore è l'utente loggato
+        if(!event.isOrganizer(eventManager.getLoggedUser())){
+            errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "You aren't the organizer of this event", "");
+            construct=false;
+            FacesContext.getCurrentInstance().addMessage(null, errMessage);
+            return;
+        }
         //Aggiorno la lista degli eventi
         invitedPeople=eventManager.getInvitedPeople(idEvent);
-        event=eventManager.getEventById(idEvent);
     }
     
     public String getName() {
@@ -108,24 +139,27 @@ public class AddInvitationBean implements Serializable{
     
     
     public void addUserThroughEmail() {
-        eventManager.addInvitation(email,idEvent);
-        /*
-        manca da controllare se l'invito è mandabile, e in caso di problemi visualizzare un messaggio
-        FacesMessage message;
-        message = new FacesMessage("No results","");
-        FacesContext.getCurrentInstance().addMessage(null, message);*/
-        //Prelevo dal db la lista degli invitati
-        invitedPeople = eventManager.getInvitedPeople(idEvent);
+        User u = searchManager.findUser(email);
+        addUser(u);
     }
     
-    public String addUser(User u){
-        eventManager.addInvitation(u, idEvent);
-        
-        //Prelevo dal db la lista degli invitati
-        invitedPeople = eventManager.getInvitedPeople(idEvent);
+    public String addSelectedUser(User u){
+        addUser(u);
         partialResult= null;
-        return"";
+        return "";
     }
+    
+    private void addUser(User user){
+        try {
+            eventManager.addInvitation(user, event);
+            invitedPeople = eventManager.getInvitedPeople(idEvent);
+        } catch (InviteException ex) {
+            FacesMessage message;
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"ERROR",ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
+    
     
     public void addUserThroughNameSurname() {
         //Cerco gli utenti per nome e cognome
@@ -136,5 +170,12 @@ public class AddInvitationBean implements Serializable{
             message = new FacesMessage("No results","");
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
+    }
+    
+    /**
+     * @return the construct
+     */
+    public boolean isConstruct() {
+        return construct;
     }
 }

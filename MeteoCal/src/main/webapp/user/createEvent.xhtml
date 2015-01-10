@@ -28,7 +28,7 @@
                 <h3>Create Event:</h3>
                 <h:form id="registrationform">
                     <h:panelGrid columns="2" id="regGrid">
-                        <h:outputLabel for="name">Name:</h:outputLabel>
+                        <h:outputLabel for="name" value="Name" />
                         <p:inputText id="name" value="#{eventOperationBean.event.name}"/>
                                         
                         <p:outputLabel for="timeStart" value="Time Start:" />
@@ -83,6 +83,7 @@
                             <f:selectItem itemLabel="greater 20" itemValue="3" />
                         </p:selectOneRadio>
                     </h:panelGrid>
+                    <p:messages id="messageForError" autoUpdate="true" closable="true" showDetail="true" />
                     <p:commandButton id="createEvent" value="CreateEvent" update="regGrid"
                                      action="#{eventOperationBean.createEvent()}" />
                 </h:form>           
