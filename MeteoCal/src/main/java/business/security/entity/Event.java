@@ -7,6 +7,7 @@ package business.security.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,20 +25,20 @@ public class Event implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Name May not be empty")
     private String name;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Time Start May not be empty")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date timeStart;
 
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Time End May not be empty")
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date timeEnd;
      
     private String description;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Location May not be empty")
     private String location;
     
     private String latitude;
@@ -56,7 +57,7 @@ public class Event implements Serializable {
     @NotNull(message = "May not be empty")
     private User organizer;
     
-    @NotNull(message = "May not be empty")
+    @NotNull(message = "Typology May not be empty")
     private PredefinedTypology predefinedTypology;
     
     //@NotNull(message = "May not be empty")
@@ -201,5 +202,25 @@ public class Event implements Serializable {
         this.location = location;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Event other = (Event) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean isOrganizer(User user){
+        return this.organizer.equals(user);
+    }
+
+    
     
 }

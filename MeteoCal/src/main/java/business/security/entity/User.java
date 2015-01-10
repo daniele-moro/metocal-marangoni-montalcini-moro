@@ -8,6 +8,7 @@ package business.security.entity;
 import business.security.control.PasswordEncrypter;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
@@ -122,6 +123,21 @@ public class User implements Serializable {
 
     public void setCalendarPublic(boolean calendarPublic) {
         this.calendarPublic = calendarPublic;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        return true;
     }
 
 }
