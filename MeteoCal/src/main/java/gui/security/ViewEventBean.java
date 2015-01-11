@@ -10,10 +10,14 @@ import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.User;
+import exception.DateConsistencyException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -87,8 +91,12 @@ public class ViewEventBean implements Serializable{
     
     
     public void acceptInvitation() {
-        eventManager.addParticipantToEvent(event);
-        //return "event?faces-redirect=true";
+        try {
+            eventManager.addParticipantToEvent(event);
+        } catch (DateConsistencyException ex) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
     }
     
     public void refuseInvitation() {
@@ -96,16 +104,10 @@ public class ViewEventBean implements Serializable{
         //return "event?faces-redirect=true";
     }
     
-    public void reAcceptInvitation() {
-        eventManager.addParticipantToEvent(event);
-        //return "event?faces-redirect=true";
-    }
-    
     public void deleteParticipation() {
         eventManager.removeParticipantFromEvent(event);
         //return "event?faces-redirect=true";
     }
-    
     
     public boolean getFindInviteStatusInvited() {
         return userInformationLoader.findInviteStatus(event).getStatus()== Invite.InviteStatus.invited;

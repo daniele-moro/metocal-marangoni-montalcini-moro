@@ -61,14 +61,14 @@ public class EventManager {
 
     /**
      * Creation of a new Event, it also takes the weather forecast
-     *
+     * 
      * @param event Event to add
      * @throws DateConsistencyException Exception in case of overlapping or
      * inconsitent date
-     * @throws Exception Exception in case of JSONError
+     * @throws JSONException 
      */
     public void createEvent(Event event) throws DateConsistencyException, JSONException {
-        if (checkDateConsistency(event.getTimeStart(), event.getTimeEnd())) {
+        if (checkDateConsistency(event)) {
             event.setOrganizer(getLoggedUser());
             // System.out.println("" + awc.getPrecipitation() + " " + awc.getTemperature() + " " + awc.getWind() );
             //prelevo le previsioni del tempo
@@ -114,37 +114,51 @@ public class EventManager {
      * @return true: no overlaps would be created; false: overlaps would be
      * created
      */
-    public boolean checkDateConsistency(Date start, Date end) {
+    /*public boolean checkDateConsistency(Date start, Date end) {
         if (start.after((end))) {
             return false;
         } else {
             for (Event ev : userInformationLoader.loadCreatedEvents()) {
-                if (start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd())
-                        || end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd())
-                        || start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd())) {
+                if ((start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd()))
+                        || (end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd()))
+                        || (start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd()))) {
                     return false;
                 }
             }
             for (Event ev : userInformationLoader.loadAcceptedEvents()) {
-                if (start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd())
-                        || end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd())
-                        || start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd())) {
+                if ((start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd()))
+                        || (end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd()))
+                        || (start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd()))) {
                     return false;
                 }
             }
         }
         return true;
-    }
+    }*/
 
     /**
-     * Overload of the previous method, passing an event instead of date start
-     * and date end
+     * This method checks the consistency of the interval of the start and end
+     * dates, e.g., if the event with this type of time interval can be created
+     * without causing any overlaps with other events
      *
      * @param event Event to control
      * @return
      */
     public boolean checkDateConsistency(Event event) {
-        return checkDateConsistency(event.getTimeStart(), event.getTimeEnd());
+        if(event.getTimeStart().after(event.getTimeEnd())){
+            return false;
+        }
+        for (Event ev : userInformationLoader.loadCreatedEvents()) {
+                if (ev.isOverlapped(event)) {
+                    return false;
+                }
+            }
+            for (Event ev : userInformationLoader.loadAcceptedEvents()) {
+                 if (ev.isOverlapped(event)) {
+                    return false;
+                }
+            }
+        return true;
     }
 
     public List<NameSurnameEmail> getPartialResults() {
@@ -319,15 +333,22 @@ public class EventManager {
      * This method is called when the logged user decides to participate to an
      * event: it updates the invite status in the database, setting it as
      * "accepted"
-     *
-     * @param ev : the event to which the user has decided to participate.
+     * 
+     * @param ev Event the loggedUser wants to participate
+     * @throws DateConsistencyException Exception generated in case the logged user has an overlapping event
      */
-    public void addParticipantToEvent(Event ev) {
-        Query updateInviteStatus = em.createQuery("UPDATE INVITE i SET i.status =?1 WHERE i.event =?2 AND i.user = ?3");
-        updateInviteStatus.setParameter(1, Invite.InviteStatus.accepted);
-        updateInviteStatus.setParameter(2, ev);
-        updateInviteStatus.setParameter(3, getLoggedUser());
-        updateInviteStatus.executeUpdate();
+    public void addParticipantToEvent(Event ev) throws DateConsistencyException {
+        //Control if there is an overlapping event
+        if (this.checkDateConsistency(ev)) {
+            Query updateInviteStatus = em.createQuery("UPDATE INVITE i SET i.status =?1 WHERE i.event =?2 AND i.user = ?3");
+            updateInviteStatus.setParameter(1, Invite.InviteStatus.accepted);
+            updateInviteStatus.setParameter(2, ev);
+            updateInviteStatus.setParameter(3, getLoggedUser());
+            updateInviteStatus.executeUpdate();
+        } else {
+            //If there's an overlapping event, generate an exception
+            throw new DateConsistencyException("You may have an ovelapping event, you have to delete your participation to that event");
+        }
     }
 
     /**
@@ -348,13 +369,13 @@ public class EventManager {
 
     /**
      * This methods search in the database all the events which are created by
-     * the specified user
+     * the specified user (NOT deleted)
      *
      * @param user: the user on which the search is based
      * @return All the events created by the specified user
      */
     public List<Event> loadUserCreatedEvents(User user) {
-        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1");
+        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1 AND e.deleted=FALSE");
         qCreatedEvents.setParameter(1, user.getEmail());
         List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList();
         return createdEvents;
@@ -362,13 +383,13 @@ public class EventManager {
 
     /**
      * This methods search in the database all the events which are accepted by
-     * the specified user
+     * the specified user (NOT deleted)
      *
      * @param user: the user on which the search is based
      * @return All the events accepted by the specified user
      */
     public List<Event> loadUserAcceptedEvents(User user) {
-        Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
+        Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2 AND e.deleted=FALSE");
         qAcceptedEvents.setParameter(1, user.getEmail());
         qAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
 
@@ -377,8 +398,9 @@ public class EventManager {
     }
 
     /**
-     * This methods calls two other methods which find his accepted and created
-     * events: if his calendar is public, they are added to the result list
+     * This methods calls {@link loadUserCreatedEvents(User user) loadUserCreatedEvents(User)} and
+     * {@link loadUserAcceptedEvents(User user) loadUserAcceptedEvents(User)} which find his accepted and created
+     * events (NOT delete), events which are public and only if user has public calendar
      *
      * @param u: the user on which the search is based
      * @return All the events which are displayed in the calendar of the
@@ -399,16 +421,6 @@ public class EventManager {
             }
         }
         return userEvents;
-    }
-
-    /**
-     * It calls a method of the searchManager in order to find all the events
-     * stored in the database
-     *
-     * @return all the events stored in the database
-     */
-    public List<Event> getAllEvents() {
-        return searchManager.findAllEvents();
     }
 
     /**

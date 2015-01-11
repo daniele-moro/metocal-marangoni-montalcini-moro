@@ -74,7 +74,7 @@
                                      update="formButton"/>
                     <p:commandButton id="reAcceptInvitation" 
                                      value="Re-accept Invitation" 
-                                     actionListener="#{viewEventBean.reAcceptInvitation()}"
+                                     actionListener="#{viewEventBean.acceptInvitation()}"
                                      rendered="#{viewEventBean.findInviteStatusDelayed==true}" 
                                      update="formButton"/>
                     <p:commandButton id="deleteParticipation" 
@@ -83,6 +83,7 @@
                                      rendered="#{viewEventBean.findInviteStatusAccepted==true}" 
                                      update="formButton"/>
                     <h:outputLabel value="You have refused to participate to this event" rendered="#{viewEventBean.findInviteStatusNotAccepted==true}" />
+                    <p:messages id="messageError" globalOnly="true" showDetail="true" autoUpdate="true" closable="true" />
                 </h:form>
                 <h:form rendered="#{viewEventBean.event.deleted==true}">
                     <h:outputText value="This event has been deleted by its organizer"/>

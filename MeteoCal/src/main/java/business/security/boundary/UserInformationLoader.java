@@ -28,22 +28,22 @@ public class UserInformationLoader {
     }
     
     /**
-     * This method searches in the database for the events created by the logged user
+     * This method searches in the database for the events created by the logged user (NOT deleted)
      * @return list of the events created by the logged user
      */
     public List<Event> loadCreatedEvents() {
-        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1");
+        Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1 AND e.deleted=FALSE");
         qCreatedEvents.setParameter(1, getLoggedUser().getEmail());
         List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList();
         return createdEvents;
     }
     
     /**
-     * This method searches in the database for the events accepted by the logged user
+     * This method searches in the database for the events accepted by the logged user (NOT deleted)
      * @return list of the events accepted by the logged user
      */
     public List<Event> loadAcceptedEvents() {
-        Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2");
+        Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2 AND e.deleted=FALSE");
         qAcceptedEvents.setParameter(1, getLoggedUser().getEmail());
         qAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
         
@@ -65,7 +65,7 @@ public class UserInformationLoader {
     }
     
     /**
-     * This method calls three other methods which find the events of the user
+     * This method calls three other methods which find the events of the user (not deleted)
      * @return The events of the users
      */
     public List<Event> loadEvent() {

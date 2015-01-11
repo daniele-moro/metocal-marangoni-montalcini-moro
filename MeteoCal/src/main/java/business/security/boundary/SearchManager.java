@@ -84,20 +84,20 @@ public class SearchManager {
 
     /**
      * 
-     * @return All the events that aren't already occurred, null if there isn't any one
+     * @return All the events that aren't already occurred and not deleted, null if there isn't any one
      */
     public List<Event> findAllFutureEvents() {
-        Query findFutureEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.timeStart >= ?1");
+        Query findFutureEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.timeStart >= ?1 AND e.deleted=FALSE");
         findFutureEvents.setParameter(1, new Date());
         return findFutureEvents.getResultList();
     }
     
     /**
      * 
-     * @return All the events that are already occurred, null if there isn't any one
+     * @return All the events that are already occurred and not deleted, null if there isn't any one
      */
     public List<Event> findAllPastEvents() {
-        Query findFutureEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.timeStart < ?1");
+        Query findFutureEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.timeStart < ?1 AND e.deleted=FALSE");
         findFutureEvents.setParameter(1, new Date());
         return findFutureEvents.getResultList();
     }
