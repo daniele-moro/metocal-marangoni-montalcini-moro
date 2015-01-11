@@ -19,71 +19,75 @@ public class JsonPars {
         String mainResult;
         long forecastDateUnix;
         boolean setted = false;
-        Date dataEstratta = new Date();
+        Date currentDate = new Date();
         
-        jObj = new JSONObject(wm.getData());
-        JSONArray jArr = jObj.getJSONArray("list");
+        long currentDateMillisec = currentDate.getTime();
+        long eventStartMillisec = eventStart.getTime();
         
-        for(int i=0; i<jArr.length(); i++) {
-            JSONObject JSONWeather = jArr.getJSONObject(i);
+        long millisecDiff = eventStartMillisec - currentDateMillisec;
+        //1 giorno medio = 1000*60*60*24 ms
+        // = 86400000 ms
+        int differenzaGiorni = (int) (millisecDiff / 86400000) + 1 ;
+        System.out.println("Devo prendere l'iesimo elemento: " + differenzaGiorni);
+        
+        if(differenzaGiorni < 16) {
+            jObj = new JSONObject(wm.getData());
+            JSONArray jArr = jObj.getJSONArray("list");
+
+            JSONObject JSONWeather = jArr.getJSONObject(differenzaGiorni);
 
             //Forecast Date
             forecastDateUnix = getLong("dt", JSONWeather);
-            Date forecastDate = new Date((long)forecastDateUnix*1000);
+            Date dataEstratta = new Date((long)forecastDateUnix*1000);
 
-            if(     forecastDate.getDate()== eventStart.getDate() &&
-                    forecastDate.getYear() == eventStart.getYear() && 
-                    forecastDate.getMonth() == eventStart.getMonth() ){
-                
-                setted = true;
-                dataEstratta = forecastDate;
-                    
-                //Wind Speed
-                wc.setWind(getFloat("speed", JSONWeather));
+            setted = true;
 
-                //Temperature
-                JSONObject tempObj = getObject("temp", JSONWeather);
-                wc.setTemperature(getFloat("day", tempObj));
+            //Wind Speed
+            wc.setWind(getFloat("speed", JSONWeather));
 
-                //Main
-                JSONArray weatherArr = JSONWeather.getJSONArray("weather");
-                JSONObject weatherObj = weatherArr.getJSONObject(0);
-                mainResult = getString("main", weatherObj);
-                switch(mainResult) {
-                    case "Thunderstorm" : 
-                        wc.setPrecipitation(true);
-                        break; 
-                    case "Drizzle" : 
-                        wc.setPrecipitation(true);
-                        break; 
-                    case "Rain" :
-                        wc.setPrecipitation(true);
-                        break; 
-                    case "Snow" : 
-                        wc.setPrecipitation(true);
-                        break; 
-                    case "Atmpsphere" : 
-                        wc.setPrecipitation(false);
-                        break; 
-                    case "Clouds" : 
-                        wc.setPrecipitation(false);
-                        break; 
-                    case "Extreme" : 
-                        wc.setPrecipitation(false);
-                        break; 
-                    default : 
-                        wc.setPrecipitation(false);
-                        break; 
-                }
+            //Temperature
+            JSONObject tempObj = getObject("temp", JSONWeather);
+            wc.setTemperature(getFloat("day", tempObj));
 
-                //Icon
-                wc.setIcon(getString("icon", weatherObj));
-                System.out.println("Data estratta: " + dataEstratta);
-                System.out.println("Data richiesta: " + eventStart);
-                return wc;
+            //Main
+            JSONArray weatherArr = JSONWeather.getJSONArray("weather");
+            JSONObject weatherObj = weatherArr.getJSONObject(0);
+            mainResult = getString("main", weatherObj);
+            switch(mainResult) {
+                case "Thunderstorm" : 
+                    wc.setPrecipitation(true);
+                    break; 
+                case "Drizzle" : 
+                    wc.setPrecipitation(true);
+                    break; 
+                case "Rain" :
+                    wc.setPrecipitation(true);
+                    break; 
+                case "Snow" : 
+                    wc.setPrecipitation(true);
+                    break; 
+                case "Atmpsphere" : 
+                    wc.setPrecipitation(false);
+                    break; 
+                case "Clouds" : 
+                    wc.setPrecipitation(false);
+                    break; 
+                case "Extreme" : 
+                    wc.setPrecipitation(false);
+                    break; 
+                default : 
+                    wc.setPrecipitation(false);
+                    break; 
             }
+
+            //Icon
+            wc.setIcon(getString("icon", weatherObj));
+            System.out.println("Data estratta: " + dataEstratta);
+            System.out.println("Data richiesta: " + eventStart);
+            return wc;
+        } else {
+            return null;
         }
-        return null;
     }
     
     public Location parsingLatitudeLongitude(String city) throws JSONException {
