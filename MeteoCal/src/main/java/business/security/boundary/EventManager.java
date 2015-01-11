@@ -8,6 +8,7 @@ import business.security.entity.WeatherCondition;
 import business.security.object.NameSurnameEmail;
 import exception.DateConsistencyException;
 import exception.InviteException;
+import exception.WeatherException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,20 +68,25 @@ public class EventManager {
      * inconsitent date
      * @throws JSONException 
      */
-    public void createEvent(Event event) throws DateConsistencyException, JSONException {
+    public void createEvent(Event event) throws DateConsistencyException {
         if (checkDateConsistency(event)) {
-            event.setOrganizer(getLoggedUser());
-            // System.out.println("" + awc.getPrecipitation() + " " + awc.getTemperature() + " " + awc.getWind() );
-            //prelevo le previsioni del tempo
-            WeatherCondition weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
-            //Le aggiungo all'evento
-            event.setWeatherForecast(weatherForecast);
-            save(event.getAcceptedWeatherConditions());
-            //Se non sono previste previsioni meteo (data troppo avanti nel tempo)non le memorizzo
-            if (weatherForecast != null) {
+            try {
+                event.setOrganizer(getLoggedUser());
+                save(event.getAcceptedWeatherConditions());
+                em.persist(event);
+                // System.out.println("" + awc.getPrecipitation() + " " + awc.getTemperature() + " " + awc.getWind() );
+                //prelevo le previsioni del tempo
+                System.out.println("------------------------------------------------------CREAZIONE EVENTO");
+                WeatherCondition weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
+                System.out.println("------------------------------------------------------WEATHER PRELEVATOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                //Le aggiungo all'evento se e solo se non mi torna una exception
+                event.setWeatherForecast(weatherForecast);
                 save(event.getWeatherForecast());
+                em.merge(event);
+                
+            } catch (WeatherException ex) {
+                System.out.println(""+ex.getMessage());
             }
-            em.persist(event);
         } else {
             throw new DateConsistencyException("You may have some overlapping event, or the date of start is after the end");
         }

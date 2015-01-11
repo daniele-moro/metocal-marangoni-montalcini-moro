@@ -7,6 +7,9 @@ package business.security.boundary;
 
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
+import exception.WeatherException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -66,7 +69,7 @@ public class WeatherChecker {
                 System.out.println("\nCambiate le weather forecast:");
                 //System.out.println(event.getWeatherForecast().toString());
 
-            } catch (JSONException ex) {
+            } catch (WeatherException ex) {
                 System.out.println(ex.getMessage());
             }
 

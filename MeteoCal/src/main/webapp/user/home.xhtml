@@ -40,11 +40,30 @@
                             
                             <h:outputLabel for="notPredefinedTypology" value="Typology2:"/> 
                             <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"/>
-
+                            
                             <h:outputLabel for="predefinedTypology" value="Typology: "/> 
-                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"/>
-                            <h:commandButton value="View Event" action="#{scheduleView.goToEvent(scheduleView.event.data)}"/>
+                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"/>               
+                            
+                            <h:outputLabel for="weatherForecast" value="Weather Forecast:" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            <p:graphicImage id="weatherForecast" value="http://openweathermap.org/img/w/#{scheduleView.event.data.weatherForecast.icon}.png" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            
+                            <h:outputLabel for="tempForecast" value="Temperature Forecast:" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            <h:outputLabel id="tempForecast" value="#{scheduleView.event.data.weatherForecast.temperatureFormat} °C" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            
+                            <br/>
+                            <h:outputLabel id="rainForecasted" value="Forecasted rain" rendered="#{scheduleView.event.data.weatherForecast != null 
+                                                                                                   and scheduleView.event.data.weatherForecast.precipitation == true}"/>
+                            
+                            <h:outputLabel id="NOrainForecasted" value="NO Forecasted rain" rendered="#{scheduleView.event.data.weatherForecast != null 
+                                                                                                        and scheduleView.event.data.weatherForecast.precipitation == false}"/>
+                            
+                            <h:outputLabel for="windForecast" value="Wind Forecast:" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            <h:outputLabel id="windForecast" value="#{scheduleView.event.data.weatherForecast.wind} mps" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            
                         </h:panelGrid>
+
+                            <h:commandButton value="View Event" action="#{scheduleView.goToEvent(scheduleView.event.data)}"/>
+                        
                     </p:dialog>    
                 </h:form>
             </ui:define>

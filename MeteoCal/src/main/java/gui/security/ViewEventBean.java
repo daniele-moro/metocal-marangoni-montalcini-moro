@@ -1,8 +1,8 @@
 /*
-* To change this license header, choose License Headers in Project Properties.
-* To change this template file, choose Tools | Templates
-* and open the template in the editor.
-*/
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package gui.security;
 
 import business.security.boundary.EventManager;
@@ -13,8 +13,6 @@ import business.security.entity.User;
 import exception.DateConsistencyException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -28,68 +26,68 @@ import javax.faces.view.ViewScoped;
  */
 @Named
 @ViewScoped
-public class ViewEventBean implements Serializable{
-    
+public class ViewEventBean implements Serializable {
+
     private Event event;
     private boolean creator;
-    
+
     @EJB
     private EventManager eventManager;
-    
+
     @EJB
     private UserInformationLoader userInformationLoader;
-    
+
     private List<User> accepted;
     private List<User> refused;
     private List<User> pendent;
-    
+
     @PostConstruct
-    public void init(){
+    public void init() {
         temp();
     }
-    
-    private void temp(){
+
+    private void temp() {
         //Prelevo l'id passato in GET
         long idEvent = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
-        System.out.println("ID EVENTO "+idEvent);
+        System.out.println("ID EVENTO " + idEvent);
         //Aggiorno la lista degli eventi
         setEvent(eventManager.getEventById(idEvent));
         /**
-         * Se l'utente loggato è il creatore devo caricare la lista degli:
-         * - utenti che hanno accettato la partecipazione
-         * - utenti che hanno rifiutato la partecipazione
-         * - utenti che devono ancora rispondere
+         * Se l'utente loggato è il creatore devo caricare la lista degli: -
+         * utenti che hanno accettato la partecipazione - utenti che hanno
+         * rifiutato la partecipazione - utenti che devono ancora rispondere
          */
-        if(event.getOrganizer().getEmail().equals(eventManager.getLoggedUser().getEmail())){
-            creator=true;
+        if (event.getOrganizer().equals(eventManager.getLoggedUser())) {
+            creator = true;
             accepted = eventManager.getAcceptedPeople(event);
             refused = eventManager.getRefusedPeople(event);
             pendent = eventManager.getPendentPeople(event);
-        } else{
-            creator=false;
-            accepted = refused = pendent = null;
+        } else {
+            creator = false;
+            accepted = null;
+            refused = null;
+            pendent = null;
         }
     }
-    
-    public String viewProfile(User u){
-        return "userProfile?faces-redirect=true&amp;email="+u.getEmail();
+
+    public String viewProfile(User u) {
+        return "userProfile?faces-redirect=true&amp;email=" + u.getEmail();
     }
-    
+
     /**
      * @return the event
      */
     public Event getEvent() {
         return event;
     }
-    
+
     /**
      * @param event the event to set
      */
     public void setEvent(Event event) {
         this.event = event;
     }
-    
-    
+
     public void acceptInvitation() {
         try {
             eventManager.addParticipantToEvent(event);
@@ -98,29 +96,47 @@ public class ViewEventBean implements Serializable{
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
-    
+
     public void refuseInvitation() {
         eventManager.removeParticipantFromEvent(event);
         //return "event?faces-redirect=true";
     }
-    
+
     public void deleteParticipation() {
         eventManager.removeParticipantFromEvent(event);
         //return "event?faces-redirect=true";
     }
-    
+
     public boolean getFindInviteStatusInvited() {
-        return userInformationLoader.findInviteStatus(event).getStatus()== Invite.InviteStatus.invited;
+        Invite inv = userInformationLoader.findInviteStatus(event);
+        if (inv == null) {
+            return false;
+        }
+        return inv.getStatus() == Invite.InviteStatus.invited;
     }
-    
+
     public boolean getFindInviteStatusAccepted() {
-        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.accepted;
+        Invite inv = userInformationLoader.findInviteStatus(event);
+        if (inv == null) {
+            return false;
+        }
+        return inv.getStatus() == Invite.InviteStatus.accepted;
     }
+
     public boolean getFindInviteStatusNotAccepted() {
-        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.notAccepted;
+        Invite inv = userInformationLoader.findInviteStatus(event);
+        if (inv == null) {
+            return false;
+        }
+        return inv.getStatus() == Invite.InviteStatus.notAccepted;
     }
+
     public boolean getFindInviteStatusDelayed() {
-        return userInformationLoader.findInviteStatus(event).getStatus() == Invite.InviteStatus.delayedEvent;
+        Invite inv = userInformationLoader.findInviteStatus(event);
+        if (inv == null) {
+            return false;
+        }
+        return inv.getStatus() == Invite.InviteStatus.delayedEvent;
     }
 
     /**
@@ -150,5 +166,5 @@ public class ViewEventBean implements Serializable{
     public boolean isCreator() {
         return creator;
     }
-    
+
 }

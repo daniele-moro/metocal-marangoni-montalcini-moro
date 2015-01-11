@@ -57,6 +57,10 @@ public class WeatherCondition implements Serializable {
     public float getTemperature() {
         return temperature;
     }
+    
+    public String getTemperatureFormat(){
+        return String.format ("%.2f", temperature-273.15);
+    }
 
     public void setTemperature(float temperature) {
         this.temperature = temperature;

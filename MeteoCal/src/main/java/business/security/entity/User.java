@@ -125,6 +125,11 @@ public class User implements Serializable {
         this.calendarPublic = calendarPublic;
     }
 
+    /**
+     * Redefined equals, it compare the emails
+     * @param obj
+     * @return 
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
