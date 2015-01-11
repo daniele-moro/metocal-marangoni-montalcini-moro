@@ -2,6 +2,7 @@ package business.security.control;
 
 
 import javax.annotation.Resource;
+import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -17,7 +18,9 @@ public class MailManager {
    @Resource (name = "mail/sendMail")
    private Session mailSession;
    
+   @Asynchronous
     public void sendMail (String destination, String subject, String text){
+        System.out.println("--------------------------------SPEDIZIONE MAIL!!!!!!-------------------------------------");
         Message msg = new MimeMessage(mailSession);
         try {
             msg.setSubject(subject);
