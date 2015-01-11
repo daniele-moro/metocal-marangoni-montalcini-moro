@@ -6,7 +6,9 @@
 package business.security.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -219,6 +221,29 @@ public class Event implements Serializable {
     
     public boolean isOrganizer(User user){
         return this.organizer.equals(user);
+    }
+    
+    /**
+     * This method control if there is any overlap of period between the current object (this) and the parameter
+     * @param ev
+     * @return False if there isn't any overlap, True if there's an overlap
+     */
+    public boolean isOverlapped(Event ev){
+        if(this.timeEnd==null || this.timeStart==null || ev.timeEnd==null || ev.timeStart==null)
+            throw new IllegalArgumentException("Illegal Data");//Or return true
+
+        if((this.getTimeStart().after(ev.getTimeStart()) && this.getTimeStart().before(ev.getTimeEnd()))
+                || (this.getTimeEnd().after(ev.getTimeStart()) && this.getTimeEnd().before(ev.getTimeEnd()))
+                || (this.getTimeStart().equals(ev.getTimeStart()) && this.getTimeEnd().equals(ev.getTimeEnd()))){
+            return true;
+        }
+
+        if((ev.getTimeStart().after(this.getTimeStart()) && ev.getTimeStart().before(this.getTimeEnd()))
+                || (ev.getTimeEnd().after(this.getTimeStart()) && ev.getTimeEnd().before(this.getTimeEnd()))
+                || (ev.getTimeStart().equals(this.getTimeStart()) && ev.getTimeEnd().equals(this.getTimeEnd()))){
+            return true;
+        }    
+        return false;
     }
 
     
