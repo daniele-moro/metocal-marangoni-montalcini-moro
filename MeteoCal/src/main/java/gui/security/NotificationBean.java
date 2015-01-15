@@ -26,9 +26,6 @@ public class NotificationBean implements Serializable{
     private EventManager eventManager;
     
     private Event event;
-
-    public NotificationBean() {
-    }
     
     public List<Notification> getNotification() {
         return userInformationLoader.loadNotifications(); 
@@ -48,10 +45,6 @@ public class NotificationBean implements Serializable{
         //eventManager.setDeletedEvent(notification.getRelatedEvent().isDeleted());
         this.setEvent(notification.getRelatedEvent());
         return "event?faces-redirect=true&amp;id="+event.getId();
-    }
-   
-    public String showNotifications() {
-        return "notifications?faces-redirect=true";
     }
     
     public String deleteNotification(Notification notification) {

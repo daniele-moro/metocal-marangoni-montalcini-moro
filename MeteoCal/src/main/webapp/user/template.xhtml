@@ -30,16 +30,14 @@
                     </div>
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#">Dashboard</a></li>
-                            <li><a href="#">Settings</a></li>
-                            <li><a href="#">Profile</a></li>
-                            <li><a href="#">Help</a></li>
+                            <li><a  href="profile.xhtml">Profile</a></li>
+                            <li>
+                                <a href="notifications.xhtml">
+                                    <p:graphicImage value="images/notifications.png" rendered="#{notificationBean.notification.size()==0}"/>
+                                    <p:graphicImage value="images/newNotifications.png" rendered="#{notificationBean.notification.size()>0}"/>
+                                </a>
+                            </li>
                         </ul>
-                        <h:form id="searchForm" class="navbar-form navbar-right" role="form">
-                            <div class="form-group">
-                                <p:inputText type="text" placeholder="Search..." class="form-control" id="search" required="true"/>
-                            </div>
-                        </h:form>
                     </div>
                 </div>
             </nav>
@@ -65,14 +63,13 @@
                     <ul data-spy="affix" data-offset-top="50" id="affix" class="nav nav-stacked">
                         <!--part of the page for the sidebar-->
                         <ui:insert name="sidebar">
-                            <li><p:link outcome="profile" value="Profile"/></li>
                             <li><p:link outcome="createEvent" value="Create Event"/></li>
                             <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
                             <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
                             <li><p:link outcome="createdEvent" value="Created Event"/></li> 
                             <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
                             <li><p:link outcome="searchForUser" value="Search For A User"/></li>
-                            <li><p:link outcome="#{notificationBean.showNotifications()}" value="My Notifications"/></li>
+                            <li><p:link outcome="notifications" value="My Notifications"/></li>
                             <li><h:form>
                                     <p:commandLink action="#{loginBean.logout()}" value="logout"/>
                                 </h:form>
@@ -88,9 +85,10 @@
                 </div>
             </div>
         </div>
-        <hr/>
-        <footer>
-            <center><p>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</p></center>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted"><center>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</center></p>
+            </div>
         </footer>
     </h:body>
 </html>

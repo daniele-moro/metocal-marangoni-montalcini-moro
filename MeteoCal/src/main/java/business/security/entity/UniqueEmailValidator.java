@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package business.security.entity;
 
 import java.io.Serializable;
@@ -18,10 +13,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-/**
- *
- * @author matteomontalcini
- */
 @RequestScoped
 @FacesValidator("uniqueEmailValidator")
 public class UniqueEmailValidator implements Validator, Serializable {
@@ -39,7 +30,7 @@ public class UniqueEmailValidator implements Validator, Serializable {
             qUser.setParameter(1, (String) value);
             qUser.getSingleResult();
         } catch (NoResultException ex) {
-            isValid = true; // good! no result means unique validation was OK!
+            isValid = true; // No result means unique validation was OK!
         }
         if (!isValid) {
             throw new ValidatorException(new FacesMessage(
