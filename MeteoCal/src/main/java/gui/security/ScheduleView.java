@@ -1,5 +1,5 @@
 package gui.security;
- 
+
 import business.security.boundary.EventManager;
 import business.security.boundary.SearchManager;
 import business.security.boundary.UserInformationLoader;
@@ -18,20 +18,20 @@ import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
- 
+
 @ManagedBean
 @ViewScoped
 public class ScheduleView implements Serializable {
- 
+    
     
     private ScheduleModel loggedUserEvents;
     
     private User user;
- 
+    
     private ScheduleEvent event = new DefaultScheduleEvent();
     
     @EJB
-    private UserInformationLoader userInformationLoader; 
+    private UserInformationLoader userInformationLoader;
     
     @EJB
     private EventManager eventManager;
@@ -55,46 +55,55 @@ public class ScheduleView implements Serializable {
                 @Override
                 public void loadEvents(Date start, Date end) {
                     for(Event ev : userInformationLoader.loadAcceptedEvents()) {
-                        loggedUserEvents.addEvent(
-                                new  DefaultScheduleEvent(
-                                        ev.getName(),
-                                        ev.getTimeStart(),
-                                        ev.getTimeEnd(),
-                                        ev)
-                        );
+                        DefaultScheduleEvent event =  new DefaultScheduleEvent(
+                                ev.getName(),
+                                ev.getTimeStart(),
+                                ev.getTimeEnd(),
+                                ev);
+                        event.setStyleClass(ev.getPredefinedTypology().toString());
+                        loggedUserEvents.addEvent(event);
                     }
                     for(Event ev : userInformationLoader.loadCreatedEvents()) {
-                        loggedUserEvents.addEvent(
-                                new DefaultScheduleEvent(
-                                        ev.getName(),
-                                        ev.getTimeStart(),
-                                        ev.getTimeEnd(),
-                                        ev)
-                        );
+                        DefaultScheduleEvent event =  new DefaultScheduleEvent(
+                                ev.getName(),
+                                ev.getTimeStart(),
+                                ev.getTimeEnd(),
+                                ev);
+                        event.setStyleClass(ev.getPredefinedTypology().toString());
+                        loggedUserEvents.addEvent(event);
                     }
                     
                 }
             };
         } else {
-           user= srcManager.findUser(email);
-           loggedUserEvents = new LazyScheduleModel(){
+            user= srcManager.findUser(email);
+            loggedUserEvents = new LazyScheduleModel(){
                 @Override
                 public void loadEvents(Date start, Date end) {
                     for(Event ev : eventManager.loadEvent(user)) {
-                        loggedUserEvents.addEvent(
-                                new DefaultScheduleEvent(
-                                        ev.getName(),
-                                        ev.getTimeStart(), 
-                                        ev.getTimeEnd(),
-                                        ev)
-                        );
+                        DefaultScheduleEvent event;
+                        if(ev.isPublicEvent()){
+                            System.out.println("PUBLIC");
+                            event =  new DefaultScheduleEvent(
+                                    ev.getName(),
+                                    ev.getTimeStart(),
+                                    ev.getTimeEnd(),
+                                    ev);
+                            event.setStyleClass(ev.getPredefinedTypology().toString());
+                        } else {
+                            System.out.println("PRIVATE");
+                            event = new DefaultScheduleEvent("PRIVATE", ev.getTimeStart(), ev.getTimeEnd());
+                            event.setStyleClass("private");
+                        }
+                        
+                        loggedUserEvents.addEvent(event);
                     }
                 }
             };
         }
         
     }
-
+    
     public ScheduleEvent getEvent() {
         return event;
     }
@@ -102,17 +111,17 @@ public class ScheduleView implements Serializable {
     public void setEvent(ScheduleEvent event) {
         this.event = event;
     }
-   
-     
+    
+    
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
     }
-     
+    
     
     public ScheduleModel getLoggedUserEvents() {
         return loggedUserEvents;
     }
-
+    
     /**
      * @return the user
      */
@@ -122,14 +131,14 @@ public class ScheduleView implements Serializable {
     
     public String getPredefined(){
         if(event.getData()!=null){
-        System.out.println("PREDEFINED TYPO: "+((Event) event.getData()).getPredefinedTypology());
-        return ((Event) event.getData()).getPredefinedTypology().toString();
-    }
+            System.out.println("PREDEFINED TYPO: "+((Event) event.getData()).getPredefinedTypology());
+            return ((Event) event.getData()).getPredefinedTypology().toString();
+        }
         return "";
     }
     
     public String goToEvent(Event e){
         return "event.xhtml?faces-redirect=true&amp;id="+e.getId();
     }
-
+    
 }

@@ -37,9 +37,9 @@
                         <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                     </p:schedule>
                     <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
-                        <h:panelGrid id="eventDetails" columns="2">
-                            <h:outputLabel for="title" value="Title:" />
-                            <h:outputText id="title" value="#{scheduleView.event.title}" />
+                        <h:panelGrid id="eventDetails" columns="2" >
+                            <h:outputLabel for="title" value="Title:"  rendered="#{scheduleView.event.data!=null}"/>
+                            <h:outputText id="title" value="#{scheduleView.event.title}"  rendered="#{scheduleView.event.data!=null}"/>
                                     
                             <h:outputLabel for="from" value="From:" />
                             <h:outputText id="from" value="#{scheduleView.event.startDate}">
@@ -51,12 +51,13 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
                             </h:outputText>
                             
-                            <h:outputLabel for="notPredefinedTypology" value="Typology2:"/> 
-                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"/>
+                            <h:outputLabel for="notPredefinedTypology" value="Typology2:"  rendered="#{scheduleView.event.data!=null}"/> 
+                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"  rendered="#{scheduleView.event.data!=null}"/>
 
-                            <h:outputLabel for="predefinedTypology" value="Typology: "/> 
-                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"/>
-                            <h:commandButton value="View Event" action="#{scheduleView.goToEvent(scheduleView.event.data)}"/>
+                            <h:outputLabel for="predefinedTypology" value="Typology: "  rendered="#{scheduleView.event.data!=null}"/> 
+                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"  rendered="#{scheduleView.event.data!=null}"/>
+                            <h:commandButton value="View Event" action="#{scheduleView.goToEvent(scheduleView.event.data)}"  rendered="#{scheduleView.event.data!=null}"/>
+                            <h:outputLabel id="privateEvent" value="PRIVATE EVENT: you can't see more information about this event" rendered="#{scheduleView.event.data == null}"/>
                         </h:panelGrid>
                     </p:dialog>    
                 </h:form>

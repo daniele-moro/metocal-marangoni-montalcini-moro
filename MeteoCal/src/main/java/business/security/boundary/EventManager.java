@@ -416,14 +416,14 @@ public class EventManager {
         List<Event> userEvents = new ArrayList<>();
         if (u.isCalendarPublic()) {
             for (Event e : loadUserCreatedEvents(u)) {
-                if (e.isPublicEvent()) {
+               // if (e.isPublicEvent()) {
                     userEvents.add(e);
-                }
+              //  }
             }
             for (Event e : loadUserAcceptedEvents(u)) {
-                if (e.isPublicEvent()) {
+               // if (e.isPublicEvent()) {
                     userEvents.add(e);
-                }
+               // }
             }
         }
         return userEvents;

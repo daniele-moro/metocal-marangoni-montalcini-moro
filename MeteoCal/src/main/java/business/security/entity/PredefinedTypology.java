@@ -19,5 +19,12 @@ public enum PredefinedTypology {
     party,
     birthday,
     sport;
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
+    
+    
     
 }

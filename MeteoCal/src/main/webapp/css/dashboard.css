@@ -18,6 +18,60 @@ body {
 }
 
 /*
+* Color of the events
+*/
+.aperitif .fc-event-inner {
+    background: red;
+}
+
+.dinner .fc-event-inner {
+    background: green;
+}
+
+.lunch .fc-event-inner {
+    background: blue;
+}
+
+.baptism .fc-event-inner {
+    background: white;
+}
+
+.communion .fc-event-inner {
+    background: pink;
+}
+
+.confirmation .fc-event-inner {
+    background: purple;
+}
+
+.marriage .fc-event-inner {
+    background: yellow;
+}
+
+.graduation .fc-event-inner {
+    background: gray;
+}
+
+.party .fc-event-inner {
+    background: gold;
+}
+
+.birthday .fc-event-inner {
+    background: red;
+}
+
+.sport .fc-event-inner {
+    background: fuchsia;
+}
+
+.private .fc-event-inner {
+    background: brown;
+}
+
+
+
+
+/*
  * Top navigation
  * Hide default border to remove 1px line.
  */
