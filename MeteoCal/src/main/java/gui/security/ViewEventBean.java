@@ -6,12 +6,14 @@
 package gui.security;
 
 import business.security.boundary.EventManager;
+import business.security.boundary.SearchManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.User;
 import exception.DateConsistencyException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -30,13 +32,19 @@ public class ViewEventBean implements Serializable {
 
     private Event event;
     private boolean creator;
+    
+    private Date suggestedDate;
 
     @EJB
     private EventManager eventManager;
+    
+    @EJB
+    private SearchManager searchManager;
 
     @EJB
     private UserInformationLoader userInformationLoader;
-
+    
+    private boolean badWeatherConditions; 
     private List<User> accepted;
     private List<User> refused;
     private List<User> pendent;
@@ -59,10 +67,15 @@ public class ViewEventBean implements Serializable {
          */
         if (event.getOrganizer().equals(eventManager.getLoggedUser())) {
             creator = true;
+            if(searchManager.existWeatherChangedNotification(event)){
+                badWeatherConditions=true;
+                suggestedDate =eventManager.suggestNewDate(event);
+            }
             accepted = eventManager.getAcceptedPeople(event);
             refused = eventManager.getRefusedPeople(event);
             pendent = eventManager.getPendentPeople(event);
         } else {
+            badWeatherConditions = false;
             creator = false;
             accepted = null;
             refused = null;
@@ -165,6 +178,20 @@ public class ViewEventBean implements Serializable {
      */
     public boolean isCreator() {
         return creator;
+    }
+
+    /**
+     * @return the badWeatherConditions
+     */
+    public boolean isBadWeatherConditions() {
+        return badWeatherConditions;
+    }
+
+    /**
+     * @return the suggestedDate
+     */
+    public Date getSuggestedDate() {
+        return suggestedDate;
     }
 
 }

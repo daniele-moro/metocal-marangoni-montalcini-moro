@@ -51,10 +51,6 @@ public class EventOperationBean {
         return event;
     }
     
-    public WeatherCondition getAcceptedWeatherConditionsToModify() {
-        return eventManager.getAcceptedWeatherConditions();
-    }
-    
     public WeatherCondition getAcceptedWeatherCondition() {
         if (acceptedWeatherCondition == null) {
             acceptedWeatherCondition = new WeatherCondition();
@@ -119,10 +115,7 @@ public class EventOperationBean {
     public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
-    
-    public boolean getEventDeleted() {
-        return eventManager.isDeletedEvent();
-    }
+   
     
     /**
      * @return the weatherForecast
