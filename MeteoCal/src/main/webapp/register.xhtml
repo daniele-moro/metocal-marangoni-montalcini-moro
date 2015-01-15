@@ -81,7 +81,7 @@
                                     <p:message id="surnamemsg" for="surname" />
 
                                     <h:outputLabel for="birthday" value="Birthday:" />
-                                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" locale="de" navigator="true" pattern="yyyy-MMM-dd" yearRange="1900:2000"/>
+                                    <p:calendar id="birthday" value="#{registrationBean.user.birthday}" locale="en" navigator="true" pattern="yyyy-MMM-dd" yearRange="1900:2000"/>
                                     <p:message id="birthdaymsg" for="birthday" />
 
                                     <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
@@ -116,6 +116,7 @@
                                     <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
                                     <p:password id="pwd2" label="Confirm Password"/>
                                 </h:panelGrid>
+                                <p:messages id="messageError" globalOnly="true" showDetail="true" autoUpdate="true" closable="true" />
                                 <p:commandButton id="submit" value="Register" update="regGrid"
                                                  action="#{registrationBean.register()}" />
                             </p:panel>

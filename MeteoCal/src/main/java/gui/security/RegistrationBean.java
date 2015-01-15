@@ -1,33 +1,36 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package gui.security;
 
 import business.security.boundary.UserManager;
 import business.security.control.MailManager;
 import business.security.entity.User;
+import java.util.Calendar;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 @Named
 @RequestScoped
 public class RegistrationBean {
-
+    
     @EJB
     private UserManager um;
     
     @EJB
-    private MailManager mailManager; 
-
+    private MailManager mailManager;
+    
     private User user;
-
+    
     public RegistrationBean() {
     }
-
+    
     public User getUser() {
         if (user == null) {
             user = new User();
@@ -38,13 +41,23 @@ public class RegistrationBean {
     public void setUser(User user) {
         this.user = user;
     }
-
+    
     public String register() {
+        if(user.getBirthday().after(new Date(2000,12,31))){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Invalid inserted date, it can't be after 31/12/2000");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
         String residenceTown = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
+        if(residenceTown ==null || residenceTown.isEmpty() ){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location invalid or empty","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
         user.setResidenceTown(residenceTown);
         um.save(user);
         mailManager.sendMail(user.getEmail(), "Registration to MeteoCal", "Welcome in Meteocal! Your registration has been succesfully completed.");
         return "login?faces-redirect=true";
     }
-
+    
 }

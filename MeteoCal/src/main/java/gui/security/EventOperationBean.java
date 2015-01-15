@@ -12,8 +12,6 @@ import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -69,7 +67,7 @@ public class EventOperationBean {
         String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
         //Control if the location is valid (not null or not empty)
         if(location ==null || location.isEmpty() ){
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location invalid or empty","");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location empty","");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "";
         }
@@ -78,7 +76,14 @@ public class EventOperationBean {
         event.setLocation(location);
         
         //Parse of the location in GPS coordinate
-        Location loc = p.parsingLatitudeLongitude(event.getLocation());
+        Location loc;
+        try{
+        loc = p.parsingLatitudeLongitude(event.getLocation());
+        }catch(JSONException ex){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location invalid","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
         event.setLocation(location);
         event.setLatitude(loc.getLatitude());
         event.setLongitude(loc.getLongitude());
