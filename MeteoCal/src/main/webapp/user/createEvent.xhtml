@@ -57,7 +57,7 @@
                         <p:inputTextarea rows="6" cols="33" id="description" value="#{eventOperationBean.event.description}" />
                                         
                         <p:outputLabel value ="Place:" />
-                        <input id="geocomplete" name="geocomplete" class="controls" type="text" onfocus="showSuggestions()" />
+                        <input id="geocomplete" name="geocomplete" class="controls" type="text" onfocus="showSuggestions()" placeholder="Type in an address"/>
                                         
                         <p:outputLabel for="privacy" value="Privacy:" />
                         <p:selectOneRadio id="privacy" value="#{eventOperationBean.event.publicEvent}">
