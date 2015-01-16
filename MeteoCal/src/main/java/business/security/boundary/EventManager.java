@@ -492,25 +492,25 @@ public class EventManager {
     }
     
     
-    private boolean checkTemperature (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
+        private boolean checkTemperature (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getTemperature()) {
             case (0):
-                if (weatherForecast.getTemperature() >= 0) {
+                if (weatherForecast.getTemperature() >= (0 + 273)) {
                     return true;
                 }
                 break;
             case (1):
-                if (weatherForecast.getTemperature() < 0 || weatherForecast.getTemperature() > 10) {
+                if (weatherForecast.getTemperature() < (0 + 273) || weatherForecast.getTemperature() > (10 + 273 )) {
                     return true;
                 }
                 break;
             case (2):
-                if (weatherForecast.getTemperature() < 10 || weatherForecast.getTemperature() > 20) {
+                if (weatherForecast.getTemperature() < (10 + 273) || weatherForecast.getTemperature() > (20 + 273)) {
                     return true;
                 }
                 break;
             case (3):
-                if (weatherForecast.getTemperature() < 20) {
+                if (weatherForecast.getTemperature() < (20 + 273)) {
                     return true;
                 }
                 break;
@@ -533,7 +533,7 @@ public class EventManager {
                 }
                 break;
             case (2):
-                if (weatherForecast.getWind() < 15 ) {
+                if (weatherForecast.getWind() < 8 ) {
                     return true;
                 }
             default:
