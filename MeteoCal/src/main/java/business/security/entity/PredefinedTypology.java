@@ -18,7 +18,8 @@ public enum PredefinedTypology {
     graduation,
     party,
     birthday,
-    sport;
+    sport,
+    other;
 
     @Override
     public String toString() {

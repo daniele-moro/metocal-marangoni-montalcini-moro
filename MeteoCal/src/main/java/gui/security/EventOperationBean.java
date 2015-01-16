@@ -11,17 +11,19 @@ import business.security.boundary.JsonPars;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
+import java.io.Serializable;
 import java.util.Date;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import org.codehaus.jettison.json.JSONException;
 
 @Named
-@RequestScoped
-public class EventOperationBean {
+@ViewScoped
+public class EventOperationBean implements Serializable {
     
     @EJB
     private EventManager eventManager;
@@ -39,6 +41,8 @@ public class EventOperationBean {
     private WeatherCondition weatherForecast;
     
     private Date currentDate = new Date();
+    
+    private boolean showWeatherValue = false;
     
     
     public EventOperationBean() {
@@ -143,7 +147,17 @@ public class EventOperationBean {
         return currentDate;
     }
     
-    
-    
-    
+    public String showWeather() {
+        System.out.println("valore " + showWeatherValue);
+        showWeatherValue = !showWeatherValue;
+        System.out.println("valore nuovo " + showWeatherValue);
+        return "createEvent";
+    }
+
+    /**
+     * @return the showWeather
+     */
+    public boolean getShowWeatherValue() {
+        return showWeatherValue;
+    }
 }

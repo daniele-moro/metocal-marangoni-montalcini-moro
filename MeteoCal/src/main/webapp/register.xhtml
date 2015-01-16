@@ -25,46 +25,21 @@
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">MeteoCal</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Settings</a></li>
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Help</a></li>
-                    </ul>
-                    <h:form id="searchForm" class="navbar-form navbar-right" role="form">
-                        <div class="form-group">
-                            <p:inputText type="text" placeholder="Search..." class="form-control" id="search" required="true"/>
-                        </div>
-                    </h:form>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="login.xhtml">MeteoCal</a>
                 </div>
             </div>
         </nav>
         <div class="container">
-    
-		<div class="row">
-		
-			<div class="col-md-12">
-			
-					
-                                        <hr/>
-					
-			</div>
-		
-		</div>
-		
-		
+            <br/>
+            <br/>
 		<div class="row">
 			<!-- content -->
                         <center>
 			<div class="main">
-			
 			 <h:form id="registrationform">
                             <p:panel header="Registration Form">
                                 <h:panelGrid columns="3" id="regGrid">
@@ -111,7 +86,7 @@
                                     <h:outputLabel for="password">Password:</h:outputLabel>
                                     <p:password id="password" value="#{registrationBean.user.password}"
                                                 feedback="true" match="pwd2" label="Password"/>
-                                    <p:message for="password" />
+                                    <p:message id ="passwordMessage" for="password" />
 
                                     <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
                                     <p:password id="pwd2" label="Confirm Password"/>
@@ -125,9 +100,10 @@
                         </center>
 		</div>
         </div>
-        <hr/>
-        <footer>
-            <center><p>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</p></center>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted"><center>&copy; Daniele Marangoni - Matteo Montalcini - Daniele Moro 2014</center></p>
+            </div>
         </footer>
     </h:body>
 </html>

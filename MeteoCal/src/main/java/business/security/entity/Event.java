@@ -62,7 +62,9 @@ public class Event implements Serializable {
     @NotNull(message = "Typology May not be empty")
     private PredefinedTypology predefinedTypology;
     
-    //@NotNull(message = "May not be empty")
+    private boolean outdoor;
+    
+    
     private WeatherCondition acceptedWeatherConditions;
     
     private WeatherCondition weatherForecast;
@@ -244,6 +246,14 @@ public class Event implements Serializable {
             return true;
         }    
         return false;
+    }
+
+    public boolean isOutdoor() {
+        return outdoor;
+    }
+
+    public void setOutdoor(boolean outdoor) {
+        this.outdoor = outdoor;
     }
 
     

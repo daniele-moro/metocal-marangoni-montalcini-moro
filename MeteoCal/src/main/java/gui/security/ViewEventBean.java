@@ -57,14 +57,13 @@ public class ViewEventBean implements Serializable {
          * utenti che hanno accettato la partecipazione - utenti che hanno
          * rifiutato la partecipazione - utenti che devono ancora rispondere
          */
+        accepted = eventManager.getAcceptedPeople(event);
         if (event.getOrganizer().equals(eventManager.getLoggedUser())) {
             creator = true;
-            accepted = eventManager.getAcceptedPeople(event);
             refused = eventManager.getRefusedPeople(event);
             pendent = eventManager.getPendentPeople(event);
         } else {
             creator = false;
-            accepted = null;
             refused = null;
             pendent = null;
         }

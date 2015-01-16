@@ -38,11 +38,14 @@
                             <h:outputLabel for="location" value="Location:"/> 
                             <h:outputLabel id="location" value="#{scheduleView.event.data.location}"/>
                             
-                            <h:outputLabel for="notPredefinedTypology" value="Typology2:"/> 
-                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"/>
+                            <h:outputLabel for="notPredefinedTypology" value="Typology:" rendered="#{scheduleView.event.data.predefinedTypology == 'other'}"/> 
+                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}" rendered="#{scheduleView.event.data.predefinedTypology == 'other'}"/>
                             
-                            <h:outputLabel for="predefinedTypology" value="Typology: "/> 
-                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"/>               
+                            <h:outputLabel for="predefinedTypology" value="Typology: " rendered="#{scheduleView.event.data.predefinedTypology != 'other'}"/> 
+                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}" rendered="#{scheduleView.event.data.predefinedTypology != 'other'}"/>               
+                            
+                            <h:outputLabel for="outdoor" value="Outdoor:"/> 
+                            <h:outputLabel id="outdoor" value="#{scheduleView.event.data.outdoor}"/>
                             
                             <h:outputLabel for="weatherForecast" value="Weather Forecast:" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
                             <p:graphicImage id="weatherForecast" value="http://openweathermap.org/img/w/#{scheduleView.event.data.weatherForecast.icon}.png" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
@@ -51,14 +54,14 @@
                             <h:outputLabel id="tempForecast" value="#{scheduleView.event.data.weatherForecast.temperatureFormat} °C" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
                             
                             <br/>
-                            <h:outputLabel id="rainForecasted" value="Forecasted rain" rendered="#{scheduleView.event.data.weatherForecast != null 
+                            <h:outputLabel id="rainForecasted" value="Expected rain" rendered="#{scheduleView.event.data.weatherForecast != null 
                                                                                                    and scheduleView.event.data.weatherForecast.precipitation == true}"/>
                             
-                            <h:outputLabel id="NOrainForecasted" value="NO Forecasted rain" rendered="#{scheduleView.event.data.weatherForecast != null 
+                            <h:outputLabel id="NOrainForecasted" value="NO expected rain" rendered="#{scheduleView.event.data.weatherForecast != null 
                                                                                                         and scheduleView.event.data.weatherForecast.precipitation == false}"/>
                             
                             <h:outputLabel for="windForecast" value="Wind Forecast:" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
-                            <h:outputLabel id="windForecast" value="#{scheduleView.event.data.weatherForecast.wind} mps" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
+                            <h:outputLabel id="windForecast" value="#{scheduleView.event.data.weatherForecast.wind} m/s" rendered="#{scheduleView.event.data.weatherForecast != null}"/>
                             
                         </h:panelGrid>
 

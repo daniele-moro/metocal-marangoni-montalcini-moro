@@ -64,12 +64,12 @@
                         <!--part of the page for the sidebar-->
                         <ui:insert name="sidebar">
                             <li><p:link outcome="createEvent" value="Create Event"/></li>
+                            <li><p:link outcome="createdEvent" value="See Created Event"/></li>
+                            <li><p:link outcome="notifications" value="My Notifications"/></li>
+                            <li><p:link outcome="searchForUser" value="Search For A User"/></li>
                             <li><p:link outcome="importCalendar" value="Import Calendar"/></li>
                             <li><p:link outcome="exportCalendar" value="Export Calendar"/></li>
-                            <li><p:link outcome="createdEvent" value="Created Event"/></li> 
                             <li><p:link outcome="suggestRegistration" value="Suggest Registration"/></li>
-                            <li><p:link outcome="searchForUser" value="Search For A User"/></li>
-                            <li><p:link outcome="notifications" value="My Notifications"/></li>
                             <li><h:form>
                                     <p:commandLink action="#{loginBean.logout()}" value="logout"/>
                                 </h:form>

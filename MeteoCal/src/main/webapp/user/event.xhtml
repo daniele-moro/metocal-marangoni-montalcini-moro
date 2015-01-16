@@ -35,23 +35,34 @@
                         <p:outputLabel id="dateEnd" value="#{viewEventBean.event.timeEnd}"/>
                             
                             
-                        <h:outputLabel for="predefinedTypology" value="Predefined Typology: " />
-                        <p:outputLabel id="predefinedTypology" value="#{viewEventBean.event.predefinedTypology}"/> 
+                        <h:outputLabel for="predefinedTypology" value="Typology: "  rendered="#{viewEventBean.event.predefinedTypology != 'other'}"/>
+                        <p:outputLabel id="predefinedTypology" value="#{viewEventBean.event.predefinedTypology}" rendered="#{viewEventBean.event.predefinedTypology != 'other'}"/>
+                            
+                        <h:outputLabel for="notPredefinedTypology" value="Typology: " rendered="#{viewEventBean.event.predefinedTypology == 'other'}"/>
+                        <p:outputLabel id="notPredefinedTypology" value="#{viewEventBean.event.notPredefinedTypology}" rendered="#{viewEventBean.event.predefinedTypology == 'other'}"/> 
                             
                         <h:outputLabel for="description" value="Description:" />
                         <p:outputLabel id="description" value="#{viewEventBean.event.description}"/> 
                             
                         <h:outputLabel for="town" value ="Place:" />
                         <p:outputLabel id="town" value="#{viewEventBean.event.location}"/>
+                        
+                        <h:outputLabel for="outdoor" value="Outdoor:"/> 
+                        <h:outputLabel id="outdoor" value="#{viewEventBean.event.outdoor}"/>
                             
-                        <h:outputLabel for="wind" value="Wind:" />
-                        <p:outputLabel id="wind" value="#{viewEventBean.event.acceptedWeatherConditions.wind}"/>
+                        <h:outputLabel for="wind1, wind2, wind3" value="Wind:" rendered="#{viewEventBean.event.acceptedWeatherConditions != null}"/>
+                        <p:outputLabel id="wind1" value="Absent" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.wind == 0.0}"/>
+                        <p:outputLabel id="wind2" value="Medium (0-8 m/s)" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.wind == 1.0}"/> 
+                        <p:outputLabel id="wind3" value="High (more than 8 m/s)" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.wind == 2.0}"/>
+                        
+                        <h:outputLabel for="precipitation" value="Accepted Precipitation:" rendered="#{viewEventBean.event.acceptedWeatherConditions != null}"/>
+                        <p:outputLabel id="precipitation" value="#{viewEventBean.event.acceptedWeatherConditions.precipitation}" rendered="#{viewEventBean.event.acceptedWeatherConditions != null}"/>
                             
-                        <h:outputLabel for="precipitation" value="Accepted Precipitation:" />
-                        <p:outputLabel id="precipitation" value="#{viewEventBean.event.acceptedWeatherConditions.precipitation}"/>
-                            
-                        <h:outputLabel for="temperature" value="Temperature:" />
-                        <p:outputLabel id="temperature" value="#{viewEventBean.event.acceptedWeatherConditions.temperature}"/>
+                        <h:outputLabel for="temperature1, temperature2, temperature3, temperature4" value="Temperature:" rendered="#{viewEventBean.event.acceptedWeatherConditions != null}"/>
+                        <p:outputLabel id="temperature1" value="less than 0 °C" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.temperature == 0.0}"/>
+                        <p:outputLabel id="temperature2" value="0-10 °C" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.temperature == 1.0}"/>
+                        <p:outputLabel id="temperature3" value="10 - 20 °C" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.temperature == 2.0}"/>
+                        <p:outputLabel id="temperature4" value="more than 20°" rendered="#{viewEventBean.event.acceptedWeatherConditions != null and viewEventBean.event.acceptedWeatherConditions.temperature == 3.0}"/>
                     </h:panelGrid>
                 </h:form>
                 <br>
@@ -89,7 +100,7 @@
                     <h:outputText value="This event has been deleted by its organizer"/>
                 </h:form>
                     
-                <h:panelGrid id="pnlInvitations" rendered="#{viewEventBean.creator}">
+                <h:panelGrid id="pnlParticipants">
                     <p:dataTable rendered="#{viewEventBean.accepted != null and viewEventBean.accepted.size()!=0}"
                                  value="#{viewEventBean.accepted}"
                                  styleClass="order-table"
@@ -113,7 +124,9 @@
                             </h:form>
                         </p:column>
                     </p:dataTable>
+                </h:panelGrid>
                     
+                <h:panelGrid id="pnlInvitations" rendered="#{viewEventBean.creator}">
                     <p:dataTable rendered="#{viewEventBean.refused != null and viewEventBean.refused.size()!=0 }"
                                  value="#{viewEventBean.refused}"
                                  styleClass="order-table"
@@ -136,7 +149,7 @@
                             </h:form>
                         </p:column>
                     </p:dataTable>
-                    
+                        
                     <p:dataTable rendered="#{viewEventBean.pendent != null and viewEventBean.pendent.size()!=0}"
                                  value="#{viewEventBean.pendent}"
                                  styleClass="order-table"
