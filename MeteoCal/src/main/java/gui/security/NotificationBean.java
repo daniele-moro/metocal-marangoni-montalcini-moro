@@ -1,11 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package gui.security;
 
 import business.security.boundary.EventManager;
+import business.security.boundary.SearchManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.Notification;
@@ -18,17 +19,20 @@ import javax.enterprise.context.SessionScoped;
 @Named
 @SessionScoped
 public class NotificationBean implements Serializable{
-        
-    @EJB
-    private UserInformationLoader userInformationLoader; 
     
-    @EJB    
+    @EJB
+    private UserInformationLoader userInformationLoader;
+    
+    @EJB
     private EventManager eventManager;
+    
+    @EJB
+    private SearchManager searchManager;
     
     private Event event;
     
     public List<Notification> getNotification() {
-        return userInformationLoader.loadNotifications(); 
+        return userInformationLoader.loadNotifications();
     }
     
     public EventManager getEventManager() {
@@ -40,7 +44,7 @@ public class NotificationBean implements Serializable{
     }
     
     public String showEventRelatedToNotification(Notification notification) {
-        userInformationLoader.setNotificationSeen(notification); 
+        userInformationLoader.setNotificationSeen(notification);
         //eventManager.setEvent(notification.getRelatedEvent());
         //eventManager.setDeletedEvent(notification.getRelatedEvent().isDeleted());
         this.setEvent(notification.getRelatedEvent());
@@ -48,7 +52,7 @@ public class NotificationBean implements Serializable{
     }
     
     public String deleteNotification(Notification notification) {
-        userInformationLoader.removeNotification(notification); 
+        userInformationLoader.removeNotification(notification);
         return "notifications?faces-redirect=true";
     }
     
@@ -63,5 +67,9 @@ public class NotificationBean implements Serializable{
     public void setEvent(Event event) {
         this.event = event;
     }
-
+    
+    public boolean notReadNotification () {
+        return !searchManager.findNotReadNotification(userInformationLoader.getLoggedUser()).isEmpty();
+        
+    }
 }

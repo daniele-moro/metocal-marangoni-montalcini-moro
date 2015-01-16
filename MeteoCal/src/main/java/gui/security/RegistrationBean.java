@@ -10,6 +10,7 @@ import business.security.control.MailManager;
 import business.security.entity.User;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -43,7 +44,7 @@ public class RegistrationBean {
     }
     
     public String register() {
-        if(user.getBirthday().after(new Date(2000,12,31))){
+        if(user.getBirthday().after(new Date (100,12,31))){
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Invalid inserted date, it can't be after 31/12/2000");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "";

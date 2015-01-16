@@ -11,7 +11,9 @@ import exception.InviteException;
 import exception.WeatherException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,17 +50,7 @@ public class EventManager {
     @EJB
     private JsonPars p;
     
-    private boolean deletedEvent = false;
     
-    private List<NameSurnameEmail> partialResults;
-    
-    private WeatherCondition acceptedWeatherConditions;
-    
-    public EventManager() {
-        acceptedWeatherConditions = new WeatherCondition();
-        partialResults = new ArrayList<>();
-        notificationManager = new NotificationManager();
-    }
     
     /**
      * Creation of a new Event, it also takes the weather forecast
@@ -114,37 +106,6 @@ public class EventManager {
         return em.find(User.class, principal.getName());
     }
     
-    /**
-     * This method checks the consistency of the interval of the start and end
-     * dates, e.g., if the event with this type of time interval can be created
-     * without causing any overlaps with other events
-     *
-     * @param start Start of the event
-     * @param end End of the event
-     * @return true: no overlaps would be created; false: overlaps would be
-     * created
-     */
-    /*public boolean checkDateConsistency(Date start, Date end) {
-    if (start.after((end))) {
-    return false;
-    } else {
-    for (Event ev : userInformationLoader.loadCreatedEvents()) {
-    if ((start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd()))
-    || (end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd()))
-    || (start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd()))) {
-    return false;
-    }
-    }
-    for (Event ev : userInformationLoader.loadAcceptedEvents()) {
-    if ((start.after(ev.getTimeStart()) && start.before(ev.getTimeEnd()))
-    || (end.after(ev.getTimeStart()) && end.before(ev.getTimeEnd()))
-    || (start.equals(ev.getTimeStart()) && end.equals(ev.getTimeEnd()))) {
-    return false;
-    }
-    }
-    }
-    return true;
-    }*/
     
     /**
      * This method checks the consistency of the interval of the start and end
@@ -171,37 +132,11 @@ public class EventManager {
         return true;
     }
     
-    public List<NameSurnameEmail> getPartialResults() {
-        if (partialResults == null) {
-            partialResults = new ArrayList<>();
-        }
-        return partialResults;
-    }
-    
-    public void setPartialResults(List<NameSurnameEmail> partialResults) {
-        this.partialResults = partialResults;
-    }
     
     public List<User> getInvitedPeople(long idEvent) {
         Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event.id = ?1 AND i.user.email = u.email");
         findInvitedPeopleThroughIDev.setParameter(1, idEvent);
         return ((List<User>) findInvitedPeopleThroughIDev.getResultList());
-    }
-    
-    public WeatherCondition getAcceptedWeatherConditions() {
-        return acceptedWeatherConditions;
-    }
-    
-    public void setAcceptedWeatherConditions(WeatherCondition acceptedWeatherConditions) {
-        this.acceptedWeatherConditions = acceptedWeatherConditions;
-    }
-    
-    public boolean isDeletedEvent() {
-        return deletedEvent;
-    }
-    
-    public void setDeletedEvent(boolean deletedEvent) {
-        this.deletedEvent = deletedEvent;
     }
     
     /**
@@ -481,6 +416,31 @@ public class EventManager {
         return ((List<User>) findAcceptedPeople.getResultList());
     }
     
+    
+    public Date suggestNewDate(Event event) {
+        List<WeatherCondition> listWeatherForecast;
+        try {
+            listWeatherForecast = p.weatherForecastNextDays(event.getLatitude(), event.getLongitude(), event.getTimeStart());
+            for (int i = 1; i < listWeatherForecast.size(); i++) {
+                if(checkWeatherForecast(event.getAcceptedWeatherConditions(), listWeatherForecast.get(i))) {
+                    Calendar date = new GregorianCalendar();
+                    date.setTime(event.getTimeStart());
+                    date.add(Calendar.DAY_OF_MONTH, i);
+                    
+                    System.out.println("pioggia: " + listWeatherForecast.get(i));
+                    System.out.println("vento: " + listWeatherForecast.get(i));
+                    System.out.println("temperatura" + listWeatherForecast.get(i));
+                    System.out.println("timeStart: " + event.getTimeStart());
+                    System.out.println("date : " + date.getTime());
+                    return date.getTime();
+                }
+            }
+        } catch (WeatherException ex) {
+            Logger.getLogger(EventManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     /**
      * This method compares the weather forecast with the accepted weather
      * condition of the event: if there is a discrepancy, a mail is sent to the
@@ -488,68 +448,107 @@ public class EventManager {
      *
      * @param event
      */
-    public void checkWeatherForecast(Event event) {
-        boolean notDesiredTemperature = false;
-        boolean notDesiredPrecipitation = false;
-        boolean notDesiredWind = false;
-        switch ((int) event.getAcceptedWeatherConditions().getTemperature()) {
+    public boolean checkWeatherForecast(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) throws WeatherException {
+        if(weatherForecast == null || acceptedWeatherCondition == null) {
+            throw new WeatherException("No weather forecast or accepted weather condition");
+        }
+        return (checkTemperature(acceptedWeatherCondition, weatherForecast) || checkWind(acceptedWeatherCondition, weatherForecast) || checkPrecipitation(acceptedWeatherCondition, weatherForecast));
+    }
+    
+    public boolean checkWeatherForecast (Event event) {
+        boolean notDesiredTemperature = checkTemperature(event.getAcceptedWeatherConditions(), event.getWeatherForecast());
+        boolean notDesiredPrecipitation = checkPrecipitation(event.getAcceptedWeatherConditions(), event.getWeatherForecast());
+        boolean notDesiredWind = checkWind(event.getAcceptedWeatherConditions(), event.getWeatherForecast());
+        String message = "";
+        if (notDesiredTemperature) {
+            message += " \nthe temperature for your event is different from which you have indicated as desired ";
+        }
+        if (notDesiredPrecipitation) {
+            message += "\nthe precipitation for your event is different from which you have indicated as desired ";
+        }
+        if (notDesiredWind) {
+            message += "\nthe wind for your event is different from which you have indicated as desired ";
+        }
+        if(notDesiredPrecipitation || notDesiredTemperature || notDesiredWind) {
+            notificationManager.createWeatherConditionChangedNotification(event.getOrganizer(), event);
+            mailManager.sendMail(event.getOrganizer().getEmail(), "Not optimal weather forecasts", "Hi! We suggest you to check the weather forecast for your event, since we have discovered some problems: " + message);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean checkWeatherOneDayBefore (Event event) {
+        if(checkTemperature(event.getAcceptedWeatherConditions(), event.getWeatherForecast())
+                ||checkPrecipitation(event.getAcceptedWeatherConditions(), event.getWeatherForecast())
+                ||checkWind(event.getAcceptedWeatherConditions(), event.getWeatherForecast())) {
+            for(Invite invite : searchManager.findInviteRelatedToAnEvent(event)) {
+                if(invite.getStatus().equals(Invite.InviteStatus.accepted)) {
+                    notificationManager.createWeatherConditionChangedNotification(invite.getUser(), event);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    
+    private boolean checkTemperature (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
+        switch ((int) acceptedWeatherCondition.getTemperature()) {
             case (0):
-                if (event.getWeatherForecast().getTemperature() > 0) {
-                    notDesiredTemperature = true;
+                if (weatherForecast.getTemperature() >= 0) {
+                    return true;
                 }
                 break;
             case (1):
-                if (event.getWeatherForecast().getTemperature() < 0 || event.getWeatherForecast().getTemperature() > 10) {
-                    notDesiredTemperature = true;
+                if (weatherForecast.getTemperature() < 0 || weatherForecast.getTemperature() > 10) {
+                    return true;
                 }
                 break;
             case (2):
-                if (event.getWeatherForecast().getTemperature() < 10 || event.getWeatherForecast().getTemperature() > 20) {
-                    notDesiredTemperature = true;
+                if (weatherForecast.getTemperature() < 10 || weatherForecast.getTemperature() > 20) {
+                    return true;
                 }
                 break;
             case (3):
-                if (event.getWeatherForecast().getTemperature() < 20) {
-                    notDesiredTemperature = true;
+                if (weatherForecast.getTemperature() < 20) {
+                    return true;
                 }
                 break;
             default:
                 break;
         }
-        switch ((int) event.getAcceptedWeatherConditions().getWind()) {
+        return false;
+    }
+    
+    private boolean checkWind (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
+        switch ((int) acceptedWeatherCondition.getWind()) {
             case (0):
-                if (event.getWeatherForecast().getWind() > 0) {
-                    notDesiredWind = true;
+                if (weatherForecast.getWind() > 0) {
+                    return true;
                 }
                 break;
             case (1):
-                if (event.getWeatherForecast().getWind() > 8) {
-                    notDesiredWind = true;
+                if (weatherForecast.getWind() > 8) {
+                    return true;
                 }
                 break;
+            case (2):
+                if (weatherForecast.getWind() < 15 ) {
+                    return true;
+                }
             default:
                 break;
         }
-        if (event.getAcceptedWeatherConditions().getPrecipitation() == false && event.getWeatherForecast().getPrecipitation() == true) {
-            notDesiredPrecipitation = true;
-        }
-        
-        if (notDesiredTemperature || notDesiredPrecipitation || notDesiredWind) {
-            String temperature = "";
-            String wind = "";
-            String precipitation = "";
-            if (notDesiredTemperature) {
-                temperature = "The temperature for your event is different from which you have indicated as desired";
-            }
-            if (notDesiredPrecipitation) {
-                precipitation = "The precipitation for your event is different from which you have indicated as desired";
-            }
-            if (notDesiredWind) {
-                wind = "The wind for your event is different from which you have indicated as desired";
-            }
-            mailManager.sendMail(event.getOrganizer().getEmail(), "Not optimal weather forecasts", "Hi! We suggest you to check the weather forecast for your event, since we have discover some problems: " + precipitation + " " + wind + " " + temperature);
-        }
+        return false;
     }
+    
+    private boolean checkPrecipitation (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
+        if (acceptedWeatherCondition.getPrecipitation() == false && weatherForecast.getPrecipitation() == true) {
+            return true;
+        } else return false;
+    }
+    
+    
     
     /**
      * This method checks if an invitation has already been sent to the user
@@ -571,5 +570,6 @@ public class EventManager {
         }
         return true;
     }
+    
     
 }

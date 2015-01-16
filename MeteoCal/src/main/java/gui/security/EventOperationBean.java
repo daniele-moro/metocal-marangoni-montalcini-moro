@@ -55,10 +55,6 @@ public class EventOperationBean implements Serializable {
         return event;
     }
     
-    public WeatherCondition getAcceptedWeatherConditionsToModify() {
-        return eventManager.getAcceptedWeatherConditions();
-    }
-    
     public WeatherCondition getAcceptedWeatherCondition() {
         if (acceptedWeatherCondition == null) {
             acceptedWeatherCondition = new WeatherCondition();
@@ -123,10 +119,7 @@ public class EventOperationBean implements Serializable {
     public void setAcceptedWeatherCondition(WeatherCondition acceptedWeatherCondition) {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
-    
-    public boolean getEventDeleted() {
-        return eventManager.isDeletedEvent();
-    }
+   
     
     /**
      * @return the weatherForecast
