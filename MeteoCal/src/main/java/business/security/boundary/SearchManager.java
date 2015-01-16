@@ -7,6 +7,7 @@ package business.security.boundary;
 
 import business.security.entity.Event;
 import business.security.entity.Invite;
+import business.security.entity.Notification;
 import business.security.entity.NotificationType;
 import business.security.entity.User;
 import business.security.object.NameSurnameEmail;
@@ -112,6 +113,13 @@ public class SearchManager {
         }
         return false;
         
+    }
+    
+    public List<Notification> findNotReadNotification(User user) {
+        Query findNotReadNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.notificatedUser = ?1 AND n.seen = ?2");
+        findNotReadNotification.setParameter(1,user);
+        findNotReadNotification.setParameter(2,false);
+        return findNotReadNotification.getResultList();
     }
 }
 
