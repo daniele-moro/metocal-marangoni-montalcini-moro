@@ -3,7 +3,7 @@ package business.security.boundary;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.Notification;
-import business.security.entity.User;
+import business.security.entity.Users;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ public class UserInformationLoader {
     @Inject
             Principal principal;
     
-    public User getLoggedUser() {
+    public Users getLoggedUser() {
         System.out.println("ciao " + em);
-        return em.find(User.class, principal.getName());
+        return em.find(Users.class, principal.getName());
     }
     
     /**

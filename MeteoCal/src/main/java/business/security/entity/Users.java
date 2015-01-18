@@ -15,8 +15,8 @@ import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@Entity(name = "USER")
-public class User implements Serializable {
+@Entity(name = "USERS")
+public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -138,7 +138,7 @@ public class User implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final User other = (User) obj;
+        final Users other = (Users) obj;
         if (!Objects.equals(this.email, other.email)) {
             return false;
         }

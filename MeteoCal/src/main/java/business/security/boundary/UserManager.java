@@ -6,7 +6,7 @@
 package business.security.boundary;
 
 import business.security.entity.Group;
-import business.security.entity.User;
+import business.security.entity.Users;
 import java.security.Principal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ public class UserManager {
     @Inject
     Principal principal;
 
-    public void save(User user) {
+    public void save(Users user) {
         user.setGroupName(Group.USER);
         em.persist(user);
     }
@@ -32,15 +32,15 @@ public class UserManager {
         em.remove(getLoggedUser());
     }
 
-    public User getLoggedUser() {
-        return em.find(User.class, principal.getName());
+    public Users getLoggedUser() {
+        return em.find(Users.class, principal.getName());
     }
     
-    public void updateUser(User usr) {
+    public void updateUser(Users usr) {
         // Bisogna impostare update on cascade se si vuole modificare la password: nel parametro 6, 
         // al posto di u.getEmail(), bisogna mettere oldEmail, che è il valore vecchio dell'email. 
         // Ma se non si imposta update on cascade, non si può fare la modifica dell'email 
-        Query q = em.createQuery("UPDATE USER user SET user.name =?1, user.surname = ?2, user.birthday =?3, user.phoneNumber =?4, user.residenceTown =?5, user.calendarPublic =?6 WHERE user.email =?7");
+        Query q = em.createQuery("UPDATE USERS user SET user.name =?1, user.surname = ?2, user.birthday =?3, user.phoneNumber =?4, user.residenceTown =?5, user.calendarPublic =?6 WHERE user.email =?7");
         q.setParameter(1, usr.getName()); 
         q.setParameter(2, usr.getSurname()); 
         q.setParameter(3, usr.getBirthday()); 

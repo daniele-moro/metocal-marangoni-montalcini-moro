@@ -6,7 +6,7 @@ import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.Notification;
 import business.security.entity.NotificationType;
-import business.security.entity.User;
+import business.security.entity.Users;
 import business.security.object.NameSurnameEmail;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class NotificationManager {
      * @param e
      * @param u 
      */
-    public void createInviteNotification(Event e, User u) {
+    public void createInviteNotification(Event e, Users u) {
             setInvite(new Invite()); 
             getInvite().setUser(u);
             getInvite().setStatus(Invite.InviteStatus.invited);
@@ -108,7 +108,7 @@ public class NotificationManager {
         mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
     }
     
-    public void createWeatherConditionChangedNotification (User user, Event event) {
+    public void createWeatherConditionChangedNotification (Users user, Event event) {
         setNotification(new Notification()); 
         getNotification().setGenerationDate(new Date());
         getNotification().setNotificatedUser(user);

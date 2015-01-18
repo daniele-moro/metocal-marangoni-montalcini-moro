@@ -9,7 +9,7 @@ import business.security.boundary.EventManager;
 import business.security.boundary.NotificationManager;
 import business.security.boundary.SearchManager;
 import business.security.entity.Event;
-import business.security.entity.User;
+import business.security.entity.Users;
 import exception.InviteException;
 import java.io.Serializable;
 import java.util.List;
@@ -49,10 +49,10 @@ public class AddInvitationBean implements Serializable{
     private String email;
     
     //Lista degli invitati
-    private List<User> invitedPeople;
+    private List<Users> invitedPeople;
     
     //lista dei risultati parziali
-    private List<User> partialResult;
+    private List<Users> partialResult;
     
     private boolean construct;
     
@@ -128,28 +128,28 @@ public class AddInvitationBean implements Serializable{
         this.email = email;
     }
     
-    public List<User> getInvitedPeople() {
+    public List<Users> getInvitedPeople() {
         return this.invitedPeople;
     }
     
-    public List<User> getPartialResults() {
+    public List<Users> getPartialResults() {
         return this.partialResult;
     }
     
     
     
     public void addUserThroughEmail() {
-        User u = searchManager.findUser(email);
+        Users u = searchManager.findUser(email);
         addUser(u);
     }
     
-    public String addSelectedUser(User u){
+    public String addSelectedUser(Users u){
         addUser(u);
         partialResult= null;
         return "";
     }
     
-    private void addUser(User user){
+    private void addUser(Users user){
         try {
             eventManager.addInvitation(user, event);
             invitedPeople = eventManager.getInvitedPeople(idEvent);

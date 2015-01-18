@@ -3,9 +3,8 @@ package business.security.boundary;
 import business.security.control.MailManager;
 import business.security.entity.Event;
 import business.security.entity.Invite;
-import business.security.entity.User;
+import business.security.entity.Users;
 import business.security.entity.WeatherCondition;
-import business.security.object.NameSurnameEmail;
 import exception.DateConsistencyException;
 import exception.InviteException;
 import exception.WeatherException;
@@ -17,7 +16,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.chart.PieChart;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -64,7 +62,9 @@ public class EventManager {
         if (checkDateConsistency(event)) {
             System.out.println("NOT PREDEFINED TYPO:"+event.getNotPredefinedTypology());
             try {
-                event.setOrganizer(getLoggedUser());
+                if(event.getOrganizer() == null) {
+                    event.setOrganizer(getLoggedUser());
+                }
                 if(event.isOutdoor()){
                     save(event.getAcceptedWeatherConditions());
                     em.persist(event);
@@ -93,7 +93,7 @@ public class EventManager {
      *
      * @param weatherCondition
      */
-    public void save(WeatherCondition weatherCondition) {
+    private void save(WeatherCondition weatherCondition) {
         em.persist(weatherCondition);
     }
     
@@ -102,10 +102,9 @@ public class EventManager {
      *
      * @return the logged user
      */
-    public User getLoggedUser() {
-        return em.find(User.class, principal.getName());
+    public Users getLoggedUser() {
+        return em.find(Users.class, principal.getName());
     }
-    
     
     /**
      * This method checks the consistency of the interval of the start and end
@@ -133,21 +132,22 @@ public class EventManager {
     }
     
     
-    public List<User> getInvitedPeople(long idEvent) {
-        Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event.id = ?1 AND i.user.email = u.email");
+    public List<Users> getInvitedPeople(long idEvent) {
+        Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USERS u WHERE i.event.id = ?1 AND i.user.email = u.email");
+        System.out.println(""+idEvent);
         findInvitedPeopleThroughIDev.setParameter(1, idEvent);
-        return ((List<User>) findInvitedPeopleThroughIDev.getResultList());
+        return ((List<Users>) findInvitedPeopleThroughIDev.getResultList());
     }
     
     /**
      * This method add an invitation related to the event passed to the user
      * passed
      *
-     * @param user User to add the invitation
+     * @param user Users to add the invitation
      * @param event Event related to the invitation
      * @throws exception.InviteException
      */
-    public void addInvitation(User user, Event event) throws InviteException {
+    public void addInvitation(Users user, Event event) throws InviteException {
         //Control if parameter are null
         if (user == null) {
             throw new InviteException("User inexistent");
@@ -181,8 +181,8 @@ public class EventManager {
         for (Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
             if (inv.getStatus() == Invite.InviteStatus.accepted || inv.getStatus() == Invite.InviteStatus.invited || inv.getStatus() == Invite.InviteStatus.delayedEvent) {
                 notificationManager.createDeleteNotification(inv);
-                //Rimozione dell'invito
             }
+            //Rimozione dell'invito
             em.remove(inv);
         }
     }
@@ -321,7 +321,7 @@ public class EventManager {
      * @param user: the user on which the search is based
      * @return All the events created by the specified user
      */
-    public List<Event> loadUserCreatedEvents(User user) {
+    public List<Event> loadUserCreatedEvents(Users user) {
         Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1 AND e.deleted=FALSE");
         qCreatedEvents.setParameter(1, user.getEmail());
         List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList();
@@ -335,7 +335,7 @@ public class EventManager {
      * @param user: the user on which the search is based
      * @return All the events accepted by the specified user
      */
-    public List<Event> loadUserAcceptedEvents(User user) {
+    public List<Event> loadUserAcceptedEvents(Users user) {
         Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2 AND e.deleted=FALSE");
         qAcceptedEvents.setParameter(1, user.getEmail());
         qAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
@@ -345,15 +345,15 @@ public class EventManager {
     }
     
     /**
-     * This methods calls {@link loadUserCreatedEvents(User user) loadUserCreatedEvents(User)} and
-     * {@link loadUserAcceptedEvents(User user) loadUserAcceptedEvents(User)} which find his accepted and created
+     * This methods calls {@link loadUserCreatedEvents(User user) loadUserCreatedEvents(Users)} and
+     * {@link loadUserAcceptedEvents(User user) loadUserAcceptedEvents(Users)} which find his accepted and created
      * events (NOT delete), events which are public and only if user has public calendar
      *
      * @param u: the user on which the search is based
      * @return All the events which are displayed in the calendar of the
      * searched user
      */
-    public List<Event> loadEvent(User u) {
+    public List<Event> loadEvents(Users u) {
         List<Event> userEvents = new ArrayList<>();
         if (u.isCalendarPublic()) {
             for (Event e : loadUserCreatedEvents(u)) {
@@ -378,11 +378,11 @@ public class EventManager {
      * @return list of the users that have accepted the invitation for the
      * specified event
      */
-    public List<User> getAcceptedPeople(Event e) {
-        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event = ?1 AND i.user.email = u.email AND i.status = ?2");
+    public List<Users> getAcceptedPeople(Event e) {
+        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USERS u WHERE i.event = ?1 AND i.user.email = u.email AND i.status = ?2");
         findAcceptedPeople.setParameter(1, e);
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.accepted);
-        return ((List<User>) findAcceptedPeople.getResultList());
+        return ((List<Users>) findAcceptedPeople.getResultList());
     }
     
     /**
@@ -393,11 +393,11 @@ public class EventManager {
      * @return list of the users that have refused the invitation for the
      * specified event
      */
-    public List<User> getRefusedPeople(Event e) {
-        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event = ?1 AND i.user.email = u.email AND i.status = ?2");
+    public List<Users> getRefusedPeople(Event e) {
+        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USERS u WHERE i.event = ?1 AND i.user.email = u.email AND i.status = ?2");
         findAcceptedPeople.setParameter(1, e);
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.notAccepted);
-        return ((List<User>) findAcceptedPeople.getResultList());
+        return ((List<Users>) findAcceptedPeople.getResultList());
     }
     
     /**
@@ -408,12 +408,12 @@ public class EventManager {
      * @param e
      * @return
      */
-    public List<User> getPendentPeople(Event e) {
-        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USER u WHERE i.event = ?1 AND i.user.email = u.email AND (i.status = ?2 OR i.status = ?3)");
+    public List<Users> getPendentPeople(Event e) {
+        Query findAcceptedPeople = em.createQuery("SELECT u FROM INVITE i, USERS u WHERE i.event = ?1 AND i.user.email = u.email AND (i.status = ?2 OR i.status = ?3)");
         findAcceptedPeople.setParameter(1, e);
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.invited);
         findAcceptedPeople.setParameter(3, Invite.InviteStatus.delayedEvent);
-        return ((List<User>) findAcceptedPeople.getResultList());
+        return ((List<Users>) findAcceptedPeople.getResultList());
     }
     
     
@@ -492,7 +492,7 @@ public class EventManager {
     }
     
     
-        private boolean checkTemperature (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
+    private boolean checkTemperature (WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getTemperature()) {
             case (0):
                 if (weatherForecast.getTemperature() >= (0 + 273)) {
@@ -562,13 +562,54 @@ public class EventManager {
      * @return : the boolean value, which highlights if it is possible to send
      * an invitation to the specified user
      */
-    public boolean checkUserForInvitation(User user, Event event) {
+    public boolean checkUserForInvitation(Users user, Event event) {
         for (Invite invite : searchManager.findInviteRelatedToAnEvent(event)) {
             if (invite.getUser().equals(user)) {
                 return false;
             }
         }
         return true;
+    }
+    
+    /**
+     * This method updates the weather forecast and in case of outdoor events sends the email if the weather forecast are changed
+     * @param e Event
+     * @param newWeat New weather forecast
+     */
+    public void weatherUpdater(Event e, WeatherCondition newWeat) {
+        if (e.getWeatherForecast() != null) {
+            WeatherCondition w;
+            Query findCondition = em.createQuery("SELECT w FROM WeatherCondition w WHERE w.id = ?1");
+            findCondition.setParameter(1, e.getWeatherForecast().getId());
+            w = (WeatherCondition) findCondition.getResultList().get(0);
+            
+            //Mandiamo le email in caso di cambiamento di condizioni climatiche
+            if(!w.getIcon().equals(newWeat.getIcon()) && e.isOutdoor()){
+                mailManager.sendMail(e.getOrganizer().getEmail(), "Weather forecast changed for the event "+'"'+e.getName()+'"', "The weather forecast for the event are changed.");
+                for(Users u : this.getAcceptedPeople(e)){
+                    mailManager.sendMail(u.getEmail(), "Weather forecast changed for the event "+'"'+e.getName()+'"', "The weather forecast for the event are changed.");
+                }
+            }
+            w.setPrecipitation(newWeat.getPrecipitation());
+            w.setTemperature(newWeat.getTemperature());
+            w.setIcon(newWeat.getIcon());
+            w.setWind(newWeat.getWind());
+            em.merge(w);
+        } else{
+            em.persist(newWeat);
+            e.setWeatherForecast(newWeat);
+            em.merge(e);
+        }
+        
+    }
+    
+    //Le save servono solo per il test
+    public void save(Event event){
+        em.persist(event);
+    }
+    
+    public void save(Invite invite){
+        em.persist(invite);
     }
     
     

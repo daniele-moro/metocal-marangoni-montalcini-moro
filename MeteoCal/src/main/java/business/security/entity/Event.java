@@ -57,7 +57,7 @@ public class Event implements Serializable {
     private boolean deleted;
     
     @NotNull(message = "May not be empty")
-    private User organizer;
+    private Users organizer;
     
     @NotNull(message = "Typology May not be empty")
     private PredefinedTypology predefinedTypology;
@@ -159,11 +159,11 @@ public class Event implements Serializable {
     }
 
     @XmlTransient
-    public User getOrganizer() {
+    public Users getOrganizer() {
         return organizer;
     }
 
-    public void setOrganizer(User organizer) {
+    public void setOrganizer(Users organizer) {
         this.organizer = organizer;
     }
     
@@ -221,7 +221,7 @@ public class Event implements Serializable {
         return true;
     }
     
-    public boolean isOrganizer(User user){
+    public boolean isOrganizer(Users user){
         return this.organizer.equals(user);
     }
     

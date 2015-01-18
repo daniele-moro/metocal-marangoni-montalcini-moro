@@ -6,9 +6,8 @@
 package gui.security;
 
 import business.security.boundary.SearchManager;
-import business.security.entity.User;
+import business.security.entity.Users;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -36,9 +35,9 @@ public class SearchResultsBean implements Serializable {
             message = "invalid email")
     private String email; 
     
-   // private User user; 
+   // private Users user; 
     
-    private List<User> partialResults; 
+    private List<Users> partialResults; 
 
     public String getName() {
         return name;
@@ -96,7 +95,7 @@ public class SearchResultsBean implements Serializable {
      */
     public String showUserProfile() {
         System.out.println("dentro al search bean prima della chiamata a search manager" );
-        User u= searchManager.findUser(this.email);
+        Users u= searchManager.findUser(this.email);
         if(u!=null){
             System.out.println("dentro al search bean dopo chiamata" );
             return "userProfile?faces-redirect=true&amp;email="+u.getEmail();
@@ -108,7 +107,7 @@ public class SearchResultsBean implements Serializable {
         } 
     }
     
-    public String showUserProfile(User u) {
+    public String showUserProfile(Users u) {
         String mail=u.getEmail();
         return "userProfile?faces-redirect=true&amp;email="+mail;
     }
@@ -127,7 +126,7 @@ public class SearchResultsBean implements Serializable {
     /**
      * @return the partialResults
      */
-    public List<User> getPartialResults() {
+    public List<Users> getPartialResults() {
         return partialResults;
     }
    

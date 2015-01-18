@@ -4,7 +4,7 @@ import business.security.boundary.EventManager;
 import business.security.boundary.SearchManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
-import business.security.entity.User;
+import business.security.entity.Users;
 import java.io.Serializable;
 import java.util.Date;
 import javax.annotation.PostConstruct;
@@ -26,7 +26,7 @@ public class ScheduleView implements Serializable {
     
     private ScheduleModel loggedUserEvents;
     
-    private User user;
+    private Users user;
     
     private ScheduleEvent event = new DefaultScheduleEvent();
     
@@ -80,7 +80,7 @@ public class ScheduleView implements Serializable {
             loggedUserEvents = new LazyScheduleModel(){
                 @Override
                 public void loadEvents(Date start, Date end) {
-                    for(Event ev : eventManager.loadEvent(user)) {
+                    for(Event ev : eventManager.loadEvents(user)) {
                         DefaultScheduleEvent event;
                         if(ev.isPublicEvent()){
                             System.out.println("PUBLIC");
@@ -125,7 +125,7 @@ public class ScheduleView implements Serializable {
     /**
      * @return the user
      */
-    public User getUser() {
+    public Users getUser() {
         return user;
     }
     

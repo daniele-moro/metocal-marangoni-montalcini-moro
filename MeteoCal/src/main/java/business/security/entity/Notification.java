@@ -25,7 +25,7 @@ public class Notification implements Serializable {
    
     private NotificationType type;
     
-    private User notificatedUser;
+    private Users notificatedUser;
     
     private Event relatedevent;
     
@@ -52,11 +52,11 @@ public class Notification implements Serializable {
     }
 
    
-    public User getNotificatedUser() {
+    public Users getNotificatedUser() {
         return notificatedUser;
     }
 
-    public void setNotificatedUser(User notificatedUser) {
+    public void setNotificatedUser(Users notificatedUser) {
         this.notificatedUser = notificatedUser;
     }
     

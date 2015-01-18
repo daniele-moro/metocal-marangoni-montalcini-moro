@@ -40,17 +40,17 @@ public class Invite implements Serializable {
     }
     
     @Id
-    private User user;
+    private Users user;
     
     @NotNull(message = "May not be empty")
     private InviteStatus status; 
     
 
-    public User getUser() {
+    public Users getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Users user) {
         this.user = user;
     }
 

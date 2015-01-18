@@ -9,7 +9,7 @@ import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.Notification;
 import business.security.entity.NotificationType;
-import business.security.entity.User;
+import business.security.entity.Users;
 import business.security.object.NameSurnameEmail;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -30,10 +30,10 @@ public class SearchManager {
     @Inject
             Principal principal;
     
-    public User findUser(String email) {
-        Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.email =?1");
+    public Users findUser(String email) {
+        Query qFindUser = em.createQuery("SELECT u FROM USERS u WHERE u.email =?1");
         qFindUser.setParameter(1, email);
-        List<User> users = (List<User>) qFindUser.getResultList();
+        List<Users> users = (List<Users>) qFindUser.getResultList();
         if (users.size() >= 1) {
             return users.get(0);
         } else {
@@ -42,15 +42,15 @@ public class SearchManager {
     }
     
     public NameSurnameEmail findNameSurnameEmailFromUser(String email) {
-        User u = findUser(email);
+        Users u = findUser(email);
         NameSurnameEmail nameSurnameEmail = new NameSurnameEmail();
         nameSurnameEmail.setNameSurnameEmail(u.getName(), u.getSurname(), u.getEmail());
         System.out.println(nameSurnameEmail.getName());
         return nameSurnameEmail;
     }
     
-    public List<User> findUsersFromNameSurname(String name, String surname) {
-        Query qFindUser = em.createQuery("SELECT u FROM USER u WHERE u.name =?1 AND u.surname =?2");
+    public List<Users> findUsersFromNameSurname(String name, String surname) {
+        Query qFindUser = em.createQuery("SELECT u FROM USERS u WHERE u.name =?1 AND u.surname =?2");
         qFindUser.setParameter(1, name);
         qFindUser.setParameter(2, surname);
         return qFindUser.getResultList();
@@ -63,7 +63,7 @@ public class SearchManager {
         return invites;
     }
     
-    public List<Event> findUserEvent(User user) {
+    public List<Event> findUserEvent(Users user) {
         List<Event> userEvents = new ArrayList<>();
         Query findUserAcceptedEvents = em.createQuery("SELECT invite.event FROM INVITE invite WHERE invite.user = ?1 AND invite.status =?2");
         findUserAcceptedEvents.setParameter(1, user);
@@ -115,7 +115,7 @@ public class SearchManager {
         
     }
     
-    public List<Notification> findNotReadNotification(User user) {
+    public List<Notification> findNotReadNotification(Users user) {
         Query findNotReadNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.notificatedUser = ?1 AND n.seen = ?2");
         findNotReadNotification.setParameter(1,user);
         findNotReadNotification.setParameter(2,false);

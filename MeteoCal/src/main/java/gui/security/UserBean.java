@@ -6,7 +6,7 @@
 package gui.security;
 
 import business.security.boundary.UserManager;
-import business.security.entity.User;
+import business.security.entity.Users;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -19,16 +19,16 @@ public class UserBean implements Serializable{
     @EJB
     UserManager um;
     
-    private User user; 
+    private Users user; 
 
     public String getName() {
         return um.getLoggedUser().getName();
     }
     
-    public User getUser() {
+    public Users getUser() {
         if(user==null){
-            user=new User();
-            User u= um.getLoggedUser();
+            user=new Users();
+            Users u= um.getLoggedUser();
             user.setBirthday(u.getBirthday());
             user.setCalendarPublic(u.isCalendarPublic());
             user.setEmail(u.getEmail());

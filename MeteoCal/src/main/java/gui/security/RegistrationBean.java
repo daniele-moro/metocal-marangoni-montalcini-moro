@@ -7,7 +7,7 @@ package gui.security;
 
 import business.security.boundary.UserManager;
 import business.security.control.MailManager;
-import business.security.entity.User;
+import business.security.entity.Users;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,19 +27,19 @@ public class RegistrationBean {
     @EJB
     private MailManager mailManager;
     
-    private User user;
+    private Users user;
     
     public RegistrationBean() {
     }
     
-    public User getUser() {
+    public Users getUser() {
         if (user == null) {
-            user = new User();
+            user = new Users();
         }
         return user;
     }
     
-    public void setUser(User user) {
+    public void setUser(Users user) {
         this.user = user;
     }
     

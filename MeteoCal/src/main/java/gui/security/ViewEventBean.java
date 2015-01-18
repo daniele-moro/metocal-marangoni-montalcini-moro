@@ -10,7 +10,7 @@ import business.security.boundary.SearchManager;
 import business.security.boundary.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.Invite;
-import business.security.entity.User;
+import business.security.entity.Users;
 import exception.DateConsistencyException;
 import java.io.Serializable;
 import java.util.Date;
@@ -45,9 +45,9 @@ public class ViewEventBean implements Serializable {
     private UserInformationLoader userInformationLoader;
     
     private boolean badWeatherConditions; 
-    private List<User> accepted;
-    private List<User> refused;
-    private List<User> pendent;
+    private List<Users> accepted;
+    private List<Users> refused;
+    private List<Users> pendent;
 
     @PostConstruct
     public void init() {
@@ -83,7 +83,7 @@ public class ViewEventBean implements Serializable {
         }
     }
 
-    public String viewProfile(User u) {
+    public String viewProfile(Users u) {
         return "userProfile?faces-redirect=true&amp;email=" + u.getEmail();
     }
 
@@ -155,21 +155,21 @@ public class ViewEventBean implements Serializable {
     /**
      * @return the accepted
      */
-    public List<User> getAccepted() {
+    public List<Users> getAccepted() {
         return accepted;
     }
 
     /**
      * @return the refused
      */
-    public List<User> getRefused() {
+    public List<Users> getRefused() {
         return refused;
     }
 
     /**
      * @return the pendent
      */
-    public List<User> getPendent() {
+    public List<Users> getPendent() {
         return pendent;
     }
 

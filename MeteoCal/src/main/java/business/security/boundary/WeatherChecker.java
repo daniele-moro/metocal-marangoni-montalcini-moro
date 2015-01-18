@@ -45,30 +45,12 @@ public class WeatherChecker {
         // System.out.println("Timer event: " + new Date());
         for (Event event : searchManager.findAllFutureEvents()) {
             WeatherCondition temp;
-            
             try {
                 temp = jsonPars.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
                 if (temp != null) {
-                    
-                    if (event.getWeatherForecast() != null) {
-                        WeatherCondition w;
-                        Query findCondition = em.createQuery("SELECT w FROM WeatherCondition w WHERE w.id = ?1");
-                        findCondition.setParameter(1, event.getWeatherForecast().getId());
-                        w = (WeatherCondition) findCondition.getResultList().get(0);
-                        w.setPrecipitation(temp.getPrecipitation());
-                        w.setTemperature(temp.getTemperature());
-                        w.setIcon(temp.getIcon());
-                        w.setWind(temp.getWind());
-                        em.merge(w);
-                    } else{
-                        em.persist(temp);
-                        event.setWeatherForecast(temp);
-                        em.merge(event);
-                        
-                    }
+                    eventManager.weatherUpdater(event, temp);
                 }
                 System.out.println("\nCambiate le weather forecast:");
-                //System.out.println(event.getWeatherForecast().toString());
                 
             } catch (WeatherException ex) {
                 System.out.println(ex.getMessage());
@@ -100,6 +82,9 @@ public class WeatherChecker {
         }
     }
     
+    
+    
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
 }
