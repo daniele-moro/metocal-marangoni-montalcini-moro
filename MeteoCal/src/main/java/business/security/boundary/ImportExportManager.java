@@ -2,6 +2,7 @@ package business.security.boundary;
 
 import business.security.entity.Event;
 import exception.DateConsistencyException;
+import exception.ImportExportException;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,7 +30,17 @@ public class ImportExportManager {
     @EJB
     UserInformationLoader uil;
     
-    public void importUserCalendar(InputStream inStr) throws JAXBException, DateConsistencyException, JSONException {
+    /**
+     * This method does the import functionality, it checks before if all the events
+     * the user wants to import are correct and compatible with the system and
+     * after it adds the events
+     * @param inStr InputStream of the file you want to import
+     * @throws JAXBException
+     * @throws ImportExportException Exception in case of not compatible events (overlaps or outdoor events without accepted weather condition)
+     * @throws DateConsistencyException
+     * @throws JSONException 
+     */
+    public void importUserCalendar(InputStream inStr) throws JAXBException, DateConsistencyException, JSONException, ImportExportException {
         JAXBContext context = JAXBContext.newInstance(EventsList.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         
@@ -37,9 +48,13 @@ public class ImportExportManager {
         
         for(Event e : events.getEvents()){
             //Controllo se la data degli eventi da importare è compatibile con gli eventi del DB
+            //inoltre controllo che se l'evento è outdoor abbia l'AcceptedWeatherCondition
             if(!eventMgr.checkDateConsistency(e)){
                 //se un evento provoca sovrapposizioni, genero un eccezione
-                throw new DateConsistencyException("Error in date consistency on import");
+                throw new ImportExportException("You may have some overlapping events or you have some inconsistency on the date, the event with problem is "+'"'+e.getName()+'"');
+            }
+            if(e.isOutdoor() && e.getAcceptedWeatherConditions() == null){
+                throw new ImportExportException("Outdoor events must have accepted weather condition, the event with problem is "+'"'+e.getName()+'"');
             }
             //Non servirebbe perchè viene gia fatto dentro il create event
             e.setOrganizer(eventMgr.getLoggedUser());
@@ -50,6 +65,11 @@ public class ImportExportManager {
         }
     }
     
+    /**
+     * This method does the export functionality, it takes alla the events of the logged user and it exports them in a .xml file
+     * @return ByteArrayOutputStream stream of the output
+     * @throws JAXBException 
+     */
     public ByteArrayOutputStream exportUserCalendar() throws JAXBException{
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         JAXBContext context = JAXBContext.newInstance(EventsList.class);

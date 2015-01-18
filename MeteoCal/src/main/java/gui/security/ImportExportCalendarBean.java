@@ -2,11 +2,10 @@ package gui.security;
 
 import business.security.boundary.ImportExportManager;
 import exception.DateConsistencyException;
+import exception.ImportExportException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.inject.Named;
@@ -36,9 +35,7 @@ public class ImportExportCalendarBean {
             try {
                 impExp.importUserCalendar(file.getInputstream());
                 message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
-            } catch (IOException | DateConsistencyException ex) {
-                message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error", file.getFileName() + " isn't uploaded. \n"+ex.getMessage());
-            } catch (JSONException ex) {
+            } catch (IOException | DateConsistencyException | JSONException | ImportExportException ex) {
                 message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error", file.getFileName() + " isn't uploaded. \n"+ex.getMessage());
             }
         }else{
