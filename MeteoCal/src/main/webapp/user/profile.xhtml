@@ -16,20 +16,27 @@
             <ui:define name="content">
                 <!--______________ MAIN CONTENT ______________-->
                 <h:form>
-                    <h:panelGrid columns="1">
-                        <h:outputLabel for="name" value = "Name: #{userBean.user.name}"/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="name" value="Name:"/>
+                        <h:outputLabel id ="name" value = "#{userBean.user.name}"/>
                                         
-                        <h:outputLabel for="surname" value = "Surname: #{userBean.user.surname}"/>
+                        <h:outputLabel for="surname" value = "Surname:"/>
+                        <h:outputLabel id="surname" value="#{userBean.user.surname}"/>
                                         
-                        <h:outputLabel for="birthday" value = "Birthday: #{userBean.user.birthday}"/>
+                        <h:outputLabel for="birthday" value = "Birthday:"/>
+                        <h:outputLabel id="birthday" value="#{userBean.user.birthday}"/>
                                                    
-                        <h:outputLabel for="phoneNumber" value = "Phone Number: #{userBean.user.phoneNumber}"/>
+                        <h:outputLabel for="phoneNumber" value = "Phone Number:"/>
+                        <h:outputLabel id="phoneNumber" value="#{userBean.user.phoneNumber}"/>
                                         
-                        <h:outputLabel for="residenceTown" value = "Residence Town: #{userBean.user.residenceTown}"/>
+                        <h:outputLabel for="residenceTown" value = "Residence Town:"/>
+                        <h:outputLabel id="residenceTown" value="#{userBean.user.residenceTown}"/>
                                         
-                        <h:outputLabel for="privacy" value = "Calendar Public: #{userBean.user.calendarPublic}"/>
+                        <h:outputLabel for="privacy" value = "Calendar Public:"/>
+                        <h:outputLabel id="privacy" value="#{userBean.user.calendarPublic}"/>
                                         
-                        <h:outputLabel for="email" value = "Email: #{userBean.user.email}"/>
+                        <h:outputLabel for="email" value = "Email:"/>
+                        <h:outputLabel id="email" value="#{userBean.user.email}"/>
                     </h:panelGrid>
                     <h:panelGrid columns="2">
                         <p:commandButton value="Modify Profile" action="#{userBean.modifyProfile()}"/>

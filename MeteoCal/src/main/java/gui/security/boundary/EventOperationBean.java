@@ -11,11 +11,11 @@ import business.security.control.JsonPars;
 import business.security.control.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
+import exception.DateConsistencyException;
 import java.io.Serializable;
 import java.util.Date;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -92,7 +92,7 @@ public class EventOperationBean implements Serializable {
         
         try {
             eventManager.createEvent(event);
-        } catch (Exception ex) {
+        } catch (DateConsistencyException ex) {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "";

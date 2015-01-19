@@ -14,6 +14,8 @@ import business.security.entity.WeatherCondition;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -70,14 +72,28 @@ public class CreatedEventsBean implements Serializable {
     return "modifyEvent?faces-redirect=true&amp;id"+event.getId();
     }*/
     
-    public String modifyEventInformation() throws JSONException {
+    public String modifyEventInformation(){
         String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
+        //Control if the location is valid (not null or not empty)
+        if(location ==null || location.isEmpty() ){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location empty","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
+        
+        //Parse of the location in GPS coordinate
+        Location loc;
+        try {
+            loc = p.parsingLatitudeLongitude(location);
+        } catch (JSONException ex) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location invalid","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
         event.setLocation(location);
-        //change backspace with %20
-        String replace = event.getLocation().replace(" ", "%20");
-        Location loc = p.parsingLatitudeLongitude(replace);
         event.setLatitude(loc.getLatitude());
         event.setLongitude(loc.getLongitude());
+        
         try {
             eventManager.updateEventInformation(event, acceptedWeatherCondition);
         } catch (Exception ex) {

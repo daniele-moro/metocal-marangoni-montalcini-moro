@@ -33,6 +33,7 @@
                                 <p:password id="pass" placeholder="Password" class="form-control" value="#{loginBean.password}" required="true" />
                             </div>
                             <p:commandButton id="submit" class="btn btn-sm btn-success" action="#{loginBean.login()}" value="Login" />
+                            <p:growl id="errorMessage" showDetail="true" autoUpdate="true" />
                         </h:panelGroup>
                     </h:form>
                 </div>
