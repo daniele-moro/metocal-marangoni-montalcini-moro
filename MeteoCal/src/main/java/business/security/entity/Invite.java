@@ -6,6 +6,7 @@
 package business.security.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -60,6 +61,24 @@ public class Invite implements Serializable {
 
     public void setStatus(InviteStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Invite other = (Invite) obj;
+        if (!Objects.equals(this.event, other.event)) {
+            return false;
+        }
+        if (!Objects.equals(this.user, other.user)) {
+            return false;
+        }
+        return true;
     }
     
 }

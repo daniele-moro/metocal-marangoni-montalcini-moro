@@ -16,6 +16,7 @@ import business.security.entity.NotificationType;
 import business.security.entity.PredefinedTypology;
 import business.security.entity.Users;
 import exception.DateConsistencyException;
+import java.security.Principal;
 import java.util.Date;
 import static org.hamcrest.CoreMatchers.is;
 import javax.ejb.EJB;
@@ -31,6 +32,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 /**
  *
@@ -88,7 +90,10 @@ public class EventManagerTestIT {
     
     @Before
     public void setUp() {
-        eventManager = new EventManager();
+         prova pr = new prova();
+        pr.setLoggedUser("z@z.it");
+        eventManager.principal = pr;
+        
     }
     
     
@@ -112,7 +117,7 @@ public class EventManagerTestIT {
         newUser.setBirthday(new Date(92,1,15));
         newUser.setName("try");
         newUser.setSurname("try");
-        newUser.setGroupName(Group.USER);
+        newUser.setGroupName(Group.USERS);
         userManager.save(newUser);
         Users foundUser = searchManager.findUser(email);
         
@@ -139,6 +144,7 @@ public class EventManagerTestIT {
     
     @Test
     public void testCreateEvent(){
+       
         try {
             //Create Users
             Users user1=new Users();
@@ -147,16 +153,10 @@ public class EventManagerTestIT {
             user1.setBirthday(new Date(92,1,15));
             user1.setName("try");
             user1.setSurname("try");
-            user1.setGroupName(Group.USER);
-            
-            try{
+            user1.setGroupName(Group.USERS);
                 userManager.save(user1);
-            }catch(Exception e){
-                System.out.println("ERRROREEEEEEEE");
-            }
             
             Event event1= new Event();
-            event1.setId((long)1);
             event1.setName("Event1");
             event1.setTimeStart(new Date(116,1, 20));
             event1.setTimeEnd(new Date(116,1,21));
@@ -187,7 +187,7 @@ public class EventManagerTestIT {
         user1.setBirthday(new Date(92,1,15));
         user1.setName("try");
         user1.setSurname("try");
-        user1.setGroupName(Group.USER);
+        user1.setGroupName(Group.USERS);
         userManager.save(user1);
         
         user2 = new Users();
@@ -196,7 +196,7 @@ public class EventManagerTestIT {
         user2.setBirthday(new Date(92,1,15));
         user2.setName("try");
         user2.setSurname("try");
-        user2.setGroupName(Group.USER);
+        user2.setGroupName(Group.USERS);
         userManager.save(user2);
         
         event1= new Event();
@@ -244,7 +244,7 @@ public class EventManagerTestIT {
         user1.setBirthday(new Date(92,1,15));
         user1.setName("try");
         user1.setSurname("try");
-        user1.setGroupName(Group.USER);
+        user1.setGroupName(Group.USERS);
         userManager.save(user1);
         
         user2 = new Users();
@@ -253,7 +253,7 @@ public class EventManagerTestIT {
         user2.setBirthday(new Date(92,1,15));
         user2.setName("try");
         user2.setSurname("try");
-        user2.setGroupName(Group.USER);
+        user2.setGroupName(Group.USERS);
         userManager.save(user2);
         
         event1= new Event();
@@ -277,5 +277,22 @@ public class EventManagerTestIT {
     
     
     
+    
+}
+
+
+class prova implements Principal{
+    
+    private String n;
+    
+    public void setLoggedUser(String name){
+        this.n=name;
+    }
+    
+
+    @Override
+    public String getName() {
+        return "z@z.it";
+    }
     
 }
