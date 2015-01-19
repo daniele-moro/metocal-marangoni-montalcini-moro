@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui.security;
+package gui.security.boundary;
 
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
@@ -45,7 +45,7 @@ public class LoginBean {
             request.login(this.username, this.password);
         } catch (ServletException e) {
             context.addMessage(null, new FacesMessage("Login failed."));
-            return "login";
+            return "";
         }
         return "/user/home?faces-redirect=true";
     }
@@ -53,6 +53,6 @@ public class LoginBean {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
         request.getSession().invalidate();
-        return "/login?faces-redirect=true";
+        return "/index?faces-redirect=true";
     }
 }

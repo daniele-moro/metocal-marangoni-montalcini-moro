@@ -1,6 +1,6 @@
-package gui.security;
+package gui.security.boundary;
 
-import business.security.boundary.ImportExportManager;
+import business.security.control.ImportExportManager;
 import exception.DateConsistencyException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -3,17 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui.security;
+package gui.security.boundary;
 
-import business.security.boundary.NotificationManager;
-import business.security.boundary.SearchManager;
 import business.security.control.MailManager;
-import business.security.object.NameSurnameEmail;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Named

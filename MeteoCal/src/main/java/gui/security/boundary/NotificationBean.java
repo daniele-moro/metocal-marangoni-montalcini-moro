@@ -3,11 +3,11 @@
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-package gui.security;
+package gui.security.boundary;
 
-import business.security.boundary.EventManager;
-import business.security.boundary.SearchManager;
-import business.security.boundary.UserInformationLoader;
+import business.security.control.EventManager;
+import business.security.control.SearchManager;
+import business.security.control.UserInformationLoader;
 import business.security.entity.Event;
 import business.security.entity.Notification;
 import java.io.Serializable;

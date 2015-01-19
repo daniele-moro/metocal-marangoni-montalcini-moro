@@ -1,23 +1,18 @@
 
-package business.security.boundary;
+package business.security.control;
 
-import business.security.control.MailManager;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.Notification;
 import business.security.entity.NotificationType;
 import business.security.entity.Users;
-import business.security.object.NameSurnameEmail;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 @Stateless
 public class NotificationManager {

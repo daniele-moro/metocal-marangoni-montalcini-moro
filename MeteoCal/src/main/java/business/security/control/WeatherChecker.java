@@ -3,7 +3,7 @@
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-package business.security.boundary;
+package business.security.control;
 
 import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
@@ -63,21 +63,23 @@ public class WeatherChecker {
     public void myTimer2() {
         // System.out.println("Timer event: " + new Date());
         for (Event event : searchManager.findAllFutureEvents()) {
-            WeatherCondition temp;
-            
-            Date date = new Date();
-            long currentDateMillisec = date.getTime();
-            long eventStartMillisec = event.getTimeStart().getTime();
-            
-            long millisecDiff = eventStartMillisec - currentDateMillisec;
-            //1 giorno medio = 1000*60*60*24 ms
-            // = 86400000 ms
-            int differenzaGiorni = (int) Math.floor(millisecDiff / 86400000.0);
-            if(differenzaGiorni == 3) {
-                eventManager.checkWeatherForecast(event);
-            }
-            if(differenzaGiorni == 1) {
-                eventManager.checkWeatherOneDayBefore(event);
+            if(event.isOutdoor() && event.getAcceptedWeatherConditions()!=null){
+                WeatherCondition temp;
+                
+                Date date = new Date();
+                long currentDateMillisec = date.getTime();
+                long eventStartMillisec = event.getTimeStart().getTime();
+                
+                long millisecDiff = eventStartMillisec - currentDateMillisec;
+                //1 giorno medio = 1000*60*60*24 ms
+                // = 86400000 ms
+                int differenzaGiorni = (int) Math.floor(millisecDiff / 86400000.0);
+                if(differenzaGiorni == 3) {
+                    eventManager.checkWeatherForecast(event);
+                }
+                if(differenzaGiorni == 1) {
+                    eventManager.checkWeatherOneDayBefore(event);
+                }
             }
         }
     }
@@ -86,5 +88,5 @@ public class WeatherChecker {
     
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-
+    
 }

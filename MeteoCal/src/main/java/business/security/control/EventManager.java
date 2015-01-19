@@ -1,6 +1,5 @@
-package business.security.boundary;
+package business.security.control;
 
-import business.security.control.MailManager;
 import business.security.entity.Event;
 import business.security.entity.Invite;
 import business.security.entity.Users;

@@ -3,8 +3,12 @@
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-package business.security.boundary;
+package business.security.control;
 
+import business.security.control.UserManager;
+import business.security.control.SearchManager;
+import business.security.control.NotificationManager;
+import business.security.control.EventManager;
 import business.security.entity.Event;
 import business.security.entity.Group;
 import business.security.entity.Invite;

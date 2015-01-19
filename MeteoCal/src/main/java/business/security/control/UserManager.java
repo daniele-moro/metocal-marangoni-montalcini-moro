@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package business.security.boundary;
+package business.security.control;
 
 import business.security.entity.Group;
 import business.security.entity.Users;

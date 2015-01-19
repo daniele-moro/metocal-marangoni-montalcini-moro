@@ -1,4 +1,4 @@
-package business.security.boundary;
+package business.security.control;
 
 /*
 * To change this license header, choose License Headers in Project Properties.
@@ -6,8 +6,14 @@ package business.security.boundary;
 * and open the template in the editor.
 */
 
-import business.security.control.MailManager;
 import business.security.control.PasswordEncrypter;
+import business.security.control.JsonPars;
+import business.security.control.UserManager;
+import business.security.control.SearchManager;
+import business.security.control.UserInformationLoader;
+import business.security.control.MailManager;
+import business.security.control.NotificationManager;
+import business.security.control.EventManager;
 import business.security.entity.Event;
 import business.security.entity.Group;
 import business.security.entity.Invite;

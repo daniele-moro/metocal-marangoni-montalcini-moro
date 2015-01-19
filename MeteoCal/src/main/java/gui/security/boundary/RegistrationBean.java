@@ -3,9 +3,9 @@
 * To change this template file, choose Tools | Templates
 * and open the template in the editor.
 */
-package gui.security;
+package gui.security.boundary;
 
-import business.security.boundary.UserManager;
+import business.security.control.UserManager;
 import business.security.control.MailManager;
 import business.security.entity.Users;
 import java.util.Calendar;
@@ -51,14 +51,14 @@ public class RegistrationBean {
         }
         String residenceTown = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
         if(residenceTown ==null || residenceTown.isEmpty() ){
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location invalid or empty","");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location empty","");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "";
         }
         user.setResidenceTown(residenceTown);
         um.save(user);
         mailManager.sendMail(user.getEmail(), "Registration to MeteoCal", "Welcome in Meteocal! Your registration has been succesfully completed.");
-        return "login?faces-redirect=true";
+        return "index?faces-redirect=true";
     }
     
 }

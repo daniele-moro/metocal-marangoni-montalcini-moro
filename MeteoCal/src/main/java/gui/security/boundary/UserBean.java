@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui.security;
+package gui.security.boundary;
 
-import business.security.boundary.UserManager;
+import business.security.control.UserManager;
 import business.security.entity.Users;
 import java.io.Serializable;
 import javax.ejb.EJB;

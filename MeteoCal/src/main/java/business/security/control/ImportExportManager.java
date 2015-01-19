@@ -1,4 +1,4 @@
-package business.security.boundary;
+package business.security.control;
 
 import business.security.entity.Event;
 import exception.DateConsistencyException;
