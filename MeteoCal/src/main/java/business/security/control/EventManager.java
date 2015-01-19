@@ -316,7 +316,7 @@ public class EventManager {
             updateInviteStatus.executeUpdate();
         } else {
             //If there's an overlapping event, generate an exception
-            throw new DateConsistencyException("You may have an ovelapping event, you have to delete your participation to that event");
+            throw new DateConsistencyException("You may have an ovelapping event, you have to delete your participation to that event before accepting this");
         }
     }
     
