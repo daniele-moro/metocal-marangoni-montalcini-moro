@@ -26,7 +26,7 @@ public class UniqueEmailValidator implements Validator, Serializable {
         boolean isValid = false;
         
         try {
-            Query qUser = em.createQuery("SELECT u FROM USER u WHERE u.email =?1");
+            Query qUser = em.createQuery("SELECT u FROM USERS u WHERE u.email =?1");
             qUser.setParameter(1, (String) value);
             qUser.getSingleResult();
         } catch (NoResultException ex) {

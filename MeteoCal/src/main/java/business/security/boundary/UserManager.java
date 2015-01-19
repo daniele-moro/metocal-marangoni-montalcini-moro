@@ -24,7 +24,7 @@ public class UserManager {
     Principal principal;
 
     public void save(Users user) {
-        user.setGroupName(Group.USER);
+        user.setGroupName(Group.USERS);
         em.persist(user);
     }
 
