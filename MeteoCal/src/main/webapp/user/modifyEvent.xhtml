@@ -102,6 +102,9 @@
                             </h:panelGrid>
                         </h:panelGrid>
                     </h:panelGrid>
+                    <h:panelGrid>
+                          <p:messages id="messageForError" globalOnly="true" autoUpdate="true" closable="true" showDetail="true" />
+                    </h:panelGrid>
                     <h:panelGrid columns="3" id="buttons">
                         <p:commandButton id="modifyEvent" value="Modify Event" update="regGrid"
                                          action="#{createdEventsBean.modifyEventInformation()}" />

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.codehaus.jettison.json.JSONException;
 
@@ -77,7 +78,13 @@ public class CreatedEventsBean implements Serializable {
         Location loc = p.parsingLatitudeLongitude(replace);
         event.setLatitude(loc.getLatitude());
         event.setLongitude(loc.getLongitude());
-        eventManager.updateEventInformation(event, acceptedWeatherCondition);
+        try {
+            eventManager.updateEventInformation(event, acceptedWeatherCondition);
+        } catch (Exception ex) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", ex.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
         return "createdEvent?faces-redirect=true";
     }
     

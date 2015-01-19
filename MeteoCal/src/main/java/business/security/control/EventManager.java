@@ -2,6 +2,7 @@ package business.security.control;
 
 import business.security.entity.Event;
 import business.security.entity.Invite;
+import business.security.entity.PredefinedTypology;
 import business.security.entity.Users;
 import business.security.entity.WeatherCondition;
 import exception.DateConsistencyException;
@@ -118,13 +119,17 @@ public class EventManager {
             return false;
         }
         for (Event ev : userInformationLoader.loadCreatedEvents()) {
-            if (ev.isOverlapped(event)) {
-                return false;
+            if(event.getId() != ev.getId()) {
+                if (ev.isOverlapped(event)) {
+                    return false;
+                }
             }
         }
         for (Event ev : userInformationLoader.loadAcceptedEvents()) {
-            if (ev.isOverlapped(event)) {
-                return false;
+            if(event.getId() != ev.getId()) {
+                if (ev.isOverlapped(event)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -211,68 +216,86 @@ public class EventManager {
      *
      * @param event: the event which has been modified
      * @param awc the new accepted weather condition for the event
+     * @throws exception.DateConsistencyException
      */
-    public void updateEventInformation(Event event, WeatherCondition awc) {
-        if(awc!=null){
-            Query updateWeatherCondition = em.createQuery("UPDATE WeatherCondition w SET w.precipitation =?1, w.wind =?2, w.temperature =?3 WHERE w.id =?4");
-            updateWeatherCondition.setParameter(1, awc.getPrecipitation());
-            updateWeatherCondition.setParameter(2, awc.getWind());
-            updateWeatherCondition.setParameter(3, awc.getTemperature());
-            updateWeatherCondition.setParameter(4, awc.getId());
-            updateWeatherCondition.executeUpdate();
-        }
-        
-        Query updateEventInformation = em.createQuery("UPDATE EVENT event SET event.name =?1, event.location =?2, event.description =?3, event.predefinedTypology = ?4 WHERE event.id =?5");
-        updateEventInformation.setParameter(1, event.getName());
-        updateEventInformation.setParameter(2, event.getLocation());
-        updateEventInformation.setParameter(3, event.getDescription());
-        updateEventInformation.setParameter(4, event.getPredefinedTypology());
-        updateEventInformation.setParameter(5, event.getId());
-        updateEventInformation.executeUpdate();
-        
-        //if the date is changed
-        Event ev = getEventById(event.getId());
-        if (!ev.getTimeStart().equals(event.getTimeStart()) || !ev.getTimeEnd().equals(event.getTimeEnd())) {
-            boolean mailSent = false;
-            for (Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
-                if (inv.getStatus().equals(Invite.InviteStatus.accepted) || inv.getStatus().equals(Invite.InviteStatus.invited) || inv.getStatus().equals(Invite.InviteStatus.delayedEvent)) {
-                    mailSent = false;
-                    //Sending delay notification
-                    notificationManager.createDelayNotification(inv);
-                    //Overlaps checking
-                    for (Event evv : searchManager.findUserEvent(inv.getUser())) {
-                        if ((event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
-                                || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
-                                || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {
-                            Query updateInvitationStatus = em.createQuery("UPDATE INVITE invite SET invite.status= ?1 WHERE invite.event = ?2 AND invite.user = ?3");
-                            updateInvitationStatus.setParameter(1, Invite.InviteStatus.delayedEvent);
-                            updateInvitationStatus.setParameter(2, event);
-                            updateInvitationStatus.setParameter(3, inv.getUser());
-                            updateInvitationStatus.executeUpdate();
-                            if (!mailSent) {
-                                mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. According to the new date, "
-                                        + "the event is overlapping respect to an event to which you are going to participate. So, now you are not considered among the participants of the event of which the date has been modified. "
-                                        + "If you want to participate to this event, you have to delete your participation to the other event and accept another time the invitation to this one.");
-                                mailSent = true;
+    public void updateEventInformation(Event event, WeatherCondition awc) throws DateConsistencyException {
+        if (checkDateConsistency(event)) {
+            
+            if(awc!=null){
+                Query updateWeatherCondition = em.createQuery("UPDATE WeatherCondition w SET w.precipitation =?1, w.wind =?2, w.temperature =?3 WHERE w.id =?4");
+                updateWeatherCondition.setParameter(1, awc.getPrecipitation());
+                updateWeatherCondition.setParameter(2, awc.getWind());
+                updateWeatherCondition.setParameter(3, awc.getTemperature());
+                updateWeatherCondition.setParameter(4, awc.getId());
+                updateWeatherCondition.executeUpdate();
+            }
+            
+            Query updateEventInformation = em.createQuery("UPDATE EVENT event SET event.name =?1, event.location =?2, event.description =?3, event.predefinedTypology = ?4 WHERE event.id =?5");
+            updateEventInformation.setParameter(1, event.getName());
+            updateEventInformation.setParameter(2, event.getLocation());
+            updateEventInformation.setParameter(3, event.getDescription());
+            updateEventInformation.setParameter(4, event.getPredefinedTypology());
+            updateEventInformation.setParameter(5, event.getId());
+            updateEventInformation.executeUpdate();
+            
+            if(event.getPredefinedTypology().equals(PredefinedTypology.other)) {
+                Query updateNotPredefinedTypology = em.createQuery("UPDATE EVENT event SET event.notPredefinedTypology =?1 WHERE event.id =?2");
+                updateNotPredefinedTypology.setParameter(1, event.getNotPredefinedTypology());
+                updateNotPredefinedTypology.setParameter(2, event.getId());
+                updateNotPredefinedTypology.executeUpdate();
+            } else {
+                Query updateNotPredefinedTypology = em.createQuery("UPDATE EVENT event SET event.notPredefinedTypology =?1 WHERE event.id =?2");
+                updateNotPredefinedTypology.setParameter(1, null);
+                updateNotPredefinedTypology.setParameter(2, event.getId());
+                updateNotPredefinedTypology.executeUpdate();
+            }
+            
+            //if the date is changed
+            Event ev = getEventById(event.getId());
+            if (!ev.getTimeStart().equals(event.getTimeStart()) || !ev.getTimeEnd().equals(event.getTimeEnd())) {
+                boolean mailSent = false;
+                for (Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
+                    if (inv.getStatus().equals(Invite.InviteStatus.accepted) || inv.getStatus().equals(Invite.InviteStatus.invited) || inv.getStatus().equals(Invite.InviteStatus.delayedEvent)) {
+                        mailSent = false;
+                        //Sending delay notification
+                        notificationManager.createDelayNotification(inv);
+                        //Overlaps checking
+                        for (Event evv : searchManager.findUserEvent(inv.getUser())) {
+                            if ((event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
+                                    || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
+                                    || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {
+                                Query updateInvitationStatus = em.createQuery("UPDATE INVITE invite SET invite.status= ?1 WHERE invite.event = ?2 AND invite.user = ?3");
+                                updateInvitationStatus.setParameter(1, Invite.InviteStatus.delayedEvent);
+                                updateInvitationStatus.setParameter(2, event);
+                                updateInvitationStatus.setParameter(3, inv.getUser());
+                                updateInvitationStatus.executeUpdate();
+                                if (!mailSent) {
+                                    mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. According to the new date, "
+                                            + "the event is overlapping respect to an event to which you are going to participate. So, now you are not considered among the participants of the event of which the date has been modified. "
+                                            + "If you want to participate to this event, you have to delete your participation to the other event and accept another time the invitation to this one.");
+                                    mailSent = true;
+                                }
                             }
                         }
-                    }
-                    if (!mailSent) {
-                        mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. You have no overlaps"
-                                + "with the other events you are going to participate to so you are between the participants, but we suggest you to check your notifications and discover the new date. If you "
-                                + "can't participate because of the new date, you can remove your participation to the event");
+                        if (!mailSent) {
+                            mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. You have no overlaps"
+                                    + "with the other events you are going to participate to so you are between the participants, but we suggest you to check your notifications and discover the new date. If you "
+                                    + "can't participate because of the new date, you can remove your participation to the event");
+                        }
                     }
                 }
             }
+            
+            Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
+            updateDateOfEvent.setParameter(1, event.getTimeStart());
+            updateDateOfEvent.setParameter(2, event.getTimeEnd());
+            updateDateOfEvent.setParameter(3, event.getId());
+            updateDateOfEvent.executeUpdate();
         }
-        
-        Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
-        updateDateOfEvent.setParameter(1, event.getTimeStart());
-        updateDateOfEvent.setParameter(2, event.getTimeEnd());
-        updateDateOfEvent.setParameter(3, event.getId());
-        updateDateOfEvent.executeUpdate();
-        /*notificationManager.setEvent(e);
-        notificationManager.sendNotifications(NotificationType.delayedEvent);*/
+        else {
+            throw new DateConsistencyException("You may have some overlapping event, or the date of start is after the end");
+            
+        }
     }
     
     /**
