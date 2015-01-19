@@ -16,102 +16,82 @@ import javax.persistence.PersistenceContext;
 
 @Stateless
 public class NotificationManager {
-
+    
     @PersistenceContext
-    EntityManager em;
+            EntityManager em;
     
     @Inject
-    Principal principal;
+            Principal principal;
     
     @EJB
-    private MailManager mailManager; 
-    
-    private Invite invite; 
-    
-    private Notification notification; 
-
-    public Invite getInvite() {
-        return invite;
-    }
-
-    public void setInvite(Invite invite) {
-        this.invite = invite;
-    }
-
-    public Notification getNotification() {
-        return notification;
-    }
-
-    public void setNotification(Notification notification) {
-        this.notification = notification;
-    }
+            MailManager mailManager;
     
     /**
-     * This method is called when a user is invited to an event: it create the invite and the notification 
+     * This method is called when a user is invited to an event: it first creates the invite and then the notification
      * and stores them in the database; moreover, it sends an email to the invited user
      * @param e
-     * @param u 
+     * @param u
      */
     public void createInviteNotification(Event e, Users u) {
-            setInvite(new Invite()); 
-            getInvite().setUser(u);
-            getInvite().setStatus(Invite.InviteStatus.invited);
-            getInvite().setEvent(e);
-            em.persist(getInvite());
-            setNotification(new Notification()); 
-            getNotification().setType(NotificationType.invite);
-            getNotification().setNotificatedUser(u);
-            getNotification().setRelatedEvent(e);
-            getNotification().setSeen(false);
-            getNotification().setGenerationDate(new Date());
-            em.persist(getNotification());
-            mailManager.sendMail(u.getEmail(), "New Invite", "Hi! You have received a new invite");
+        Invite invite= new Invite();
+        invite.setUser(u);
+        invite.setStatus(Invite.InviteStatus.invited);
+        invite.setEvent(e);
+        em.persist(invite);
+        Notification notification = new Notification();
+        notification.setType(NotificationType.invite);
+        notification.setNotificatedUser(u);
+        notification.setRelatedEvent(e);
+        notification.setSeen(false);
+        notification.setGenerationDate(new Date());
+        em.persist(notification);
+        mailManager.sendMail(u.getEmail(), "New Invite", "Hi! You have received a new invite");
     }
     
     /**
      * This method is called when an event is cancelled: it produces a delete notification, stores
      * it in the database and sends an email to the interested user
-     * @param inv 
+     * @param inv
      */
     public void createDeleteNotification (Invite inv) {
-        setNotification(new Notification()); 
-        getNotification().setRelatedEvent(inv.getEvent());
-        getNotification().setNotificatedUser(inv.getUser());
-        getNotification().setSeen(false);
-        getNotification().setType(NotificationType.deletedEvent);
-        getNotification().setGenerationDate(new Date());
-        em.persist(getNotification());
+        Notification notification = new Notification();
+        notification.setRelatedEvent(inv.getEvent());
+        notification.setNotificatedUser(inv.getUser());
+        notification.setSeen(false);
+        notification.setType(NotificationType.deletedEvent);
+        notification.setGenerationDate(new Date());
+        em.persist(notification);
         //I send the notification mail to the user
         mailManager.sendMail(inv.getUser().getEmail(), "Deleted Event", "Hi! An event for which you have received an invite has been cancelled. Join MeteoCal to discover it.");
     }
-
+    
     /**
      * This method is called when the date of an event is changed: it produces a delay notification, stores
      * it in the database and sends an email to the interested user
-     * @param inv 
+     * @param inv
      */
     public void createDelayNotification (Invite inv) {
-        setNotification(new Notification()); 
-        getNotification().setRelatedEvent(inv.getEvent());
-        getNotification().setNotificatedUser(inv.getUser());
-        getNotification().setSeen(false);
-        getNotification().setType(NotificationType.delayedEvent);
-        getNotification().setGenerationDate(new Date());
-        em.persist(getNotification());
+        Notification notification = new Notification();
+        notification.setRelatedEvent(inv.getEvent());
+        notification.setNotificatedUser(inv.getUser());
+        notification.setSeen(false);
+        notification.setType(NotificationType.delayedEvent);
+        notification.setGenerationDate(new Date());
+        em.persist(notification);
         
         //Invio della mail
         mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
     }
     
     public void createWeatherConditionChangedNotification (Users user, Event event) {
-        setNotification(new Notification()); 
-        getNotification().setGenerationDate(new Date());
-        getNotification().setNotificatedUser(user);
-        getNotification().setRelatedEvent(event);
-        getNotification().setSeen(false);
-        getNotification().setType(NotificationType.weatherConditionChanged);
-        em.persist(getNotification()); 
+        Notification notification = new Notification();
+        notification.setGenerationDate(new Date());
+        notification.setNotificatedUser(user);
+        notification.setRelatedEvent(event);
+        notification.setSeen(false);
+        notification.setType(NotificationType.weatherConditionChanged);
+        em.persist(notification);
         
     }
-
+    
 }
