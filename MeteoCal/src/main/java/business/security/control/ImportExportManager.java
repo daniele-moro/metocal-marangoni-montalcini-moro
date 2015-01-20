@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
@@ -37,17 +39,23 @@ public class ImportExportManager {
      *
      * @param inStr InputStream of the fileyou want to import
      * @throws JAXBException
+     * @throws exception.ImportExportException
      * @throwsImportExportException Exception in case of not compatible events
      * (overlaps or outdoor events without accepted weather condition)
      * @throws DateConsistencyException
      * @throws JSONException
      */
-    public void importUserCalendar(InputStream inStr) throws JAXBException, DateConsistencyException, JSONException, ImportExportException {
-        JAXBContext context = JAXBContext.newInstance(EventsList.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-
-        EventsList events = (EventsList) unmarshaller.unmarshal(inStr);
-
+    public void importUserCalendar(InputStream inStr) throws DateConsistencyException, JSONException, ImportExportException {
+        JAXBContext context;
+        EventsList events;
+        try {
+            context = JAXBContext.newInstance(EventsList.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            events = (EventsList) unmarshaller.unmarshal(inStr);
+        } catch (JAXBException ex) {
+            throw new ImportExportException("Error: the calendar has some missing fields for some events, or for his structure");
+        }
+        
         for (Event e : events.getEvents()) {
             //Controllo se la data degli eventi da importare è compatibile con gli eventi del DB
             //inoltre controllo che se l'evento è outdoor abbia l'AcceptedWeatherCondition
@@ -84,6 +92,8 @@ public class ImportExportManager {
         EventsList events = new EventsList();
 
         events.setEvents(uil.loadCreatedEvents());
+        
+        events.addEvents(uil.loadAcceptedEvents());
         // Write to OutputStream
         m.marshal(events, out);
         System.out.println(Arrays.toString(out.toByteArray()));
@@ -103,5 +113,8 @@ class EventsList {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+    public void addEvents(List<Event> events) {
+        this.events.addAll(events);
     }
 }
