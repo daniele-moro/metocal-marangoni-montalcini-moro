@@ -55,6 +55,7 @@ public class SearchManager {
     }
     
     public List<Event> findUserEvent(Users user) {
+        //Prelevo gli eventi a cui partecipa l'utente
         List<Event> userEvents = new ArrayList<>();
         Query findUserAcceptedEvents = em.createQuery("SELECT invite.event FROM INVITE invite WHERE invite.user = ?1 AND invite.status =?2");
         findUserAcceptedEvents.setParameter(1, user);
@@ -62,6 +63,7 @@ public class SearchManager {
         for (Event event : (List<Event>) findUserAcceptedEvents.getResultList()) {
             userEvents.add(event);
         }
+        //Prelevo gli eventi di cui è organizzatore l'utente
         Query findUserCreatedEvents = em.createQuery("SELECT event FROM EVENT event WHERE event.organizer =?1");
         findUserCreatedEvents.setParameter(1, user);
         for (Event event : (List<Event>) findUserCreatedEvents.getResultList()) {

@@ -44,11 +44,14 @@ public class RegistrationBean {
     }
     
     public String register() {
-        if(user.getBirthday().after(new Date (100,12,31))){
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Invalid inserted date, it can't be after 31/12/2000");
+        GregorianCalendar currDate = new GregorianCalendar();
+        currDate.roll(Calendar.YEAR, -16);
+        if(user.getBirthday().after(currDate.getTime())){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Invalid inserted date, you must have an age greater than 14 years");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "";
         }
+        
         String residenceTown = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
         if(residenceTown ==null || residenceTown.isEmpty() ){
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location empty","");

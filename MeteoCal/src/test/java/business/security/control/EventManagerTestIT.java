@@ -215,14 +215,14 @@ public class EventManagerTestIT {
         event1.setOrganizer(user1);
         event1.setPredefinedTypology(PredefinedTypology.dinner);
         event1.setOutdoor(false);
-        eventManager.save(event1);
+        //eventManager.save(event1);
         
         invite1 = new Invite();
         invite1.setEvent(event1);
         invite1.setUser(user2);
         invite1.setStatus(Invite.InviteStatus.accepted);
-        eventManager.save(invite1);
-        
+        //eventManager.save(invite1);
+        fail("Prototype");
         
         eventManager.removeEvent(event1);
         //Verify that the event attribute deleted is true
@@ -272,13 +272,14 @@ public class EventManagerTestIT {
         event1.setOrganizer(user1);
         event1.setPredefinedTypology(PredefinedTypology.dinner);
         event1.setOutdoor(false);
-        eventManager.save(event1);
+        //eventManager.save(event1);
         
         invite1 = new Invite();
         invite1.setEvent(event1);
         invite1.setUser(user2);
         invite1.setStatus(Invite.InviteStatus.accepted);
-        eventManager.save(invite1);
+        //eventManager.save(invite1);
+        fail("PROTOTYPE");
     }
     
     

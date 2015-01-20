@@ -101,7 +101,7 @@ public class SearchResultsBean implements Serializable {
             return "userProfile?faces-redirect=true&amp;email="+u.getEmail();
         } else {
             FacesMessage message;
-            message = new FacesMessage("Error","Mail inexistent");
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error","Mail inexistent");
             FacesContext.getCurrentInstance().addMessage(null, message);
             return "";
         } 

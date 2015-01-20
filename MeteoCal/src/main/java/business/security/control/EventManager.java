@@ -76,6 +76,7 @@ public class EventManager {
                     save(event.getWeatherForecast());
                     em.merge(event);
                 } else {
+                    event.setAcceptedWeatherConditions(null);
                     em.persist(event);
                 }
 
@@ -259,9 +260,11 @@ public class EventManager {
                         notificationManager.createDelayNotification(inv);
                         //Overlaps checking
                         for (Event evv : searchManager.findUserEvent(inv.getUser())) {
-                            if ((event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
+                            //Controllo che l'evento non sia il corrente e che sia sovrapposto
+                            if (!evv.equals(event) && evv.isOverlapped(event)){
+                                    /*(event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
                                     || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
-                                    || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {
+                                    || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {*/
                                 Query updateInvitationStatus = em.createQuery("UPDATE INVITE invite SET invite.status= ?1 WHERE invite.event = ?2 AND invite.user = ?3");
                                 updateInvitationStatus.setParameter(1, Invite.InviteStatus.delayedEvent);
                                 updateInvitationStatus.setParameter(2, event);
@@ -624,14 +627,4 @@ public class EventManager {
         }
 
     }
-
-    //Le save servono solo per il test
-    public void save(Event event) {
-        em.persist(event);
-    }
-
-    public void save(Invite invite) {
-        em.persist(invite);
-    }
-
 }
