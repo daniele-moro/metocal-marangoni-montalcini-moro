@@ -650,8 +650,10 @@ public class EventManager {
             
             //Mandiamo le email in caso di cambiamento di condizioni climatiche
             if (!w.getIcon().equals(newWeat.getIcon()) && e.isOutdoor()) {
+                System.out.println("METEO CAMBIATO!!! SPEDISCO MAIL AD ORGANIZZATORE");
                 mailManager.sendMail(e.getOrganizer().getEmail(), "Weather forecast changed for the event " + '"' + e.getName() + '"', "The weather forecast for the event are changed.");
                 for (Users u : this.getAcceptedPeople(e)) {
+                    System.out.println("METEO CAMBIATO!!! SPEDISCO MAIL A: "+u.getEmail());
                     mailManager.sendMail(u.getEmail(), "Weather forecast changed for the event " + '"' + e.getName() + '"', "The weather forecast for the event are changed.");
                 }
             }
