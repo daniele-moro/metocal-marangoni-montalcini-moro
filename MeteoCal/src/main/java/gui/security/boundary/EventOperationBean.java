@@ -42,12 +42,11 @@ public class EventOperationBean implements Serializable {
     
     private Date currentDate = new Date();
     
-    private boolean showWeatherValue = false;
-    
-    
-    public EventOperationBean() {
-    }
-    
+    /**
+     * It returns the event if it is not null, otherwise it creates a new events and 
+     * returns it. 
+     * @return 
+     */
     public Event getEvent() {
         if (event == null) {
             event = new Event();
@@ -55,6 +54,11 @@ public class EventOperationBean implements Serializable {
         return event;
     }
     
+    /**
+     * It returns the acceptedWeatherCondition if they are not null, otherwise it creates new 
+     * acceptedWeatherCondition and return them.
+     * @return 
+     */
     public WeatherCondition getAcceptedWeatherCondition() {
         if (acceptedWeatherCondition == null) {
             acceptedWeatherCondition = new WeatherCondition();
@@ -62,6 +66,12 @@ public class EventOperationBean implements Serializable {
         return acceptedWeatherCondition;
     }
     
+    /**
+     * This method sets the location, latitude and longitude of the event, its acceptedWeatherCondition and
+     * calls the eventManager method "createEvent"; finally, redirects the user to the Add Invitation page
+     * @return
+     * @throws JSONException 
+     */
     public String createEvent() throws JSONException {
         //Control of the input of the location
         String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
@@ -88,8 +98,6 @@ public class EventOperationBean implements Serializable {
         event.setLatitude(loc.getLatitude());
         event.setLongitude(loc.getLongitude());
         
-        System.out.println("" + event.getLongitude() + "    " + loc.getLatitude());
-        
         try {
             eventManager.createEvent(event);
         } catch (DateConsistencyException ex) {
@@ -102,6 +110,9 @@ public class EventOperationBean implements Serializable {
         
     }
     
+    /**
+     * This methods calls the userInformationLoader method "loadCreatedEvents"
+     */
     public void createdEvent() {
         userInformationLoader.loadCreatedEvents();
     }
@@ -135,22 +146,12 @@ public class EventOperationBean implements Serializable {
         this.weatherForecast = weatherForecast;
     }
     
-    
+    /**
+     * This method returns the current date
+     * @return 
+     */
     public Date getCurrentDate() {
         return currentDate;
     }
-    
-    public String showWeather() {
-        System.out.println("valore " + showWeatherValue);
-        showWeatherValue = !showWeatherValue;
-        System.out.println("valore nuovo " + showWeatherValue);
-        return "createEvent";
-    }
-
-    /**
-     * @return the showWeather
-     */
-    public boolean getShowWeatherValue() {
-        return showWeatherValue;
-    }
+  
 }

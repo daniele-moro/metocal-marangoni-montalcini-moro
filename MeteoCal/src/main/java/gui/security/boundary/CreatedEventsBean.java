@@ -41,37 +41,21 @@ public class CreatedEventsBean implements Serializable {
     private WeatherCondition acceptedWeatherCondition;
     
     private Date currentDate = new Date();
-    
-    
-    public CreatedEventsBean() {
-    }
-    
-    public UserInformationLoader getUserInformationLoader() {
-        return userInformationLoader;
-    }
-    
-    public void setUserInformationLoader(UserInformationLoader userInformationLoader) {
-        this.userInformationLoader = userInformationLoader;
-    }
-    
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-    
-    public void setEventManager(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
-    
+
+    /**
+     * This method calls a method of the userInformationLoader, which finds all events created by 
+     * the logged user.
+     * @return 
+     */
     public List<Event> getCreatedEvents() {
         return userInformationLoader.loadCreatedEvents();
     }
-    
-    /*  public String showModifyEvent(Event event, WeatherCondition acceptedWeatherConditions) {
-    //eventManager.setEvent(event);
-    //eventManager.setAcceptedWeatherConditions(acceptedWeatherConditions);
-    return "modifyEvent?faces-redirect=true&amp;id"+event.getId();
-    }*/
-    
+  
+    /**
+     * This method, starting from the inserted data, sets event location, latitude and longitude and 
+     * calls the eventManager method "updateEventInformation". 
+     * @return 
+     */
     public String modifyEventInformation(){
         String location = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
         //Control if the location is valid (not null or not empty)
@@ -104,19 +88,34 @@ public class CreatedEventsBean implements Serializable {
         return "createdEvent?faces-redirect=true";
     }
     
+    /**
+     * This method calls a method of the event manager which removes the event (the event is not cancelled
+     * by the database, but all the invites related to it are removed and a deleteEvent notification is sent
+     * to the interested users).
+     * @return 
+     */
     public String deleteEvent() {
         eventManager.removeEvent(event);
         return "createdEvent?faces-redirect=true";
     }
     
+    /**
+     * This method is called when the user clicks on button "Add Invitation": through this method, the user
+     * is redirected to the Add Invitation page
+     * @return 
+     */
     public String addInvitations() {
         return "addInvitation?faces-redirect=true&amp;id="+event.getId();
     }
     
-    public String navigateTo() {
-        return "home?faces-redirect=true";
-    }
-    
+
+    /**
+     * This method redirects the user to the page which allows him to update information
+     * of the event he wants to modify
+     * @param event
+     * @param acceptedWeatherConditions
+     * @return 
+     */
     public String showModifyEvent(Event event, WeatherCondition acceptedWeatherConditions) {
         this.event=event;
         this.acceptedWeatherCondition=acceptedWeatherConditions;
@@ -151,15 +150,18 @@ public class CreatedEventsBean implements Serializable {
         this.acceptedWeatherCondition = acceptedWeatherCondition;
     }
     
+    /**
+     * This method returns the current date.
+     * @return 
+     */
     public Date getCurrentDate() {
         return currentDate;
     }
-    
-    
-    
-    
-    
-
+    /**
+     * This methods redirects to the event page
+     * @param e
+     * @return 
+     */
     public String showEvent(Event e){
         return "event.xhtml?faces-redirect=true&amp;id="+e.getId();
     }

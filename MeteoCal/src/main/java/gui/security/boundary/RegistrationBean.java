@@ -29,9 +29,10 @@ public class RegistrationBean {
     
     private Users user;
     
-    public RegistrationBean() {
-    }
-    
+    /**
+     * It returns the user if it is not null, otherwise it creates a new user and returns it
+     * @return 
+     */
     public Users getUser() {
         if (user == null) {
             user = new Users();
@@ -39,10 +40,19 @@ public class RegistrationBean {
         return user;
     }
     
+    /**
+     * It set the user to the user passed as parameter
+     * @param user 
+     */
     public void setUser(Users user) {
         this.user = user;
     }
     
+    /**
+     * It performs the registration of a new user and calls a function which stores it in the database; also
+     * an email is sent to confirm the operation
+     * @return 
+     */
     public String register() {
         GregorianCalendar currDate = new GregorianCalendar();
         currDate.roll(Calendar.YEAR, -16);

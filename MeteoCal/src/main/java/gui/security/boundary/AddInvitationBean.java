@@ -60,20 +60,23 @@ public class AddInvitationBean implements Serializable{
     
     
     /**
-     * Metodo che precarica gli utenti invitati all'evento
+     * This method loads the users already invited to the event
      */
     @PostConstruct
     public void init(){
         temp();
     }
     
+    /**
+     * This method inserts in the list invitedPeople all the users already invited to the event
+     */
     private void temp(){
         construct=true;
         FacesMessage errMessage;
-        //Prelevo l'id passato in GET
+        //I fetch the id passed in GET
         String param=FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
         
-        //Controllo se viene passato l'id dell'evento alla pagina
+        //I check if the id is passed to the page
         if(param==null){
             errMessage=new FacesMessage(FacesMessage.SEVERITY_ERROR, "No event selected", "");
             FacesContext.getCurrentInstance().addMessage(null, errMessage);
@@ -85,7 +88,7 @@ public class AddInvitationBean implements Serializable{
         //Carico l'evento solo per verificare che l'evento esista
         event = eventManager.getEventById(idEvent);
         
-        //controllo se l'evento esiste
+        //I check if the event exists
         if(event==null ){
             errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Event Error", "");
             construct=false;
@@ -93,62 +96,106 @@ public class AddInvitationBean implements Serializable{
             return;
         }
         
-        //Controllo se l'organizzatore è l'utente loggato
+        //I check if the logged user is the organizer
         if(!event.isOrganizer(eventManager.getLoggedUser())){
             errMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "You aren't the organizer of this event", "");
             construct=false;
             FacesContext.getCurrentInstance().addMessage(null, errMessage);
             return;
         }
-        //Aggiorno la lista degli eventi
+        //I update the list of the invited people
         invitedPeople=eventManager.getInvitedPeople(idEvent);
     }
     
+    /**
+     * This method returns the name
+     * @return 
+     */
     public String getName() {
         return name;
     }
     
+    /**
+     * This method is used to assign to name the value of the parameter
+     * @param name 
+     */
     public void setName(String name) {
         this.name = name;
     }
     
+    /**
+     * This method returns the surname
+     * @return 
+     */
     public String getSurname() {
         return surname;
     }
     
+    /**
+     * This method is used to assign to surname the value of the parameter
+     * @param surname
+     */
     public void setSurname(String surname) {
         this.surname = surname;
     }
     
+     /**
+     * This method returns the email
+     * @return 
+     */
     public String getEmail() {
         return email;
     }
     
+    /**
+     * This method is used to assign to email the value of the parameter
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
     
+    /**
+     * This method returns the list of the invited people
+     * @return 
+     */
     public List<Users> getInvitedPeople() {
         return this.invitedPeople;
     }
     
+    /**
+     * This method returns the list partialResult
+     * @return 
+     */
     public List<Users> getPartialResults() {
         return this.partialResult;
     }
     
     
-    
+    /**
+     * This method calls a method of the searchManager in order to find the user whose email corresponds
+     * to the attribute "email"; then calls another method in order to add the found user to the list 
+     * of invited people. 
+     */
     public void addUserThroughEmail() {
         Users u = searchManager.findUser(email);
         addUser(u);
     }
     
+    /**
+     * This method calls another method in order to add the user passed as parameter to the list 
+     * of invited people.
+     */
     public String addSelectedUser(Users u){
         addUser(u);
         partialResult= null;
         return "";
     }
     
+    /**
+     * This method calls an eventManager method in order to add the user passed as parameter to the list 
+     * of invited people, then update the list of the invited people.
+     */
     private void addUser(Users user){
         try {
             eventManager.addInvitation(user, event);
@@ -160,10 +207,13 @@ public class AddInvitationBean implements Serializable{
         }
     }
     
-    
+    /**
+     * This method updates the list partialResult by calling a method of the searchManager, which 
+     * finds all the users whose name and surname correspond to the inserted ones; if no matches are found, it 
+     * displays a message. 
+     */
     public void addUserThroughNameSurname() {
-        //Cerco gli utenti per nome e cognome
-        System.out.println("appena dentro add User");
+        //I search the users throgh the inserted name and surname. 
         partialResult = searchManager.findUsersFromNameSurname(name, surname);
         if(partialResult == null || partialResult.isEmpty()){
             FacesMessage message;

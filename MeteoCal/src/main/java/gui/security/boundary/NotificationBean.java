@@ -31,43 +31,58 @@ public class NotificationBean implements Serializable{
     
     private Event event;
     
+    /**
+     * This method calls a method of the userInformationLoader which returns the list of the 
+     * logged user's notifications.
+     * @return 
+     */
     public List<Notification> getNotification() {
         return userInformationLoader.loadNotifications();
     }
     
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-    
-    public void setEventManager(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
-    
+    /**
+     * This method sets the event to the event the notification is related to, then redirects
+     * the user to the page in which he can see all the event information
+     * @param notification
+     * @return 
+     */
     public String showEventRelatedToNotification(Notification notification) {
         userInformationLoader.setNotificationSeen(notification);
-        //eventManager.setEvent(notification.getRelatedEvent());
-        //eventManager.setDeletedEvent(notification.getRelatedEvent().isDeleted());
         this.setEvent(notification.getRelatedEvent());
         return "event?faces-redirect=true&amp;id="+event.getId();
     }
     
+    /**
+     * This method calls the userInformationLoader method which performs the delete of the selected
+     * notification
+     * @param notification
+     * @return 
+     */
     public String deleteNotification(Notification notification) {
         userInformationLoader.removeNotification(notification);
         return "notifications?faces-redirect=true";
     }
     
-    public String navigateTo() {
-        return "home?faces-redirect=true";
-    }
-    
+    /**
+     * It returns the event
+     * @return 
+     */
     public Event getEvent() {
         return event;
     }
     
+    /**
+     * It sets the event to the event passed as parameter
+     * @param event 
+     */
     public void setEvent(Event event) {
         this.event = event;
     }
     
+    /**
+     * It returns true if there is at least one logged users's not read notification 
+     * @return 
+     */
     public boolean notReadNotification () {
         return !searchManager.findNotReadNotification(userInformationLoader.getLoggedUser()).isEmpty();
         

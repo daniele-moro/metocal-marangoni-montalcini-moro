@@ -32,8 +32,6 @@ public class UserInformationLoader {
      */
     public List<Event> loadCreatedEvents() {
         Query qCreatedEvents = em.createQuery("SELECT e FROM EVENT e WHERE e.organizer.email =?1 AND e.deleted=FALSE");
-        Users u = getLoggedUser();
-        System.out.println("USER: "+u);
         qCreatedEvents.setParameter(1, getLoggedUser().getEmail());
         List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList();
         return createdEvents;
