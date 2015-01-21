@@ -538,6 +538,12 @@ public class EventManager {
         return false;
     }
     
+    /**
+     * Return true if the condition are not acceptable for the event
+     * @param acceptedWeatherCondition
+     * @param weatherForecast
+     * @return 
+     */
     private boolean checkTemperature(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getTemperature()) {
             case (0):
@@ -565,7 +571,12 @@ public class EventManager {
         }
         return false;
     }
-    
+    /**
+     * Return true if the condition are not acceptable for the event
+     * @param acceptedWeatherCondition
+     * @param weatherForecast
+     * @return 
+     */
     private boolean checkWind(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getWind()) {
             case (0):
@@ -588,6 +599,12 @@ public class EventManager {
         return false;
     }
     
+    /**
+     * Return true if the condition are not acceptable for the event
+     * @param acceptedWeatherCondition
+     * @param weatherForecast
+     * @return 
+     */
     private boolean checkPrecipitation(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         if (acceptedWeatherCondition.getPrecipitation() == false && weatherForecast.getPrecipitation() == true) {
             return true;
