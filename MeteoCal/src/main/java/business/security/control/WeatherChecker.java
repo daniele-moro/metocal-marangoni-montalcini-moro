@@ -9,7 +9,6 @@ import business.security.entity.Event;
 import business.security.entity.WeatherCondition;
 import exception.WeatherException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
@@ -57,31 +56,36 @@ public class WeatherChecker {
 
     @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*", second = "*/5", persistent = false)
     public void myTimer2() {
-        // System.out.println("Timer event: " + new Date());
+        /**
+         * Construction of two date, one is one day after now, the other is three days after now
+        **/
         GregorianCalendar oneDayAfter = new GregorianCalendar();
         oneDayAfter.roll(Calendar.DAY_OF_YEAR, 1);
         GregorianCalendar threeDayAfter = new GregorianCalendar();
         threeDayAfter.roll(Calendar.DAY_OF_YEAR, 3);
         for (Event event : searchManager.findAllFutureEvents()) {
             if (event.isOutdoor() && event.getAcceptedWeatherConditions() != null) {
-                WeatherCondition temp;
 
+                //If the event is THREE days after now
                 if( event.getTimeStart().getDate()==threeDayAfter.getTime().getDate()
                         && event.getTimeStart().getMonth()==threeDayAfter.getTime().getMonth()
                         && event.getTimeStart().getYear()==threeDayAfter.getTime().getYear() 
                         ){
+                    //checks if there's some discrepancy between the forecasted and the accepted weather
+                    //if true it sends an email and a notification to the organizer of the event
                     eventManager.checkWeatherForecast(event);
                 }
+                
+                //if the event is ONE day after now
                 if( event.getTimeStart().getDate()==oneDayAfter.getTime().getDate()
                         && event.getTimeStart().getMonth()==oneDayAfter.getTime().getMonth()
                         && event.getTimeStart().getYear()==oneDayAfter.getTime().getYear() 
                         ){
+                    //Checks if there's some discrepancy between the forecasted and the accepted weather
+                    //if true it sends an email and a notification to each participant
                     eventManager.checkWeatherOneDayBefore(event);
                 }
             }
         }
     }
-
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
 }
