@@ -79,8 +79,8 @@ public class NotificationManager {
         notification.setGenerationDate(new Date());
         em.persist(notification);
         
-        //Invio della mail
-        mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
+        //Invio della mail (viene inviata dall'update event)
+        //mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
     }
     
     public void createWeatherConditionChangedNotification (Users user, Event event) {

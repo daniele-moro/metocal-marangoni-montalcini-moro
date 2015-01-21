@@ -143,14 +143,9 @@ public class NotificationManagerTest {
         notificationManager.createDelayNotification(invite);
         
         //Capture the argument passed to the mocked class
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Notification> captorNot = ArgumentCaptor.forClass(Notification.class);
         
-        verify(notificationManager.mailManager, times(1)).sendMail(captor.capture(), anyString(), anyString());
         verify(notificationManager.em, times(1)).persist(captorNot.capture());
-        
-        //Verification that the method trys to send the email to the correct address
-        assertThat(captor.getAllValues().get(0), is(user.getEmail()));
         
         //Verification that the method calls the persist method and creates the correct notification
         assertThat(((Notification)captorNot.getAllValues().get(0)).getNotificatedUser(), is(invite.getUser()));

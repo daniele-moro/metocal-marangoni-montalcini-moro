@@ -63,15 +63,19 @@ public class SearchManager {
         for (Event event : (List<Event>) findUserAcceptedEvents.getResultList()) {
             userEvents.add(event);
         }
+        
         //Prelevo gli eventi di cui è organizzatore l'utente
-        Query findUserCreatedEvents = em.createQuery("SELECT event FROM EVENT event WHERE event.organizer =?1");
+        Query findUserCreatedEvents = em.createQuery("SELECT event FROM EVENT event WHERE event.organizer =?1 AND event.deleted = ?2");
         findUserCreatedEvents.setParameter(1, user);
+        findUserCreatedEvents.setParameter(2, false);
         for (Event event : (List<Event>) findUserCreatedEvents.getResultList()) {
             userEvents.add(event);
         }
+        
         return userEvents;
     }
     
+    //TODO: REMOVE!!!!!!
     public List<Event> findAllEvents() {
         Query findAllEvents = em.createQuery("SELECT e FROM EVENT e");
         return findAllEvents.getResultList();

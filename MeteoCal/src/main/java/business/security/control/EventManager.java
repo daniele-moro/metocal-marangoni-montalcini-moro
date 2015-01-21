@@ -26,28 +26,28 @@ import org.codehaus.jettison.json.JSONException;
 
 @Stateless
 public class EventManager {
-
+    
     @PersistenceContext
-    EntityManager em;
-
+            EntityManager em;
+    
     @Inject
-    Principal principal;
-
+            Principal principal;
+    
     @EJB
-    NotificationManager notificationManager;
-
+            NotificationManager notificationManager;
+    
     @EJB
-    UserInformationLoader userInformationLoader;
-
+            UserInformationLoader userInformationLoader;
+    
     @EJB
-    SearchManager searchManager;
-
+            SearchManager searchManager;
+    
     @EJB
-    MailManager mailManager;
-
+            MailManager mailManager;
+    
     @EJB
-    JsonPars p;
-
+            JsonPars p;
+    
     /**
      * Creation of a new Event, it also takes the weather forecast
      *
@@ -59,27 +59,26 @@ public class EventManager {
     public void createEvent(Event event) throws DateConsistencyException {
         if (checkDateConsistency(event)) {
             System.out.println("NOT PREDEFINED TYPO:" + event.getNotPredefinedTypology());
+            
+            if (event.getOrganizer() == null) {
+                event.setOrganizer(getLoggedUser());
+            }
+            if (event.isOutdoor()) {
+                save(event.getAcceptedWeatherConditions());
+                em.persist(event);
+                
+            } else {
+                event.setAcceptedWeatherConditions(null);
+                em.persist(event);
+            }
             try {
-                if (event.getOrganizer() == null) {
-                    event.setOrganizer(getLoggedUser());
-                }
-                if (event.isOutdoor()) {
-                    save(event.getAcceptedWeatherConditions());
-                    em.persist(event);
-                    // System.out.println("" + awc.getPrecipitation() + " " + awc.getTemperature() + " " + awc.getWind() );
-                    //prelevo le previsioni del tempo
-                    System.out.println("------------------------------------------------------CREAZIONE EVENTO");
-                    WeatherCondition weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
-                    System.out.println("------------------------------------------------------WEATHER PRELEVATOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                    //Le aggiungo all'evento se e solo se non mi torna una exception
-                    event.setWeatherForecast(weatherForecast);
-                    save(event.getWeatherForecast());
-                    em.merge(event);
-                } else {
-                    event.setAcceptedWeatherConditions(null);
-                    em.persist(event);
-                }
-
+                //prelevo le previsioni del tempo
+                WeatherCondition weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
+                //Le aggiungo all'evento se e solo se non mi torna una exception
+                event.setWeatherForecast(weatherForecast);
+                save(event.getWeatherForecast());
+                em.merge(event);
+                
             } catch (WeatherException ex) {
                 System.out.println("" + ex.getMessage());
             }
@@ -87,7 +86,7 @@ public class EventManager {
             throw new DateConsistencyException("You may have some overlapping event, or the date of start is after the end");
         }
     }
-
+    
     /**
      * Persist of the weather condition
      *
@@ -96,7 +95,7 @@ public class EventManager {
     private void save(WeatherCondition weatherCondition) {
         em.persist(weatherCondition);
     }
-
+    
     /**
      * It finds the logged user
      *
@@ -105,7 +104,7 @@ public class EventManager {
     public Users getLoggedUser() {
         return em.find(Users.class, principal.getName());
     }
-
+    
     /**
      * This method checks the consistency of the interval of the start and end
      * dates, e.g., if the event with this type of time interval can be created
@@ -119,14 +118,14 @@ public class EventManager {
             return false;
         }
         for (Event ev : userInformationLoader.loadCreatedEvents()) {
-            if (event.getId() != ev.getId()) {
+            if (!event.equals( ev)) {
                 if (ev.isOverlapped(event)) {
                     return false;
                 }
             }
         }
         for (Event ev : userInformationLoader.loadAcceptedEvents()) {
-            if (event.getId() != ev.getId()) {
+            if (!event.equals(ev)) {
                 if (ev.isOverlapped(event)) {
                     return false;
                 }
@@ -134,14 +133,14 @@ public class EventManager {
         }
         return true;
     }
-
+    
     public List<Users> getInvitedPeople(long idEvent) {
         Query findInvitedPeopleThroughIDev = em.createQuery("SELECT u FROM INVITE i, USERS u WHERE i.event.id = ?1 AND i.user.email = u.email");
         System.out.println("" + idEvent);
         findInvitedPeopleThroughIDev.setParameter(1, idEvent);
         return ((List<Users>) findInvitedPeopleThroughIDev.getResultList());
     }
-
+    
     /**
      * This method add an invitation related to the event passed to the user
      * passed
@@ -162,14 +161,14 @@ public class EventManager {
         if (event.isOrganizer(user)) {
             throw new InviteException("The organizer can't be invited");
         }
-
+        
         //Control if the user has already been invited
         if (!this.checkUserForInvitation(user, event)) {
             throw new InviteException("The user has already been invited");
         }
         notificationManager.createInviteNotification(event, user);
     }
-
+    
     /**
      * This method executes the remove of an event: it is set as "deleted" and
      * all invites related to this event are deleted; each interested person
@@ -189,7 +188,7 @@ public class EventManager {
             em.remove(inv);
         }
     }
-
+    
     /**
      * This method searches in the database for an event which has the specified
      * id.
@@ -207,7 +206,7 @@ public class EventManager {
             return null;
         }
     }
-
+    
     /**
      * This method executes the update of an event: if there's a change in the
      * dates, every interested user is notified and receives an email in which
@@ -218,8 +217,10 @@ public class EventManager {
      * @throws exception.DateConsistencyException
      */
     public void updateEventInformation(Event event, WeatherCondition awc) throws DateConsistencyException {
+        //Check the consistency of the modified event
         if (checkDateConsistency(event)) {
-
+            
+            //if the acceptedeWeather conditions are modified, we modify them in the database
             if (awc != null) {
                 Query updateWeatherCondition = em.createQuery("UPDATE WeatherCondition w SET w.precipitation =?1, w.wind =?2, w.temperature =?3 WHERE w.id =?4");
                 updateWeatherCondition.setParameter(1, awc.getPrecipitation());
@@ -228,7 +229,8 @@ public class EventManager {
                 updateWeatherCondition.setParameter(4, awc.getId());
                 updateWeatherCondition.executeUpdate();
             }
-
+            
+            //Update of the information of the event
             Query updateEventInformation = em.createQuery("UPDATE EVENT event SET event.name =?1, event.location =?2, event.description =?3, event.predefinedTypology = ?4 WHERE event.id =?5");
             updateEventInformation.setParameter(1, event.getName());
             updateEventInformation.setParameter(2, event.getLocation());
@@ -236,7 +238,8 @@ public class EventManager {
             updateEventInformation.setParameter(4, event.getPredefinedTypology());
             updateEventInformation.setParameter(5, event.getId());
             updateEventInformation.executeUpdate();
-
+            
+            //Control if the notpredefinedtypology is modified
             if (event.getPredefinedTypology().equals(PredefinedTypology.other)) {
                 Query updateNotPredefinedTypology = em.createQuery("UPDATE EVENT event SET event.notPredefinedTypology =?1 WHERE event.id =?2");
                 updateNotPredefinedTypology.setParameter(1, event.getNotPredefinedTypology());
@@ -248,23 +251,26 @@ public class EventManager {
                 updateNotPredefinedTypology.setParameter(2, event.getId());
                 updateNotPredefinedTypology.executeUpdate();
             }
-
+            
             //if the date is changed
             Event ev = getEventById(event.getId());
             if (!ev.getTimeStart().equals(event.getTimeStart()) || !ev.getTimeEnd().equals(event.getTimeEnd())) {
                 boolean mailSent = false;
+                
                 for (Invite inv : searchManager.findInviteRelatedToAnEvent(event)) {
-                    if (inv.getStatus().equals(Invite.InviteStatus.accepted) || inv.getStatus().equals(Invite.InviteStatus.invited) || inv.getStatus().equals(Invite.InviteStatus.delayedEvent)) {
+                    if (inv.getStatus().equals(Invite.InviteStatus.accepted)
+                            || inv.getStatus().equals(Invite.InviteStatus.invited)
+                            || inv.getStatus().equals(Invite.InviteStatus.delayedEvent)) {
                         mailSent = false;
                         //Sending delay notification
                         notificationManager.createDelayNotification(inv);
                         //Overlaps checking
                         for (Event evv : searchManager.findUserEvent(inv.getUser())) {
                             //Controllo che l'evento non sia il corrente e che sia sovrapposto
-                            if (!evv.equals(event) && evv.isOverlapped(event)){
-                                    /*(event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
-                                    || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
-                                    || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {*/
+                            if (!evv.equals(ev) && evv.isOverlapped(event) && !mailSent){
+                                /*(event.getTimeStart().after(evv.getTimeStart()) && event.getTimeStart().before(evv.getTimeEnd()))
+                                || (event.getTimeEnd().after(evv.getTimeStart()) && event.getTimeEnd().before(evv.getTimeEnd()))
+                                || (event.getTimeEnd().equals(evv.getTimeStart()) && event.getTimeEnd().equals(evv.getTimeEnd()))) {*/
                                 Query updateInvitationStatus = em.createQuery("UPDATE INVITE invite SET invite.status= ?1 WHERE invite.event = ?2 AND invite.user = ?3");
                                 updateInvitationStatus.setParameter(1, Invite.InviteStatus.delayedEvent);
                                 updateInvitationStatus.setParameter(2, event);
@@ -279,25 +285,42 @@ public class EventManager {
                             }
                         }
                         if (!mailSent) {
-                            mailManager.sendMail(inv.getUser().getEmail(), "Overlapping Events", "Hi! An event for which you have received an invite has been modified: the date has been changed. You have no overlaps"
+                            mailManager.sendMail(inv.getUser().getEmail(), "Modified date of event", "Hi! An event for which you have received an invite has been modified: the date has been changed. You have no overlaps "
                                     + "with the other events you are going to participate to so you are between the participants, but we suggest you to check your notifications and discover the new date. If you "
                                     + "can't participate because of the new date, you can remove your participation to the event");
                         }
                     }
                 }
+                
+                //If the date is changed, the update is performed
+                Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
+                updateDateOfEvent.setParameter(1, event.getTimeStart());
+                updateDateOfEvent.setParameter(2, event.getTimeEnd());
+                updateDateOfEvent.setParameter(3, event.getId());
+                updateDateOfEvent.executeUpdate();
+                
             }
-
-            Query updateDateOfEvent = em.createQuery("UPDATE EVENT event SET event.timeStart =?1, event.timeEnd =?2 WHERE event.id =?3");
-            updateDateOfEvent.setParameter(1, event.getTimeStart());
-            updateDateOfEvent.setParameter(2, event.getTimeEnd());
-            updateDateOfEvent.setParameter(3, event.getId());
-            updateDateOfEvent.executeUpdate();
+            try {
+                //prelevo le previsioni del tempo
+                WeatherCondition weatherForecast = p.parsingWeather(event.getLatitude(), event.getLongitude(), event.getTimeStart());
+                //Le aggiungo all'evento se e solo se non mi torna una exception
+                WeatherCondition oldWC = event.getWeatherForecast();
+                Query updateWC = em.createQuery("UPDATE WeatherCondition wc SET wc.icon =?1, wc.precipitation =?2, wc.temperature =?3, wc.wind=?4 WHERE wc.id=?5");
+                updateWC.setParameter(1,weatherForecast.getIcon());
+                updateWC.setParameter(2,weatherForecast.getPrecipitation());
+                updateWC.setParameter(3,weatherForecast.getTemperature());
+                updateWC.setParameter(4,weatherForecast.getWind());
+                updateWC.setParameter(5,oldWC.getId());
+                updateWC.executeUpdate();
+                
+            } catch (WeatherException ex) {
+                System.out.println("" + ex.getMessage());
+            }
         } else {
             throw new DateConsistencyException("You may have some overlapping event, or the date of start is after the end");
-
         }
     }
-
+    
     /**
      * This method is called when the logged user decides to participate to an
      * event: it updates the invite status in the database, setting it as
@@ -320,7 +343,7 @@ public class EventManager {
             throw new DateConsistencyException("You may have an ovelapping event, you have to delete your participation to that event before accepting this");
         }
     }
-
+    
     /**
      * This method is called when the logged user decides to remove his
      * participation to an event: it updates the invite status in the database,
@@ -336,7 +359,7 @@ public class EventManager {
         updateInviteStatus.setParameter(3, getLoggedUser());
         updateInviteStatus.executeUpdate();
     }
-
+    
     /**
      * This methods search in the database all the events which are created by
      * the specified user (NOT deleted)
@@ -350,7 +373,7 @@ public class EventManager {
         List<Event> createdEvents = (List<Event>) qCreatedEvents.getResultList();
         return createdEvents;
     }
-
+    
     /**
      * This methods search in the database all the events which are accepted by
      * the specified user (NOT deleted)
@@ -362,11 +385,11 @@ public class EventManager {
         Query qAcceptedEvents = em.createQuery("SELECT e FROM EVENT e, INVITE i WHERE i.user.email =?1 AND i.event.id = e.id AND i.status =?2 AND e.deleted=FALSE");
         qAcceptedEvents.setParameter(1, user.getEmail());
         qAcceptedEvents.setParameter(2, Invite.InviteStatus.accepted);
-
+        
         List<Event> acceptedEvents = (List<Event>) qAcceptedEvents.getResultList();
         return acceptedEvents;
     }
-
+    
     /**
      * This methods calls
      * {@link loadUserCreatedEvents(Users user) loadUserCreatedEvents(Users)} and
@@ -394,7 +417,7 @@ public class EventManager {
         }
         return userEvents;
     }
-
+    
     /**
      * This method returns the list of the users that have accepted the
      * invitation for the specified event
@@ -409,7 +432,7 @@ public class EventManager {
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.accepted);
         return ((List<Users>) findAcceptedPeople.getResultList());
     }
-
+    
     /**
      * This method returns the list of the users that have refused the
      * invitation for the specified event
@@ -424,7 +447,7 @@ public class EventManager {
         findAcceptedPeople.setParameter(2, Invite.InviteStatus.notAccepted);
         return ((List<Users>) findAcceptedPeople.getResultList());
     }
-
+    
     /**
      * Metodo che torna la lista degli utenti che non hanno ancora accettato o
      * rifiutato l'evento o chi ha l'evento come spostato (causa
@@ -440,7 +463,7 @@ public class EventManager {
         findAcceptedPeople.setParameter(3, Invite.InviteStatus.delayedEvent);
         return ((List<Users>) findAcceptedPeople.getResultList());
     }
-
+    
     public Date suggestNewDate(Event event) {
         List<WeatherCondition> listWeatherForecast;
         try {
@@ -450,7 +473,7 @@ public class EventManager {
                     Calendar date = new GregorianCalendar();
                     date.setTime(event.getTimeStart());
                     date.add(Calendar.DAY_OF_MONTH, i);
-
+                    
                     System.out.println("pioggia: " + listWeatherForecast.get(i));
                     System.out.println("vento: " + listWeatherForecast.get(i));
                     System.out.println("temperatura" + listWeatherForecast.get(i));
@@ -464,7 +487,7 @@ public class EventManager {
         }
         return null;
     }
-
+    
     /**
      * This method compares the weather forecast with the accepted weather
      * condition of the event: if there is a discrepancy, a mail is sent to the
@@ -478,7 +501,7 @@ public class EventManager {
         }
         return (checkTemperature(acceptedWeatherCondition, weatherForecast) || checkWind(acceptedWeatherCondition, weatherForecast) || checkPrecipitation(acceptedWeatherCondition, weatherForecast));
     }
-
+    
     public boolean checkWeatherForecast(Event event) {
         boolean notDesiredTemperature = checkTemperature(event.getAcceptedWeatherConditions(), event.getWeatherForecast());
         boolean notDesiredPrecipitation = checkPrecipitation(event.getAcceptedWeatherConditions(), event.getWeatherForecast());
@@ -500,7 +523,7 @@ public class EventManager {
         }
         return false;
     }
-
+    
     public boolean checkWeatherOneDayBefore(Event event) {
         if (checkTemperature(event.getAcceptedWeatherConditions(), event.getWeatherForecast())
                 || checkPrecipitation(event.getAcceptedWeatherConditions(), event.getWeatherForecast())
@@ -514,7 +537,7 @@ public class EventManager {
         }
         return false;
     }
-
+    
     private boolean checkTemperature(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getTemperature()) {
             case (0):
@@ -542,7 +565,7 @@ public class EventManager {
         }
         return false;
     }
-
+    
     private boolean checkWind(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getWind()) {
             case (0):
@@ -564,7 +587,7 @@ public class EventManager {
         }
         return false;
     }
-
+    
     private boolean checkPrecipitation(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         if (acceptedWeatherCondition.getPrecipitation() == false && weatherForecast.getPrecipitation() == true) {
             return true;
@@ -572,7 +595,7 @@ public class EventManager {
             return false;
         }
     }
-
+    
     /**
      * This method checks if an invitation has already been sent to the user
      * with the inserted email; if an invitation already exists, it will return
@@ -593,7 +616,7 @@ public class EventManager {
         }
         return true;
     }
-
+    
     /**
      * This method updates the weather forecast and in case of outdoor events
      * sends the email if the weather forecast are changed
@@ -607,7 +630,7 @@ public class EventManager {
             Query findCondition = em.createQuery("SELECT w FROM WeatherCondition w WHERE w.id = ?1");
             findCondition.setParameter(1, e.getWeatherForecast().getId());
             w = (WeatherCondition) findCondition.getResultList().get(0);
-
+            
             //Mandiamo le email in caso di cambiamento di condizioni climatiche
             if (!w.getIcon().equals(newWeat.getIcon()) && e.isOutdoor()) {
                 mailManager.sendMail(e.getOrganizer().getEmail(), "Weather forecast changed for the event " + '"' + e.getName() + '"', "The weather forecast for the event are changed.");
@@ -625,6 +648,6 @@ public class EventManager {
             e.setWeatherForecast(newWeat);
             em.merge(e);
         }
-
+        
     }
 }

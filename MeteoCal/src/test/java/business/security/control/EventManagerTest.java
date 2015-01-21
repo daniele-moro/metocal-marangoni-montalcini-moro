@@ -178,11 +178,11 @@ public class EventManagerTest {
         eventManager.createEvent(newEvent);
 
         //Capture argument passed to mocked class
-        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
 
-        verify(eventManager.em, times(1)).persist(captor.capture());
+        verify(eventManager.em, times(2)).persist(captor.capture());
         //Verify that the argument is correct
-        assertThat(captor.getValue(), is(newEvent));
+        assertTrue(captor.getAllValues().contains(newEvent));
     }
 
     /**
