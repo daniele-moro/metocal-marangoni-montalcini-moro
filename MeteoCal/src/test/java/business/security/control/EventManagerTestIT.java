@@ -26,8 +26,10 @@ import java.security.Principal;
 import java.util.Date;
 import static org.hamcrest.CoreMatchers.is;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 import javax.validation.ConstraintViolationException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -48,7 +50,7 @@ import org.mockito.Mockito;
 public class EventManagerTestIT {
     
     @EJB
-            EventManager eventManager;
+            ExtensionEventManager eventManager;
     
     @EJB
             SearchManager searchManager;
@@ -59,19 +61,23 @@ public class EventManagerTestIT {
     @PersistenceContext
             EntityManager em;
     
+     @Inject
+            UserTransaction utx;
+    
     @EJB
     private NotificationManager notificationManager;
     
     @EJB
-    private UserInformationLoader userInformationLoader;
+    private ExtensionUserInfoLoader userInformationLoader;
     
     @EJB
     private MailManager mailManager;
     
     @EJB
     private JsonPars p;
+
     
-    Event event1;
+    Event event1, event2;
     Users user1;
     Users user2;
     Invite invite1;
@@ -80,6 +86,8 @@ public class EventManagerTestIT {
     @Deployment
     public static WebArchive createArchiveAndDeploy(){
         return ShrinkWrap.create(WebArchive.class)
+                .addClass(ExtensionEventManager.class)
+                .addClass(ExtensionUserInfoLoader.class)
                 .addClass(EventManager.class)
                 .addClass(UserInformationLoader.class)
                 .addClass(JsonPars.class)
@@ -93,15 +101,109 @@ public class EventManagerTestIT {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         
     }
-    
+ 
     @Before
-    public void setUp() {
-         prova pr = new prova();
-        pr.setLoggedUser("z@z.it");
-        eventManager.principal = pr;
-        
+    public void prepareTests() throws Exception {
+        clearData();
+        insertData();
     }
     
+    
+    
+    private void insertData() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+        
+        //user1 è il logged user
+        user1 = new Users();
+        user1.setEmail("user1@mail.it");
+        user1.setPassword("t");
+        user1.setBirthday(new Date(92,1,15));
+        user1.setName("try");
+        user1.setSurname("try");
+        user1.setGroupName(Group.USERS);
+        em.persist(user1);
+        
+        user2 = new Users();
+        user2.setEmail("user2@mail.it");
+        user2.setPassword("t");
+        user2.setBirthday(new Date(92,1,15));
+        user2.setName("try");
+        user2.setSurname("try");
+        user2.setGroupName(Group.USERS);
+        em.persist(user2);
+        
+        event1= new Event();
+        event1.setId((long) 345667);
+        event1.setName("Event1");
+        event1.setTimeStart(new Date(114,1, 17));
+        event1.setTimeEnd(new Date(114,1,17));
+        event1.setDescription("Description of event1");
+        event1.setLocation("Milano");
+        event1.setPublicEvent(true);
+        event1.setOrganizer(user1);
+        event1.setPredefinedTypology(PredefinedTypology.dinner);
+        event1.setOutdoor(false);
+        em.persist(event1);
+        
+        event2= new Event();
+        event2.setId((long)3);
+        event2.setName("Event1");
+        event2.setTimeStart(new Date(116,1, 17));
+        event2.setTimeEnd(new Date(116,1,17));
+        event2.setDescription("Description of event1");
+        event2.setLocation("Milano");
+        event2.setPublicEvent(true);
+        event2.setOrganizer(user2);
+        event2.setPredefinedTypology(PredefinedTypology.dinner);
+        event2.setOutdoor(false);
+        em.persist(event2);
+        
+        /*invite1 = new Invite();
+        invite1.setEvent(event1);
+        invite1.setUser(user2);
+        invite1.setStatus(Invite.InviteStatus.accepted);
+        em.persist(invite1);
+        
+        notification1= new Notification();
+        notification1.setGenerationDate(new Date());
+        notification1.setNotificatedUser(user2);
+        notification1.setRelatedEvent(event1);
+        notification1.setSeen(true);
+        notification1.setType(NotificationType.invite);
+        em.persist(notification1);
+        
+        
+        invite2 = new Invite();
+        invite2.setEvent(event2);
+        invite2.setUser(user1);
+        invite2.setStatus(Invite.InviteStatus.invited);
+        em.persist(invite2);
+
+        notification2 = new Notification();
+        notification2.setGenerationDate(new Date());
+        notification2.setNotificatedUser(user1);
+        notification2.setRelatedEvent(event2);
+        notification2.setSeen(false);
+        notification2.setType(NotificationType.invite);
+        em.persist(notification2);*/
+        
+        utx.commit();
+        // clear the persistence context (first-level cache)
+        em.clear();
+    }
+    
+    
+    private void clearData() throws Exception {
+        utx.begin();
+        em.joinTransaction();
+        System.out.println("Dumping old records...");
+        //em.createQuery("delete from NOTIFICATION").executeUpdate();
+        //em.createQuery("delete from INVITE").executeUpdate();
+        em.createQuery("delete from EVENT").executeUpdate();
+        em.createQuery("delete from USERS").executeUpdate();
+        utx.commit();
+    }
     
     @Test
     public void EventManagerShouldBeInjected(){
@@ -162,21 +264,22 @@ public class EventManagerTestIT {
             user1.setGroupName(Group.USERS);
                 userManager.save(user1);
             
-            Event event1= new Event();
-            event1.setName("Event1");
-            event1.setTimeStart(new Date(116,1, 20));
-            event1.setTimeEnd(new Date(116,1,21));
-            event1.setDescription("Description of event1");
-            event1.setLocation("Milano");
-            event1.setPublicEvent(true);
-            event1.setOrganizer(user1);
-            event1.setPredefinedTypology(PredefinedTypology.dinner);
-            event1.setOutdoor(false);
+            Event newEvent= new Event();
+            newEvent.setId((long) 1456772);
+            newEvent.setName("Event1");
+            newEvent.setTimeStart(new Date(116,1, 20));
+            newEvent.setTimeEnd(new Date(116,1,21));
+            newEvent.setDescription("Description of event1");
+            newEvent.setLocation("Milano");
+            newEvent.setPublicEvent(true);
+            newEvent.setOrganizer(user1);
+            newEvent.setPredefinedTypology(PredefinedTypology.dinner);
+            newEvent.setOutdoor(false);
             
-            eventManager.createEvent(event1);
+            eventManager.createEvent(newEvent);
             
-            Event eventById = eventManager.getEventById(event1.getId());
-            assertEquals(event1, eventById);
+            Event eventById = eventManager.getEventById(newEvent.getId());
+            assertEquals(newEvent, eventById);
         } catch (DateConsistencyException ex) {
             fail("Error in date");
         }
@@ -206,6 +309,7 @@ public class EventManagerTestIT {
         userManager.save(user2);
         
         event1= new Event();
+        event1.setId((long)2500);
         event1.setName("Event1");
         event1.setTimeStart(new Date(116,1, 20));
         event1.setTimeEnd(new Date(116,1,21));
@@ -222,7 +326,6 @@ public class EventManagerTestIT {
         invite1.setUser(user2);
         invite1.setStatus(Invite.InviteStatus.accepted);
         //eventManager.save(invite1);
-        fail("Prototype");
         
         eventManager.removeEvent(event1);
         //Verify that the event attribute deleted is true
@@ -245,7 +348,7 @@ public class EventManagerTestIT {
     @Test
     public void testGetInvitedPeople(){
         user1 = new Users();
-        user1.setEmail("t@t.it");
+        user1.setEmail("t1@t1.it");
         user1.setPassword("t");
         user1.setBirthday(new Date(92,1,15));
         user1.setName("try");
@@ -254,7 +357,7 @@ public class EventManagerTestIT {
         userManager.save(user1);
         
         user2 = new Users();
-        user2.setEmail("t2@t2.it");
+        user2.setEmail("t3@t3.it");
         user2.setPassword("t2");
         user2.setBirthday(new Date(92,1,15));
         user2.setName("try");
@@ -279,7 +382,6 @@ public class EventManagerTestIT {
         invite1.setUser(user2);
         invite1.setStatus(Invite.InviteStatus.accepted);
         //eventManager.save(invite1);
-        fail("PROTOTYPE");
     }
     
     

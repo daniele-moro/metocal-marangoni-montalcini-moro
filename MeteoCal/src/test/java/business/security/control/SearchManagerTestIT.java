@@ -5,10 +5,6 @@
 */
 package business.security.control;
 
-import business.security.control.UserManager;
-import business.security.control.SearchManager;
-import business.security.control.NotificationManager;
-import business.security.control.EventManager;
 import business.security.entity.Event;
 import business.security.entity.Group;
 import business.security.entity.Invite;
@@ -23,19 +19,14 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

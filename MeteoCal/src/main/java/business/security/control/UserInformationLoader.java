@@ -23,9 +23,6 @@ public class UserInformationLoader {
             Principal principal;
     
     public Users getLoggedUser() {
-        System.out.println("ciao " + em);
-        String temp = principal.getName();
-        System.out.println(principal.getName());
         return em.find(Users.class, principal.getName());
     }
     
