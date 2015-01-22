@@ -20,11 +20,20 @@ public class UserBean implements Serializable{
     UserManager um;
     
     private Users user; 
-
+    
+    /**
+     * This method returns the name of the logged user
+     * @return 
+     */
     public String getName() {
         return um.getLoggedUser().getName();
     }
     
+    /**
+     * This method return the user; if it is null, it creates a new user and set all its fields
+     * to the values of the logged user
+     * @return 
+     */
     public Users getUser() {
         if(user==null){
             user=new Users();
@@ -42,10 +51,19 @@ public class UserBean implements Serializable{
         return user;
     }
     
+    /**
+     * This method redirects to the Modify Profile page.
+     * @return 
+     */
     public String modifyProfile () {
         return "modifyProfile?faces-redirect=true";
     }
     
+    /**
+     * This method is called when a user has inserted the new data and have clicked the button 
+     * "ModifyProfile": it calls a method of the userManager, which executes the update.
+     * @return 
+     */
     public String updateProfile(){
         um.updateUser(user);
         user=null;

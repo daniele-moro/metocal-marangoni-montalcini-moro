@@ -18,6 +18,12 @@ public class MailManager {
    @Resource (name = "mail/sendMail")
    private Session mailSession;
    
+   /**
+    * It execute the email sends
+    * @param destination
+    * @param subject
+    * @param text 
+    */
    @Asynchronous
     public void sendMail (String destination, String subject, String text){
         System.out.println("--------------------------------SPEDIZIONE MAIL!!!!!!-------------------------------------");

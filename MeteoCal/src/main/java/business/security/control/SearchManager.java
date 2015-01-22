@@ -29,6 +29,12 @@ public class SearchManager {
     @Inject
             Principal principal;
     
+    /**
+     * This method returns the user whose email corresponds to the one passed as parameter; if 
+     * no such user is stored in the database, it returns null
+     * @param email
+     * @return 
+     */
     public Users findUser(String email) {
         Query qFindUser = em.createQuery("SELECT u FROM USERS u WHERE u.email =?1");
         qFindUser.setParameter(1, email);
@@ -40,6 +46,13 @@ public class SearchManager {
         }
     }
     
+    /**
+     * This method returns the list of the users whose names and surnames correspond to the one passed 
+     * as parameter. 
+     * @param name
+     * @param surname
+     * @return 
+     */
     public List<Users> findUsersFromNameSurname(String name, String surname) {
         Query qFindUser = em.createQuery("SELECT u FROM USERS u WHERE u.name =?1 AND u.surname =?2");
         qFindUser.setParameter(1, name);
@@ -47,6 +60,11 @@ public class SearchManager {
         return qFindUser.getResultList();
     }
     
+    /**
+     * This method returns all the invites related to the event passed as parameter
+     * @param event
+     * @return 
+     */
     public List<Invite> findInviteRelatedToAnEvent(Event event) {
         Query findInvites = em.createQuery("SELECT i from INVITE i WHERE i.event.id =?1");
         findInvites.setParameter(1, event.getId());
@@ -54,6 +72,11 @@ public class SearchManager {
         return invites;
     }
     
+    /**
+     * This method returns the list of events created by the user passed as parameter, or accepted by him
+     * @param user
+     * @return 
+     */
     public List<Event> findUserEvent(Users user) {
         //Prelevo gli eventi a cui partecipa l'utente
         List<Event> userEvents = new ArrayList<>();
@@ -75,7 +98,10 @@ public class SearchManager {
         return userEvents;
     }
     
-    //TODO: REMOVE!!!!!!
+    /**
+     * This method returns all the events
+     * @return 
+     */
     public List<Event> findAllEvents() {
         Query findAllEvents = em.createQuery("SELECT e FROM EVENT e");
         return findAllEvents.getResultList();
@@ -118,6 +144,11 @@ public class SearchManager {
         
     }
     
+    /**
+     * This method returns the list of not read notifications of the user passed as parameter
+     * @param user
+     * @return 
+     */
     public List<Notification> findNotReadNotification(Users user) {
         Query findNotReadNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.notificatedUser = ?1 AND n.seen = ?2");
         findNotReadNotification.setParameter(1,user);

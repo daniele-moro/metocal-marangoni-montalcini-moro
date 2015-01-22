@@ -79,10 +79,15 @@ public class NotificationManager {
         notification.setGenerationDate(new Date());
         em.persist(notification);
         
-        //Invio della mail (viene inviata dall'update event)
-        //mailManager.sendMail(inv.getUser().getEmail(), "Event Date Changed", "Hi! An event for which you have received an invite has been modified: the date has been changed. Join MeteoCal to discover it.");
+        
     }
     
+    /**
+     * This method is called when the weather forecast for an event is changed: it produces a delayNotification 
+     * and stores it in the database
+     * @param user
+     * @param event 
+     */
     public void createWeatherConditionChangedNotification (Users user, Event event) {
         Notification notification = new Notification();
         notification.setGenerationDate(new Date());

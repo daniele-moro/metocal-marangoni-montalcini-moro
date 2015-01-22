@@ -22,6 +22,10 @@ public class UserInformationLoader {
     @Inject
             Principal principal;
     
+    /**
+     * This method return the logged user
+     * @return 
+     */
     public Users getLoggedUser() {
         return em.find(Users.class, principal.getName());
     }
@@ -50,7 +54,6 @@ public class UserInformationLoader {
         return acceptedEvents;
     }
     
-    //TODO: REMOVE!!!!!!
     /**
      * This method searches in the database for the events to which the logged user has not already 
      * confirmed his participation 
@@ -64,8 +67,6 @@ public class UserInformationLoader {
         return noAnswerEvents;
     }
     
-    
-    //TODO: REMOVE!!!!
     /**
      * This method calls three other methods which find the events of the user (not deleted)
      * @return The events of the users

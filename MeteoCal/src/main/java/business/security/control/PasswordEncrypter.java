@@ -15,6 +15,11 @@ import java.util.logging.Logger;
 
 public class PasswordEncrypter {
 
+    /**
+     * It performs the encrypt of the password
+     * @param password
+     * @return 
+     */
     public static String encryptPassword(String password) {
         String encPass = null;
         try {

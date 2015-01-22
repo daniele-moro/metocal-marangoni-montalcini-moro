@@ -55,15 +55,16 @@ public class ViewEventBean implements Serializable {
     }
 
     private void temp() {
-        //Prelevo l'id passato in GET
+        //I fetch the id passed in GET
         long idEvent = Long.parseLong(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
         System.out.println("ID EVENTO " + idEvent);
-        //Aggiorno la lista degli eventi
+        //I update the list of the people who have accepted, refused, not already answered to the invitation
         setEvent(eventManager.getEventById(idEvent));
         /**
-         * Se l'utente loggato è il creatore devo caricare la lista degli: -
-         * utenti che hanno accettato la partecipazione - utenti che hanno
-         * rifiutato la partecipazione - utenti che devono ancora rispondere
+         * If the logged user is the event creator, it is necessary to load the list of the users
+         * who have accepted the invitation for the event, the list of the users who have not already
+         * answered to the invitation for the event, the list of users who have refused the invitation 
+         * for the event
          */
         accepted = eventManager.getAcceptedPeople(event);
         if (event.getOrganizer().equals(eventManager.getLoggedUser())) {
@@ -82,7 +83,12 @@ public class ViewEventBean implements Serializable {
             pendent = null;
         }
     }
-
+    
+    /**
+     * It redirects the user to the page in which he can see his profile
+     * @param u
+     * @return 
+     */
     public String viewProfile(Users u) {
         return "userProfile?faces-redirect=true&amp;email=" + u.getEmail();
     }
@@ -100,7 +106,11 @@ public class ViewEventBean implements Serializable {
     public void setEvent(Event event) {
         this.event = event;
     }
-
+    
+    /**
+     * It is called when a user clicks on button "Accept Invitation": it calls a method of the eventManager, 
+     * which adds the user to the list of the people who have accepted the invitation.
+     */
     public void acceptInvitation() {
         try {
             eventManager.addParticipantToEvent(event);
@@ -110,16 +120,28 @@ public class ViewEventBean implements Serializable {
         }
     }
 
+    /**
+     * It is called when a user clicks on button "Refuse Invitation": it calls a method of the eventManager, 
+     * which removes the user from the list of the people who have accepted the invitation.
+     */
     public void refuseInvitation() {
         eventManager.removeParticipantFromEvent(event);
-        //return "event?faces-redirect=true";
     }
 
+    /**
+     * It is called when a user, who has already accepted the invitation for an event, 
+     * clicks on button "DeleteParticipation": it calls a method of the eventManager, 
+     * which removes the user from the list of the people who have accepted the invitation.
+     */
     public void deleteParticipation() {
         eventManager.removeParticipantFromEvent(event);
-        //return "event?faces-redirect=true";
     }
-
+    
+    /**
+     * This methods returns true if the logged user has an invitation for the event
+     * passed as parameter and the invite status is "invited"
+     * @return 
+     */
     public boolean getFindInviteStatusInvited() {
         Invite inv = userInformationLoader.findInviteStatus(event);
         if (inv == null) {
@@ -128,6 +150,11 @@ public class ViewEventBean implements Serializable {
         return inv.getStatus() == Invite.InviteStatus.invited;
     }
 
+    /**
+     * This methods returns true if the logged user has an invitation for the event
+     * passed as parameter and the invite status is "accepted"
+     * @return 
+     */
     public boolean getFindInviteStatusAccepted() {
         Invite inv = userInformationLoader.findInviteStatus(event);
         if (inv == null) {
@@ -136,6 +163,11 @@ public class ViewEventBean implements Serializable {
         return inv.getStatus() == Invite.InviteStatus.accepted;
     }
 
+    /**
+     * This methods returns true if the logged user has an invitation for the event
+     * passed as parameter and the invite status is "notAccepted"
+     * @return 
+     */
     public boolean getFindInviteStatusNotAccepted() {
         Invite inv = userInformationLoader.findInviteStatus(event);
         if (inv == null) {
@@ -143,7 +175,12 @@ public class ViewEventBean implements Serializable {
         }
         return inv.getStatus() == Invite.InviteStatus.notAccepted;
     }
-
+    
+    /**
+     * This methods returns true if the logged user has an invitation for the event
+     * passed as parameter and the invite status is "delayedEvent"
+     * @return 
+     */
     public boolean getFindInviteStatusDelayed() {
         Invite inv = userInformationLoader.findInviteStatus(event);
         if (inv == null) {
