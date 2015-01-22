@@ -101,14 +101,20 @@ public class SearchManager {
         return findFutureEvents.getResultList();
     }
     
-    public boolean existWeatherChangedNotification(Event event) {
-        Query findWeatherChangedNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.relatedevent =?1 AND n.type = ?2");
+    /**
+     * This method verifies if for the organizer of an event there's a weather changed notification
+     * @param event
+     * @return 
+     */
+    public Notification existWeatherChangedNotification(Event event) {
+        Query findWeatherChangedNotification = em.createQuery("SELECT n FROM NOTIFICATION n WHERE n.relatedevent =?1 AND n.type = ?2 AND n.notificatedUser = ?3");
         findWeatherChangedNotification.setParameter(1,event);
         findWeatherChangedNotification.setParameter(2,NotificationType.weatherConditionChanged);
+        findWeatherChangedNotification.setParameter(3,event.getOrganizer());
         if(findWeatherChangedNotification.getResultList() != null && !findWeatherChangedNotification.getResultList().isEmpty()) {
-            return true;
+            return (Notification) findWeatherChangedNotification.getResultList().get(0);
         }
-        return false;
+        return null;
         
     }
     

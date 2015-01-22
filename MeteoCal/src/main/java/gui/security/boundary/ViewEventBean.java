@@ -68,7 +68,7 @@ public class ViewEventBean implements Serializable {
         accepted = eventManager.getAcceptedPeople(event);
         if (event.getOrganizer().equals(eventManager.getLoggedUser())) {
             creator = true;
-            if(searchManager.existWeatherChangedNotification(event)){
+            if(searchManager.existWeatherChangedNotification(event) != null){
                 badWeatherConditions=true;
                 suggestedDate =eventManager.suggestNewDate(event);
             }

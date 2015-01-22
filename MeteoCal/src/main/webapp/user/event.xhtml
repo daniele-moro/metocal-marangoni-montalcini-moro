@@ -100,9 +100,11 @@
                     <h:outputText value="This event has been deleted by its organizer"/>
                 </h:form>
                 
-                <p:outputLabel rendered="#{viewEventBean.badWeatherConditions and viewEventBean.creator}" value="Bad Weather condition, the suggestion for a new date start is: #{viewEventBean.suggestedDate}"/>
-                    <p:commandButton rendered="#{viewEventBean.badWeatherConditions and viewEventBean.creator}" action="#{createdEventsBean.showModifyEvent(viewEventBean.event, viewEventBean.event.acceptedWeatherConditions)}" value="Modify event"/>
-                    
+                <p:outputLabel rendered="#{viewEventBean.badWeatherConditions and viewEventBean.creator and viewEventBean.suggestedDate != null}" value="Bad Weather condition, the suggestion for a new date start is: #{viewEventBean.suggestedDate}"/>
+                <p:outputLabel rendered="#{viewEventBean.badWeatherConditions and viewEventBean.creator and viewEventBean.suggestedDate == null}" value="Bad Weather condition, there's no suggested date for the next days"/>       
+                <br/>
+                <p:commandButton rendered="#{viewEventBean.badWeatherConditions and viewEventBean.creator}" action="#{createdEventsBean.showModifyEvent(viewEventBean.event, viewEventBean.event.acceptedWeatherConditions)}" value="Modify event"/>
+                
                 <h:panelGrid id="pnlAccepted">
                     
                     <p:dataTable rendered="#{viewEventBean.accepted != null and viewEventBean.accepted.size()!=0}"

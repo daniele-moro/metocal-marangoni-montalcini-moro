@@ -4,20 +4,24 @@ import business.security.entity.Event;
 import exception.DateConsistencyException;
 import exception.ImportExportException;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.validator.Validator;
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.SchemaFactory;
 import org.codehaus.jettison.json.JSONException;
+import org.iso_relax.verifier.Schema;
 
 /**
  *
@@ -55,7 +59,7 @@ public class ImportExportManager {
         } catch (JAXBException ex) {
             throw new ImportExportException("Error: the calendar has some missing fields for some events, or for his structure");
         }
-        
+
         for (Event e : events.getEvents()) {
             //Controllo se la data degli eventi da importare è compatibile con gli eventi del DB
             //inoltre controllo che se l'evento è outdoor abbia l'AcceptedWeatherCondition
@@ -92,7 +96,7 @@ public class ImportExportManager {
         EventsList events = new EventsList();
 
         events.setEvents(uil.loadCreatedEvents());
-        
+
         events.addEvents(uil.loadAcceptedEvents());
         // Write to OutputStream
         m.marshal(events, out);
@@ -114,6 +118,7 @@ class EventsList {
     public void setEvents(List<Event> events) {
         this.events = events;
     }
+
     public void addEvents(List<Event> events) {
         this.events.addAll(events);
     }

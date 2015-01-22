@@ -35,8 +35,12 @@ public class WeatherChecker {
     @EJB
     JsonPars jsonPars;
 
-    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "1", second = "0", persistent = false)
-    public void myTimer() {
+    /**
+     * This method is called every 12 hours to update the weather forecast for all the future events
+     * 
+     **/
+    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*/1", second = "0", persistent = false)
+    public void refreshWeatherForecast() {
         // System.out.println("Timer event: " + new Date());
         for (Event event : searchManager.findAllFutureEvents()) {
             WeatherCondition temp;
@@ -54,11 +58,17 @@ public class WeatherChecker {
         }
     }
 
-    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*", second = "*/5", persistent = false)
-    public void myTimer2() {
+    /**
+     * This method is called once a day (e.g., every midnight) to check the weather forecast
+     * for the events that will be performed three days or one day after the invocation
+     **/
+    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*/1", second = "0", persistent = false)
+    public void checkAcceptedWeatherConditions() {
         /**
-         * Construction of two date, one is one day after now, the other is three days after now
-        **/
+         * Construction of two date, one is one day after now, the other is
+         * three days after now
+        *
+         */
         GregorianCalendar oneDayAfter = new GregorianCalendar();
         oneDayAfter.roll(Calendar.DAY_OF_YEAR, 1);
         GregorianCalendar threeDayAfter = new GregorianCalendar();
@@ -67,20 +77,18 @@ public class WeatherChecker {
             if (event.isOutdoor() && event.getAcceptedWeatherConditions() != null) {
 
                 //If the event is THREE days after now
-                if( event.getTimeStart().getDate()==threeDayAfter.getTime().getDate()
-                        && event.getTimeStart().getMonth()==threeDayAfter.getTime().getMonth()
-                        && event.getTimeStart().getYear()==threeDayAfter.getTime().getYear() 
-                        ){
+                if (event.getTimeStart().getDate() == threeDayAfter.getTime().getDate()
+                        && event.getTimeStart().getMonth() == threeDayAfter.getTime().getMonth()
+                        && event.getTimeStart().getYear() == threeDayAfter.getTime().getYear()) {
                     //checks if there's some discrepancy between the forecasted and the accepted weather
                     //if true it sends an email and a notification to the organizer of the event
                     eventManager.checkWeatherForecast(event);
                 }
-                
+
                 //if the event is ONE day after now
-                if( event.getTimeStart().getDate()==oneDayAfter.getTime().getDate()
-                        && event.getTimeStart().getMonth()==oneDayAfter.getTime().getMonth()
-                        && event.getTimeStart().getYear()==oneDayAfter.getTime().getYear() 
-                        ){
+                if (event.getTimeStart().getDate() == oneDayAfter.getTime().getDate()
+                        && event.getTimeStart().getMonth() == oneDayAfter.getTime().getMonth()
+                        && event.getTimeStart().getYear() == oneDayAfter.getTime().getYear()) {
                     //Checks if there's some discrepancy between the forecasted and the accepted weather
                     //if true it sends an email and a notification to each participant
                     eventManager.checkWeatherOneDayBefore(event);

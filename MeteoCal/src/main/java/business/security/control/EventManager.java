@@ -2,6 +2,7 @@ package business.security.control;
 
 import business.security.entity.Event;
 import business.security.entity.Invite;
+import business.security.entity.Notification;
 import business.security.entity.PredefinedTypology;
 import business.security.entity.Users;
 import business.security.entity.WeatherCondition;
@@ -190,7 +191,6 @@ public class EventManager {
             }
             //Rimozione dell'invito
             em.remove(inv);
-            removeEvent(event);
         }
     }
 
@@ -243,6 +243,12 @@ public class EventManager {
             updateEventInformation.setParameter(4, event.getPredefinedTypology());
             updateEventInformation.setParameter(5, event.getId());
             updateEventInformation.executeUpdate();
+            
+            //If there's a notification of weather changed, that must be deleted
+            Notification weatherChanged = searchManager.existWeatherChangedNotification(event);
+            if(weatherChanged!=null){
+                em.remove(weatherChanged);
+            }
 
             //Control if the notpredefinedtypology is modified
             if (event.getPredefinedTypology().equals(PredefinedTypology.other)) {
@@ -476,9 +482,11 @@ public class EventManager {
     public Date suggestNewDate(Event event) {
         List<WeatherCondition> listWeatherForecast;
         try {
+            //Take the list of forecast for the days after the event (starting from the day of the event)
             listWeatherForecast = p.weatherForecastNextDays(event.getLatitude(), event.getLongitude(), event.getTimeStart());
             for (int i = 1; i < listWeatherForecast.size(); i++) {
-                if (checkWeatherForecast(event.getAcceptedWeatherConditions(), listWeatherForecast.get(i))) {
+                //Check if the accepted weather forecast is compatible with the forecasted weather for the day
+                if (!checkWeatherForecast(event.getAcceptedWeatherConditions(), listWeatherForecast.get(i))) {
                     Calendar date = new GregorianCalendar();
                     date.setTime(event.getTimeStart());
                     date.add(Calendar.DAY_OF_MONTH, i);
@@ -576,6 +584,7 @@ public class EventManager {
             for (Invite invite : searchManager.findInviteRelatedToAnEvent(event)) {
                 if (invite.getStatus().equals(Invite.InviteStatus.accepted)) {
                     notificationManager.createWeatherConditionChangedNotification(invite.getUser(), event);
+                    mailManager.sendMail(event.getOrganizer().getEmail(), "Not optimal weather forecasts", "Hi! We suggest you to check the weather forecast for the event "+ event.getName());
                 }
             }
             return true;
@@ -628,17 +637,17 @@ public class EventManager {
     private boolean checkWind(WeatherCondition acceptedWeatherCondition, WeatherCondition weatherForecast) {
         switch ((int) acceptedWeatherCondition.getWind()) {
             case (0):
-                if (weatherForecast.getWind() > 0) {
+                if (weatherForecast.getWind() > 0.5) {
                     return true;
                 }
                 break;
             case (1):
-                if (weatherForecast.getWind() > 8) {
+                if (weatherForecast.getWind() > 8.0) {
                     return true;
                 }
                 break;
             case (2):
-                if (weatherForecast.getWind() < 8) {
+                if (weatherForecast.getWind() < 8.0) {
                     return true;
                 }
             default:

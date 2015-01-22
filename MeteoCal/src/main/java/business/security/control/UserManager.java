@@ -23,6 +23,10 @@ public class UserManager {
     @Inject
     Principal principal;
 
+    /**
+     * 
+     * @param user 
+     */
     public void save(Users user) {
         user.setGroupName(Group.USERS);
         em.persist(user);
