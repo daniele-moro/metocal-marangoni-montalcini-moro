@@ -1,0 +1,36 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="calendar">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="events" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="acceptedWeatherConditions" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="precipitation"/>
+                    <xs:element type="xs:float" name="temperature"/>
+                    <xs:element type="xs:float" name="wind"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element type="xs:string" name="delayedEvent"/>
+              <xs:element type="xs:string" name="deleted"/>
+              <xs:element type="xs:string" name="description" minOccurs="0"/>
+              <xs:element type="xs:float" name="latitude"/>
+              <xs:element type="xs:string" name="location"/>
+              <xs:element type="xs:float" name="longitude"/>
+              <xs:element type="xs:string" name="name"/>
+              <xs:element type="xs:string" name="notPredefinedTypology" minOccurs="0"/>
+              <xs:element type="xs:string" name="outdoor"/>
+              <xs:element type="xs:string" name="predefinedTypology"/>
+              <xs:element type="xs:string" name="publicEvent"/>
+              <xs:element type="xs:dateTime" name="timeEnd"/>
+              <xs:element type="xs:dateTime" name="timeStart"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

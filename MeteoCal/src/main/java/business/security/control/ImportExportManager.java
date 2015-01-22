@@ -6,22 +6,27 @@ import exception.ImportExportException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.validator.Validator;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.codehaus.jettison.json.JSONException;
-import org.iso_relax.verifier.Schema;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -29,13 +34,13 @@ import org.iso_relax.verifier.Schema;
  */
 @Stateless
 public class ImportExportManager {
-
+    
     @EJB
-    EventManager eventMgr;
-
+            EventManager eventMgr;
+    
     @EJB
-    UserInformationLoader uil;
-
+            UserInformationLoader uil;
+    
     /**
      * This method does the import functionality, it checks before if all the
      * events the user wants to import are correct and compatible with the
@@ -52,14 +57,23 @@ public class ImportExportManager {
     public void importUserCalendar(InputStream inStr) throws DateConsistencyException, JSONException, ImportExportException {
         JAXBContext context;
         EventsList events;
+        MyValidationEventHandler eventHandler = new MyValidationEventHandler();
         try {
             context = JAXBContext.newInstance(EventsList.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
+            URL ur = this.getClass().getResource("/schema.xsd");
+            String path = ur.getPath();
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema =factory.newSchema(new File(ur.getPath()));
+            unmarshaller.setSchema(schema);
+            
+            unmarshaller.setEventHandler(eventHandler);
             events = (EventsList) unmarshaller.unmarshal(inStr);
-        } catch (JAXBException ex) {
-            throw new ImportExportException("Error: the calendar has some missing fields for some events, or for his structure");
+            
+        } catch (JAXBException | SAXException ex) {
+            throw new ImportExportException("Error: the calendar has some missing fields for some events, or for his structure \n" + eventHandler.message);
         }
-
+        
         for (Event e : events.getEvents()) {
             //Controllo se la data degli eventi da importare è compatibile con gli eventi del DB
             //inoltre controllo che se l'evento è outdoor abbia l'AcceptedWeatherCondition
@@ -70,7 +84,7 @@ public class ImportExportManager {
             if (e.isOutdoor() && e.getAcceptedWeatherConditions() == null) {
                 throw new ImportExportException("Outdoor events must have accepted weather condition, the event with problem is " + '"' + e.getName() + '"');
             }
-
+            
             //Non servirebbe perchè viene gia fatto dentro il create event
             e.setOrganizer(eventMgr.getLoggedUser());
         }
@@ -79,7 +93,7 @@ public class ImportExportManager {
             eventMgr.createEvent(e);
         }
     }
-
+    
     /**
      * * This method does the export functionality, it takes alla the events of
      * the logged user and it exports them in a .xml file
@@ -94,9 +108,9 @@ public class ImportExportManager {
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         //Lista di eventi da portare in out sul file xml
         EventsList events = new EventsList();
-
+        
         events.setEvents(uil.loadCreatedEvents());
-
+        
         events.addEvents(uil.loadAcceptedEvents());
         // Write to OutputStream
         m.marshal(events, out);
@@ -105,21 +119,38 @@ public class ImportExportManager {
     }
 }
 
-//Classe Temporanea solo per importare ed esportare su XML la lista di eventi
+/**
+ * This class is used by the import/export functionality to export and import
+ * a list of events
+ */
 @XmlRootElement(name = "calendar")
-class EventsList {
-
+        class EventsList {
+    
     List<Event> events = new ArrayList<Event>();
-
+    
     public List<Event> getEvents() {
         return this.events;
     }
-
+    
     public void setEvents(List<Event> events) {
         this.events = events;
     }
-
+    
     public void addEvents(List<Event> events) {
         this.events.addAll(events);
     }
+    
+}
+/**
+ * This class is used by the unmarshaller in case of error in the xml file
+ */
+class MyValidationEventHandler implements ValidationEventHandler {
+    
+    String message = "";
+    
+    public boolean handleEvent(ValidationEvent event){
+        message+="MESSAGE:  " + event.getMessage();
+        return false;
+    }
+    
 }
