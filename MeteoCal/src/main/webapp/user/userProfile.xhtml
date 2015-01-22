@@ -51,13 +51,34 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy  HH:mm:ss" timeZone="GMT+1"/>
                             </h:outputText>
                             
-                            <h:outputLabel for="notPredefinedTypology" value="Typology2:"  rendered="#{scheduleView.event.data!=null}"/> 
-                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}"  rendered="#{scheduleView.event.data!=null}"/>
-
-                            <h:outputLabel for="predefinedTypology" value="Typology: "  rendered="#{scheduleView.event.data!=null}"/> 
-                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}"  rendered="#{scheduleView.event.data!=null}"/>
+                            <h:outputLabel for="notPredefinedTypology" value="Typology:" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.predefinedTypology == 'other'}"/> 
+                            <h:outputLabel id="notPredefinedTypology" value="#{scheduleView.event.data.notPredefinedTypology}" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.predefinedTypology == 'other'}"/>
+                            
+                            <h:outputLabel for="predefinedTypology" value="Typology: " rendered="#{scheduleView.event.data!=null and scheduleView.event.data.predefinedTypology != 'other'}"/> 
+                            <h:outputLabel id="predefinedTypology" value="#{scheduleView.event.data.predefinedTypology}" rendered="#{scheduleView.event.data!=null and andscheduleView.event.data.predefinedTypology != 'other'}"/>               
+                            
+                            <h:outputLabel for="outdoor" value="Outdoor:" rendered="#{scheduleView.event.data!=null}"/> 
+                            <h:outputLabel id="outdoor" value="#{scheduleView.event.data.outdoor}" rendered="#{scheduleView.event.data!=null}"/>
+                            
+                            <h:outputLabel for="weatherForecast" value="Weather Forecast:" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null}"/>
+                            <p:graphicImage id="weatherForecast" value="http://openweathermap.org/img/w/#{scheduleView.event.data.weatherForecast.icon}.png" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null}"/>
+                            
+                            <h:outputLabel for="tempForecast" value="Temperature Forecast:" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null}"/>
+                            <h:outputLabel id="tempForecast" value="#{scheduleView.event.data.weatherForecast.temperatureFormat} °C" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null}"/>
+                            
+                            <br/>
+                            <h:outputLabel id="rainForecasted" value="Expected rain" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null 
+                                                                                                   and scheduleView.event.data.weatherForecast.precipitation == true}"/>
+                            
+                            <h:outputLabel id="NOrainForecasted" value="NO expected rain" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null 
+                                                                                                        and scheduleView.event.data.weatherForecast.precipitation == false}"/>
+                            
+                            <h:outputLabel for="windForecast" value="Wind Forecast:" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null}"/>
+                            <h:outputLabel id="windForecast" value="#{scheduleView.event.data.weatherForecast.wind} m/s" rendered="#{scheduleView.event.data!=null and scheduleView.event.data.weatherForecast != null}"/>
+                            
                             <h:commandButton value="View Event" action="#{scheduleView.goToEvent(scheduleView.event.data)}"  rendered="#{scheduleView.event.data!=null}"/>
                             <h:outputLabel id="privateEvent" value="PRIVATE EVENT: you can't see more information about this event" rendered="#{scheduleView.event.data == null}"/>
+                            
                         </h:panelGrid>
                     </p:dialog>    
                 </h:form>
