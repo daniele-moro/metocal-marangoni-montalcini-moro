@@ -18,7 +18,8 @@ public class JsonPars {
     JSONObject jObj;
 
     /**
-     *
+     * This method is used to set the weather forecast for the event start date,
+     * given the event location by latitude and longitude
      * @param lat
      * @param lng
      * @param eventStart
@@ -98,6 +99,12 @@ public class JsonPars {
         }
     }
 
+    /**
+     * This method is used to set latitude and longitude for a given city
+     * @param city
+     * @return
+     * @throws JSONException
+     */
     public Location parsingLatitudeLongitude(String city) throws JSONException {
         //Change backspace with %20 for the request
         String replace = city.replace(" ", "%20");
@@ -139,6 +146,18 @@ public class JsonPars {
         return jObj.getLong(tagName);
     }
 
+    /**
+     * This method is used to get information about the weather forecast from the
+     * event start date to the next days available from the openweathermap
+     * forecast service in order to decide, in case of bad weather condition, in
+     * which day the outdoor event can be postponed in the specified latitude and 
+     * longitude
+     * @param lat
+     * @param lng
+     * @param startDate
+     * @return
+     * @throws WeatherException 
+     */
     public List<WeatherCondition> weatherForecastNextDays(String lat, String lng, Date startDate) throws WeatherException {
         RequestManager wm = new RequestManager("http://api.openweathermap.org/data/2.5/forecast/daily?lat=", lat, lng);
 

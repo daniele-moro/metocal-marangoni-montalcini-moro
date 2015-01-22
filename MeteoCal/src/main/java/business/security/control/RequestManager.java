@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * This method is used to request data to external resources like google to 
+ * identify latitude and longitude of a given city or openweathermap to know 
+ * forecast for a place, given the latitude and the longitude
+ */
 public class RequestManager {
     
     private static String BASE_URL;
