@@ -16,18 +16,26 @@
             <ui:define name="content">
                 <!--______________ MAIN CONTENT ______________-->
                 <h:form>
-                    <h:panelGrid columns="1">
-                        <h:outputLabel for="name" value = "Name: #{scheduleView.user.name}"/>
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="name" value = "Name:"/>
+                        <h:outputLabel id ="name" value = "#{scheduleView.user.name}"/>
                                 
-                        <h:outputLabel for="surname" value = "Surname: #{scheduleView.user.surname}"/>
+                        <h:outputLabel for="surname" value = "Surname:"/>
+                        <h:outputLabel id ="surname" value = "#{scheduleView.user.surname}"/>
                                 
-                        <h:outputLabel for="birthday" value = "Birthday: #{scheduleView.user.birthday}"/>
+                        <h:outputLabel for="birthday" value = "Birthday:"/>
+                        <h:outputLabel id ="birthday" value = "#{scheduleView.user.birthday}">
+                            <f:convertDateTime pattern="dd.MM.yyyy"  timeZone="GMT+1"/>
+                        </h:outputLabel>
                                 
-                        <h:outputLabel for="phoneNumber" value = "Phone Number: #{scheduleView.user.phoneNumber}"/>
+                        <h:outputLabel for="phoneNumber" value = "Phone Number:"/>
+                        <h:outputLabel id ="phoneNumber" value = "#{scheduleView.user.phoneNumber}"/>
                                 
-                        <h:outputLabel for="residenceTown" value = "Residence Town: #{scheduleView.user.residenceTown}"/>
+                        <h:outputLabel for="residenceTown" value = "Residence Town:"/>
+                        <h:outputLabel id ="residenceTown" value = "#{scheduleView.user.residenceTown}"/>
                                 
-                        <h:outputLabel for="email" value = "Email: #{scheduleView.user.email}"/>
+                        <h:outputLabel for="email" value = "Email:"/>
+                        <h:outputLabel id ="email" value = "#{scheduleView.user.email}"/>
                                 
                     </h:panelGrid>
                 </h:form>

@@ -47,7 +47,8 @@ public class RequestManager {
             return buffer.toString();
         }
         catch(Throwable t) {
-            t.printStackTrace();
+            System.out.println("Weather error");
+            //t.printStackTrace();
         }
         finally {
             try { is.close(); } catch(Throwable t) {}

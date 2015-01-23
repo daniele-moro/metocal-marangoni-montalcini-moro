@@ -8,9 +8,13 @@ package gui.security.boundary;
 import business.security.control.UserManager;
 import business.security.entity.Users;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 @Named
 @SessionScoped
@@ -65,6 +69,24 @@ public class UserBean implements Serializable{
      * @return 
      */
     public String updateProfile(){
+        
+        //Control if the user is too young
+        GregorianCalendar currDate = new GregorianCalendar();
+        currDate.roll(Calendar.YEAR, -14);
+        if(user.getBirthday().after(currDate.getTime())){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Invalid inserted date, you must have an age greater than 14 years");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
+        
+        //Control if the user has inserted a location
+        String residenceTown = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("geocomplete");
+        if(residenceTown ==null || residenceTown.isEmpty() ){
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Location empty","");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+            return "";
+        }
+        user.setResidenceTown(residenceTown);
         um.updateUser(user);
         user=null;
         return "profile?faces-redirect=true";

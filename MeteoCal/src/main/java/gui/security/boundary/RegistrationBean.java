@@ -55,7 +55,7 @@ public class RegistrationBean {
      */
     public String register() {
         GregorianCalendar currDate = new GregorianCalendar();
-        currDate.roll(Calendar.YEAR, -16);
+        currDate.roll(Calendar.YEAR, -14);
         if(user.getBirthday().after(currDate.getTime())){
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", "Invalid inserted date, you must have an age greater than 14 years");
             FacesContext.getCurrentInstance().addMessage(null, message);

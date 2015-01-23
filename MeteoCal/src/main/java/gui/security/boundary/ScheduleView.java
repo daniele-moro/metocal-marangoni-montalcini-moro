@@ -44,7 +44,11 @@ public class ScheduleView implements Serializable {
         
         temp();
     }
-    
+    /**
+     * This method is called after the construction of the bean,
+     * it loads all the events of the logged user or of the user passed via GET parameter
+     * and it adds them to the schedule view on the page
+     */
     private void temp(){
         HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance()
                 .getExternalContext().getRequest();
@@ -103,7 +107,7 @@ public class ScheduleView implements Serializable {
         }
         
     }
-    
+
     public ScheduleEvent getEvent() {
         return event;
     }
@@ -112,7 +116,11 @@ public class ScheduleView implements Serializable {
         this.event = event;
     }
     
-    
+    /**
+     * This method is called when the user click on an event on the schedule 
+     * present on the related page
+     * @param selectEvent The event selected by the user
+     */
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
     }
@@ -129,14 +137,20 @@ public class ScheduleView implements Serializable {
         return user;
     }
     
+    
     public String getPredefined(){
         if(event.getData()!=null){
-            System.out.println("PREDEFINED TYPO: "+((Event) event.getData()).getPredefinedTypology());
             return ((Event) event.getData()).getPredefinedTypology().toString();
         }
         return "";
     }
     
+    /**
+     * This method is called when the user wants to see other information about the selected events, 
+     * it redirects to the page of the event
+     * @param e
+     * @return 
+     */
     public String goToEvent(Event e){
         return "event.xhtml?faces-redirect=true&amp;id="+e.getId();
     }

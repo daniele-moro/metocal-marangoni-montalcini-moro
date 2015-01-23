@@ -13,6 +13,16 @@
                 Modify Event
             </ui:define>
             
+            <ui:define name="script">
+                <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"/>
+                <script>
+                    function showSuggestions() {
+                        var input = document.getElementById('geocomplete');
+                        var autocomplete = new google.maps.places.Autocomplete(input);
+                    }
+                </script>
+            </ui:define>
+            
             <ui:define name="content">
                 <!--______________ MAIN CONTENT ______________-->
                 <h:form id="registrationform">
@@ -20,35 +30,37 @@
                     <h:panelGrid columns="2" id="regGrid">
                         <h:outputLabel for="name">Name: </h:outputLabel>
                         <p:inputText id="name" value="#{userBean.user.name}"/>
-                                        
+                        
                         <h:outputLabel for="surname">Surname:</h:outputLabel>
                         <p:inputText id="surname" value="#{userBean.user.surname}"/>
-                                        
+                        
                         <h:outputLabel for="birthday" value="Birthday:" />
-                        <p:calendar id="birthday" value="#{userBean.user.birthday}"/>
-                                        
+                        <p:calendar id="birthday" value="#{userBean.user.birthday}" navigator="true" pattern="dd/MM/yyyy" yearRange="c-100:c"/>
+                        
                         <h:outputLabel for="phoneNumber">Phone Number:</h:outputLabel>
                         <p:inputText id="phoneNumber" value="#{userBean.user.phoneNumber}"/>
-                                        
+                        
                         <h:outputLabel for="residenceTown">Residence Town:</h:outputLabel>
-                        <p:inputText id="residenceTown" value="#{userBean.user.residenceTown}"/>
-                                        
+                        <input id="geocomplete" value="#{userBean.user.residenceTown}" name="geocomplete" class="controls" type="text" placeholder="Type in an address" onfocus="showSuggestions()"/>
+                        
                         <p:outputLabel for="privacy" value="Calendar Visibility: " />
                         <p:selectOneRadio id="privacy" value="#{userBean.user.calendarPublic}">
                             <f:selectItem itemLabel="Public" itemValue="true" />
                             <f:selectItem itemLabel="Private" itemValue="false" />
                         </p:selectOneRadio>
-                                        
+                        
                     </h:panelGrid>
                     <h:panelGrid columns="3" id="regGrid1">
                         <h:outputLabel for="password">Password:</h:outputLabel>
                         <p:password id="password" value="#{userBean.user.password}"
                                     feedback="true" match="pwd2" label="Password"/>
-                        <p:message for="password" />
-                                        
+                        
+                        <p:message id ="passwordMessage" for="password" />
+                        
                         <h:outputLabel for="pwd2">Confirm Password:</h:outputLabel>
                         <p:password id="pwd2" label="Confirm Password"/>
                     </h:panelGrid>
+                    <p:messages id="messageError" globalOnly="true" showDetail="true" autoUpdate="true" closable="true" />
                     <p:commandButton id="submit" value="Submit" update="regGrid"
                                      action="#{userBean.updateProfile()}" />
                 </h:form>   

@@ -24,7 +24,9 @@
                         <h:outputLabel id="surname" value="#{userBean.user.surname}"/>
                                         
                         <h:outputLabel for="birthday" value = "Birthday:"/>
-                        <h:outputLabel id="birthday" value="#{userBean.user.birthday}"/>
+                        <h:outputLabel id="birthday" value="#{userBean.user.birthday}">
+                            <f:convertDateTime pattern="dd.MM.yyyy"  timeZone="GMT+1"/>
+                        </h:outputLabel>
                                                    
                         <h:outputLabel for="phoneNumber" value = "Phone Number:"/>
                         <h:outputLabel id="phoneNumber" value="#{userBean.user.phoneNumber}"/>

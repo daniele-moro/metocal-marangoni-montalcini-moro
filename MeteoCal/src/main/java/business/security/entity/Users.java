@@ -36,7 +36,7 @@ public class Users implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthday; 
     
-    @Pattern(regexp="([+]39)?[0-9]{9,10}",
+    @Pattern(regexp="(([+]39)?[0-9]{9,10})?",
             message="Invalid phone number")
     private String phoneNumber;
     

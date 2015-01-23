@@ -39,7 +39,7 @@ public class WeatherChecker {
      * This method is called every 12 hours to update the weather forecast for all the future events
      * 
      **/
-    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*/1", second = "0", persistent = false)
+    @Schedule(hour = "8, 20", persistent = false)
     public void refreshWeatherForecast() {
         // System.out.println("Timer event: " + new Date());
         for (Event event : searchManager.findAllFutureEvents()) {
@@ -62,7 +62,7 @@ public class WeatherChecker {
      * This method is called once a day (e.g., every midnight) to check the weather forecast
      * for the events that will be performed three days or one day after the invocation
      **/
-    @Schedule(month = "*", hour = "*", dayOfMonth = "*", year = "*", minute = "*/1", second = "0", persistent = false)
+    @Schedule(hour = "20", persistent = false)
     public void checkAcceptedWeatherConditions() {
         /**
          * Construction of two date, one is one day after now, the other is
